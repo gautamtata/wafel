@@ -207,6 +207,16 @@ describeDb("agent routes", () => {
     expect(after).not.toHaveBeenCalled();
   });
 
+  it("ended without learner lines goes straight to RECAP_READY and schedules nothing", async () => {
+    const id = await newSession();
+    await markStarted(id);
+    const tutorOnly = transcript.filter((entry) => entry.role === "tutor");
+    const res = await agentEnded(request("", { method: "POST", body: { transcript: tutorOnly, durationSec: 40 }, ...agent() }), ctx(id));
+    expect(res.status).toBe(204);
+    expect(await getSessionView(id)).toMatchObject({ status: "RECAP_READY", recap: { summary: "No conversation was recorded." } });
+    expect(after).not.toHaveBeenCalled();
+  });
+
   it("a second ended after the first does not schedule another recap", async () => {
     const id = await newSession();
     await markStarted(id);

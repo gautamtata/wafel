@@ -32,7 +32,7 @@ export default async function SessionPage({ params }: PageProps<"/session/[id]">
       status={session.status}
       label={SESSION_TYPE_LABELS[session.type]}
       title={sessionTitle(session)}
-      capMinutes={learner.sessionCapMinutes}
+      capMinutes={session.capMinutes}
     />
   );
 }

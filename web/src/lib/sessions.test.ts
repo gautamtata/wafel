@@ -5,6 +5,7 @@ import { db } from "@/lib/db";
 import { log } from "@/lib/log";
 import { OWNER_ID } from "@/lib/owner";
 import {
+  EMPTY_RECAP,
   coveredTopics,
   createSession,
   generateAndStoreRecap,
@@ -167,7 +168,23 @@ describeDb("lifecycle", () => {
   it("markEnded with zero duration on an ACTIVE session still ends it", async () => {
     const { sessionId } = await createSession({ type: "FREE_TALK" });
     await markStarted(sessionId);
-    expect(await markEnded(sessionId, [], 0)).toEqual({ status: "ENDED", changed: true });
+    expect(await markEnded(sessionId, [], 0)).toEqual({ status: "RECAP_READY", changed: true });
+  });
+
+  it("markEnded without any learner lines stores a placeholder recap instead of scheduling one", async () => {
+    const { sessionId } = await createSession({ type: "FREE_TALK" });
+    await markStarted(sessionId);
+    const tutorOnly = transcript.filter((entry) => entry.role === "tutor");
+    expect(await markEnded(sessionId, tutorOnly, 45)).toEqual({ status: "RECAP_READY", changed: true });
+    const view = await getSessionView(sessionId);
+    expect(view).toMatchObject({ status: "RECAP_READY", durationSec: 45, transcript: tutorOnly, recap: EMPTY_RECAP });
+    expect(await db.sessionMemory.findUnique({ where: { sessionId } })).toBeNull();
+  });
+
+  it("getSessionView exposes the cap from the brief snapshot", async () => {
+    const { sessionId } = await createSession({ type: "FREE_TALK" });
+    const learner = await db.learner.findUniqueOrThrow({ where: { id: OWNER_ID } });
+    expect((await getSessionView(sessionId)).capMinutes).toBe(learner.sessionCapMinutes);
   });
 
   it("concurrent markEnded calls transition exactly once", async () => {
