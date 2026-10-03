@@ -1,0 +1,32 @@
+{
+  "sessionId": "sample-session",
+  "type": "ROLEPLAY",
+  "language": { "code": "es", "name": "Spanish", "nativeName": "Español" },
+  "nativeLanguage": "en",
+  "level": "A2",
+  "correctionMode": "SUBTLE",
+  "pace": "SLOW",
+  "voice": "marin",
+  "capMinutes": 10,
+  "goals": "Order a full meal and ask for the bill politely.",
+  "scenario": {
+    "title": "En el restaurante",
+    "setting": "A small tapas bar in Sevilla on a Friday evening.",
+    "tutorRole": "camarero",
+    "learnerRole": "cliente",
+    "goals": ["Pedir una bebida", "Pedir dos tapas", "Pedir la cuenta"]
+  },
+  "dueVocab": [
+    { "word": "la cuenta", "translation": "the bill" },
+    { "word": "la bebida", "translation": "the drink" },
+    { "word": "picante", "translation": "spicy" }
+  ],
+  "recentMistakes": [
+    { "original": "yo quiero dos cervezas frío", "corrected": "yo quiero dos cervezas frías", "category": "AGREEMENT" },
+    { "original": "ayer yo como paella", "corrected": "ayer comí paella", "category": "CONJUGATION" }
+  ],
+  "memories": [
+    "Learner is vegetarian and mentioned a trip to Sevilla next month.",
+    "Struggles with gender agreement on adjectives."
+  ]
+}
