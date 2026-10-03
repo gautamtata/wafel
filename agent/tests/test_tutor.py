@@ -5,12 +5,14 @@ from types import SimpleNamespace
 from typing import Any
 
 import pytest
+from livekit import rtc
 from livekit.agents.llm import AgentHandoff, ChatMessage
 from livekit.agents.voice.events import ConversationItemAddedEvent
 
 from wafel_agent.brief import Brief
 from wafel_agent.prompts import build_voice_prompt
 from wafel_agent.tutor import (
+    CAP_FAREWELL_INSTRUCTION,
     GREETING_INSTRUCTION,
     LEARNER_LEFT_REASON,
     LearnerPresence,
@@ -142,6 +144,35 @@ async def test_cap_timer_requests_end(brief: Brief) -> None:
     assert reasons == ["cap"]
 
 
+async def test_cap_tells_tutor_to_say_goodbye_before_shutdown(brief: Brief) -> None:
+    reasons: list[str] = []
+    session = FakeSession(FakeHandle())
+    lc = LessonLifecycle(brief, FakeApi(), shutdown=reasons.append, end_delay=0.0, cap_seconds=0.01)  # type: ignore[arg-type]
+    task = lc.mark_started(session)
+    await asyncio.wait_for(task, timeout=1)
+    assert session.calls == [CAP_FAREWELL_INSTRUCTION]
+    assert session.awaited == [CAP_FAREWELL_INSTRUCTION]
+    assert reasons == ["cap"]
+
+
+async def test_cap_farewell_timeout_still_ends(brief: Brief, monkeypatch) -> None:  # noqa: ANN001
+    monkeypatch.setattr("wafel_agent.tutor.CAP_FAREWELL_TIMEOUT_SEC", 0.01)
+    reasons: list[str] = []
+    session = FakeSession(FakeHandle(delay=10.0))
+    lc = LessonLifecycle(brief, FakeApi(), shutdown=reasons.append, end_delay=0.0, cap_seconds=0.0)  # type: ignore[arg-type]
+    await asyncio.wait_for(lc.mark_started(session), timeout=1)
+    assert session.calls == [CAP_FAREWELL_INSTRUCTION]
+    assert reasons == ["cap"]
+
+
+async def test_cap_farewell_error_still_ends(brief: Brief) -> None:
+    reasons: list[str] = []
+    session = FakeSession(FakeHandle(raises=RuntimeError("closed")))
+    lc = LessonLifecycle(brief, FakeApi(), shutdown=reasons.append, end_delay=0.0, cap_seconds=0.0)  # type: ignore[arg-type]
+    await asyncio.wait_for(lc.mark_started(session), timeout=1)
+    assert reasons == ["cap"]
+
+
 async def test_cancel_stops_cap_timer(brief: Brief) -> None:
     lc = LessonLifecycle(brief, FakeApi(), shutdown=lambda _: None, cap_seconds=60)  # type: ignore[arg-type]
     task = lc.mark_started()
@@ -153,6 +184,7 @@ async def test_cancel_stops_cap_timer(brief: Brief) -> None:
 @dataclass
 class FakeParticipant:
     identity: str
+    disconnect_reason: int | None = None
 
 
 ParticipantHandler = Callable[[FakeParticipant], None]
@@ -166,17 +198,40 @@ class FakeRoom:
         self.handlers[event] = handler
 
 
-@pytest.fixture
-def presence() -> tuple[LearnerPresence, FakeRoom, list[str]]:
+def _presence(grace_seconds: float) -> tuple[LearnerPresence, FakeRoom, list[str]]:
     room = FakeRoom()
     reasons: list[str] = []
 
     async def request_end(reason: str) -> None:
         reasons.append(reason)
 
-    watcher = LearnerPresence(room, request_end, grace_seconds=0.01)  # type: ignore[arg-type]
+    watcher = LearnerPresence(room, request_end, grace_seconds=grace_seconds)  # type: ignore[arg-type]
     watcher.watch()
     return watcher, room, reasons
+
+
+@pytest.fixture
+def presence() -> tuple[LearnerPresence, FakeRoom, list[str]]:
+    return _presence(0.01)
+
+
+async def test_client_initiated_leave_ends_without_grace() -> None:
+    watcher, room, reasons = _presence(grace_seconds=30.0)
+    room.handlers["participant_disconnected"](
+        FakeParticipant("learner", rtc.DisconnectReason.CLIENT_INITIATED)
+    )
+    await asyncio.sleep(0.05)
+    assert reasons == [LEARNER_LEFT_REASON]
+
+
+async def test_dropped_connection_keeps_grace() -> None:
+    watcher, room, reasons = _presence(grace_seconds=30.0)
+    room.handlers["participant_disconnected"](
+        FakeParticipant("learner", rtc.DisconnectReason.SIGNAL_CLOSE)
+    )
+    await asyncio.sleep(0.05)
+    assert reasons == []
+    watcher.cancel()
 
 
 async def test_learner_departure_ends_after_grace(presence: tuple) -> None:
@@ -217,12 +272,21 @@ async def test_cancel_stops_departure_timer(presence: tuple) -> None:
 class FakeHandle:
     error: BaseException | None = None
     interrupted: bool = False
+    delay: float = 0.0
+    raises: BaseException | None = None
+    awaited: list[str] | None = None
+    instructions: str = ""
 
     def exception(self) -> BaseException | None:
         return self.error
 
     def __await__(self) -> Generator[None, None, "FakeHandle"]:
         async def done() -> FakeHandle:
+            await asyncio.sleep(self.delay)
+            if self.raises is not None:
+                raise self.raises
+            if self.awaited is not None:
+                self.awaited.append(self.instructions)
             return self
 
         return done().__await__()
@@ -232,10 +296,14 @@ class FakeSession:
     def __init__(self, first: FakeHandle) -> None:
         self._first = first
         self.calls: list[str] = []
+        self.awaited: list[str] = []
 
     def generate_reply(self, *, instructions: str) -> FakeHandle:
         self.calls.append(instructions)
-        return self._first if len(self.calls) == 1 else FakeHandle()
+        handle = self._first if len(self.calls) == 1 else FakeHandle()
+        handle.awaited = self.awaited
+        handle.instructions = instructions
+        return handle
 
 
 async def _greet(brief: Brief, first: FakeHandle) -> list[str]:

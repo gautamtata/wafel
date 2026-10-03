@@ -74,7 +74,7 @@ describe("Dashboard", () => {
     expect(within(home).getByText(/12 min/)).toBeInTheDocument();
     expect(within(home).getByText(/\$0\.60/)).toBeInTheDocument();
     const market = screen.getByRole("link", { name: /Shopping at the market/ });
-    expect(market).toHaveAttribute("href", "/session/def");
+    expect(market).toHaveAttribute("href", "/session/def/recap");
     expect(within(market).getByText("Recap pending")).toBeInTheDocument();
   });
 

@@ -1,9 +1,9 @@
-import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterAll, afterEach, beforeAll, beforeEach, expect, it, vi } from "vitest";
 import { db } from "@/lib/db";
 import { OWNER_ID } from "@/lib/owner";
 import { getSessionView, markStarted } from "@/lib/sessions";
 import type { Recap } from "@/lib/types";
-import { cleanupTestRows, ensureOwner, teardownOwner, TEST_PREFIX } from "@/test/db-fixture";
+import { cleanupTestRows, ensureOwner, describeDb, teardownOwner, TEST_PREFIX } from "@/test/db-fixture";
 import { ctx, loginAsOwner, logout, request, TEST_AGENT_SECRET, TEST_APP_SECRET } from "@/test/http";
 import { POST as createSession } from "./route";
 import { GET as getSession } from "./[id]/route";
@@ -80,7 +80,7 @@ afterEach(async () => {
 });
 afterAll(teardownOwner);
 
-describe("owner session routes", () => {
+describeDb("owner session routes", () => {
   it("401s without a session cookie", async () => {
     logout();
     expect((await createSession(request("/api/sessions", { method: "POST", body: { type: "LESSON" } }))).status).toBe(401);
@@ -133,7 +133,7 @@ describe("owner session routes", () => {
   });
 });
 
-describe("agent routes", () => {
+describeDb("agent routes", () => {
   it("401s with a missing or wrong secret, even with an owner cookie", async () => {
     const id = await newSession();
     const bad = [undefined, "wrong"];
@@ -204,6 +204,16 @@ describe("agent routes", () => {
     const res = await agentEnded(request("", { method: "POST", body: { transcript: [], durationSec: 0 }, ...agent() }), ctx(id));
     expect(res.status).toBe(204);
     expect((await getSessionView(id)).status).toBe("FAILED");
+    expect(after).not.toHaveBeenCalled();
+  });
+
+  it("ended without learner lines goes straight to RECAP_READY and schedules nothing", async () => {
+    const id = await newSession();
+    await markStarted(id);
+    const tutorOnly = transcript.filter((entry) => entry.role === "tutor");
+    const res = await agentEnded(request("", { method: "POST", body: { transcript: tutorOnly, durationSec: 40 }, ...agent() }), ctx(id));
+    expect(res.status).toBe(204);
+    expect(await getSessionView(id)).toMatchObject({ status: "RECAP_READY", recap: { summary: "No conversation was recorded." } });
     expect(after).not.toHaveBeenCalled();
   });
 

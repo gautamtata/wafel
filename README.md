@@ -25,6 +25,12 @@ bun run dev
 Other scripts: `bun run test` (Vitest), `bun run lint`, `bun run build`,
 `bun run db:studio`. See `web/.env.example` for every variable the app reads.
 
+The test suite writes rows (prefixed `test-`) to a database. Because the Prisma
+integration injects the production `DATABASE_URL` into every environment, the
+DB-backed suites are skipped unless you set `DATABASE_URL_TEST` to a dedicated test
+database in `web/.env.local`, or opt in explicitly with
+`WAFEL_ALLOW_SHARED_DB_TESTS=1` to run them against `DATABASE_URL`.
+
 ## Setup (agent)
 
 See `agent/README.md` (`uv sync`, `uv run python -m wafel_agent.main dev`).

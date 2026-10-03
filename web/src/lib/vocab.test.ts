@@ -1,7 +1,7 @@
-import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, afterEach, beforeAll, expect, it } from "vitest";
 import { db } from "@/lib/db";
 import { addVocab, countDueVocab, deleteVocab, listVocab, reviewVocab } from "@/lib/vocab";
-import { cleanupTestRows, ensureOwner, teardownOwner, TEST_PREFIX } from "@/test/db-fixture";
+import { cleanupTestRows, ensureOwner, describeDb, teardownOwner, TEST_PREFIX } from "@/test/db-fixture";
 
 const word = `${TEST_PREFIX}casa`;
 
@@ -9,7 +9,7 @@ beforeAll(ensureOwner);
 afterEach(cleanupTestRows);
 afterAll(teardownOwner);
 
-describe("addVocab", () => {
+describeDb("addVocab", () => {
   it("creates a due-now item with initial SRS state", async () => {
     const before = Date.now();
     const item = await addVocab({ word, translation: "house", sourceSessionId: "test-s1" });
@@ -43,7 +43,7 @@ describe("addVocab", () => {
   });
 });
 
-describe("listVocab / reviewVocab / deleteVocab", () => {
+describeDb("listVocab / reviewVocab / deleteVocab", () => {
   it("lists due items only when asked", async () => {
     const due = await addVocab({ word, translation: "house" });
     const later = await addVocab({ word: `${TEST_PREFIX}perro`, translation: "dog" });

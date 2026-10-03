@@ -1,7 +1,7 @@
-import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterAll, afterEach, beforeAll, beforeEach, expect, it, vi } from "vitest";
 import { db } from "@/lib/db";
 import { logMistake } from "@/lib/mistakes";
-import { cleanupTestRows, ensureOwner, teardownOwner, TEST_PREFIX } from "@/test/db-fixture";
+import { cleanupTestRows, ensureOwner, describeDb, teardownOwner, TEST_PREFIX } from "@/test/db-fixture";
 import { ctx, loginAsOwner, logout, request, TEST_APP_SECRET } from "@/test/http";
 import { GET as listMistakes } from "./route";
 import { PATCH as patchMistake } from "./[id]/route";
@@ -29,7 +29,7 @@ afterAll(async () => {
   await teardownOwner();
 });
 
-describe("mistake routes", () => {
+describeDb("mistake routes", () => {
   it("401s without a cookie", async () => {
     logout();
     expect((await listMistakes(request("/api/mistakes"))).status).toBe(401);

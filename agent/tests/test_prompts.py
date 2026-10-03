@@ -101,3 +101,11 @@ def test_backend_prompt(brief: Brief) -> None:
         assert name in prompt
     assert str(brief.cap_minutes) in prompt
     assert brief.session_id not in prompt
+
+
+def test_backend_prompt_does_not_ask_model_to_end_on_cap(brief: Brief) -> None:
+    """The model cannot observe the clock; the agent's cap timer ends the lesson itself."""
+    prompt = build_backend_prompt(brief)
+    end_line = next(line for line in prompt.splitlines() if line.startswith("- end_lesson"))
+    assert "is reached" not in end_line
+    assert "Do not call it for the time cap" in end_line

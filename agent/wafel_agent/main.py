@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import json
 import logging
 import os
@@ -7,6 +8,7 @@ from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 
 from dotenv import load_dotenv
+from livekit import rtc
 from livekit.agents import AgentSession, JobContext, WorkerOptions, cli
 from livekit.agents.voice.room_io import RoomOptions
 from livekit.plugins.openai.realtime import GPTLiveModel
@@ -19,6 +21,7 @@ from wafel_agent.tutor import (
     LEARNER_IDENTITY,
     LearnerPresence,
     LessonLifecycle,
+    ReplySession,
     Shutdown,
     WafelTutor,
 )
@@ -28,6 +31,11 @@ logger = logging.getLogger("wafel.main")
 AGENT_NAME = "wafel-tutor"
 VOICE_MODEL = "gpt-live-1"
 BACKEND_MODEL = "gpt-5.6-luna"
+LEARNER_JOIN_TIMEOUT_S = 240.0
+LEARNER_NEVER_JOINED = "learner never joined"
+
+LearnerWaiter = Callable[[JobContext], Awaitable[object]]
+SessionStarter = Callable[[JobContext, Brief, LessonLifecycle, WafelApi], Awaitable[ReplySession]]
 
 
 @dataclass(frozen=True)
@@ -100,6 +108,52 @@ def build_shutdown(
     return on_shutdown
 
 
+async def wait_for_learner(ctx: JobContext) -> rtc.RemoteParticipant:
+    return await ctx.wait_for_participant(identity=LEARNER_IDENTITY)
+
+
+async def start_session(
+    ctx: JobContext, brief: Brief, lifecycle: LessonLifecycle, api: WafelApi
+) -> ReplySession:
+    tools = build_tools(brief.session_id, api, ctx.room, lifecycle.request_end)
+    session = AgentSession(llm=build_llm(brief))
+    session.on("conversation_item_added", lifecycle.transcript.on_item)
+    await session.start(WafelTutor(brief, tools), room=ctx.room, room_options=room_options())
+    return session
+
+
+async def run_lesson(
+    ctx: JobContext,
+    brief: Brief,
+    api: WafelApi,
+    *,
+    wait: LearnerWaiter = wait_for_learner,
+    start: SessionStarter = start_session,
+    join_timeout: float = LEARNER_JOIN_TIMEOUT_S,
+) -> None:
+    """Wait for the learner, then run the lesson; the GPT-Live session only exists once they are in.
+
+    Nothing that bills or marks the session ACTIVE happens before the learner joins, and the
+    shutdown callback (which posts `ended`) is registered only after the wait succeeds.
+    """
+    try:
+        await asyncio.wait_for(wait(ctx), join_timeout)
+    except TimeoutError:
+        logger.warning("learner did not join within %.0fs; giving up", join_timeout)
+        await api.failed(brief.session_id, LEARNER_NEVER_JOINED)
+        await api.aclose()
+        ctx.shutdown(LEARNER_NEVER_JOINED)
+        return
+
+    lifecycle = LessonLifecycle(brief, api, ctx.shutdown)
+    presence = LearnerPresence(ctx.room, lifecycle.request_end)
+    ctx.add_shutdown_callback(build_shutdown(presence, lifecycle, api))
+    presence.watch()
+    session = await start(ctx, brief, lifecycle, api)
+    lifecycle.mark_started(session)
+    await api.started(brief.session_id)
+
+
 async def entrypoint(ctx: JobContext) -> None:
     settings = Settings.from_env()
     api = WafelApi(settings.api_url, settings.agent_secret)
@@ -111,18 +165,7 @@ async def entrypoint(ctx: JobContext) -> None:
     if brief is None:
         await api.aclose()
         return
-
-    lifecycle = LessonLifecycle(brief, api, ctx.shutdown)
-    tools = build_tools(brief.session_id, api, ctx.room, lifecycle.request_end)
-    session = AgentSession(llm=build_llm(brief))
-    session.on("conversation_item_added", lifecycle.transcript.on_item)
-    presence = LearnerPresence(ctx.room, lifecycle.request_end)
-    ctx.add_shutdown_callback(build_shutdown(presence, lifecycle, api))
-
-    presence.watch()
-    await session.start(WafelTutor(brief, tools), room=ctx.room, room_options=room_options())
-    lifecycle.mark_started()
-    await api.started(brief.session_id)
+    await run_lesson(ctx, brief, api)
 
 
 def main() -> None:

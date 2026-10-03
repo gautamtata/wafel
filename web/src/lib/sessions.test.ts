@@ -1,10 +1,11 @@
 import type OpenAI from "openai";
-import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "vitest";
+import { afterAll, afterEach, beforeAll, expect, it, vi } from "vitest";
 import { CURRICULUM } from "@/lib/curriculum";
 import { db } from "@/lib/db";
 import { log } from "@/lib/log";
 import { OWNER_ID } from "@/lib/owner";
 import {
+  EMPTY_RECAP,
   coveredTopics,
   createSession,
   generateAndStoreRecap,
@@ -19,7 +20,7 @@ import {
   runRecap,
 } from "@/lib/sessions";
 import type { Recap, TranscriptEntry } from "@/lib/types";
-import { cleanupTestRows, ensureOwner, teardownOwner, TEST_PREFIX } from "@/test/db-fixture";
+import { cleanupTestRows, ensureOwner, describeDb, teardownOwner, TEST_PREFIX } from "@/test/db-fixture";
 
 let nextId = 0;
 vi.mock("node:crypto", async (importOriginal) => ({
@@ -79,7 +80,7 @@ afterEach(async () => {
 });
 afterAll(teardownOwner);
 
-describe("createSession", () => {
+describeDb("createSession", () => {
   it("creates a CREATED LESSON with a brief snapshot, room and token", async () => {
     await db.vocabItem.create({
       data: { learnerId: OWNER_ID, word: `${TEST_PREFIX}hola`, translation: "hello", dueAt: new Date(0) },
@@ -141,7 +142,7 @@ describe("createSession", () => {
   });
 });
 
-describe("lifecycle", () => {
+describeDb("lifecycle", () => {
   it("markStarted moves CREATED to ACTIVE once", async () => {
     const { sessionId } = await createSession({ type: "FREE_TALK" });
     expect(await markStarted(sessionId)).toEqual({ status: "ACTIVE", changed: true });
@@ -167,7 +168,23 @@ describe("lifecycle", () => {
   it("markEnded with zero duration on an ACTIVE session still ends it", async () => {
     const { sessionId } = await createSession({ type: "FREE_TALK" });
     await markStarted(sessionId);
-    expect(await markEnded(sessionId, [], 0)).toEqual({ status: "ENDED", changed: true });
+    expect(await markEnded(sessionId, [], 0)).toEqual({ status: "RECAP_READY", changed: true });
+  });
+
+  it("markEnded without any learner lines stores a placeholder recap instead of scheduling one", async () => {
+    const { sessionId } = await createSession({ type: "FREE_TALK" });
+    await markStarted(sessionId);
+    const tutorOnly = transcript.filter((entry) => entry.role === "tutor");
+    expect(await markEnded(sessionId, tutorOnly, 45)).toEqual({ status: "RECAP_READY", changed: true });
+    const view = await getSessionView(sessionId);
+    expect(view).toMatchObject({ status: "RECAP_READY", durationSec: 45, transcript: tutorOnly, recap: EMPTY_RECAP });
+    expect(await db.sessionMemory.findUnique({ where: { sessionId } })).toBeNull();
+  });
+
+  it("getSessionView exposes the cap from the brief snapshot", async () => {
+    const { sessionId } = await createSession({ type: "FREE_TALK" });
+    const learner = await db.learner.findUniqueOrThrow({ where: { id: OWNER_ID } });
+    expect((await getSessionView(sessionId)).capMinutes).toBe(learner.sessionCapMinutes);
   });
 
   it("concurrent markEnded calls transition exactly once", async () => {
@@ -224,7 +241,7 @@ describe("lifecycle", () => {
   });
 });
 
-describe("live logging", () => {
+describeDb("live logging", () => {
   it("logs vocab and mistakes against the session", async () => {
     const { sessionId } = await createSession({ type: "FREE_TALK" });
     await logSessionVocab(sessionId, { word: `${TEST_PREFIX}perro`, translation: "dog" });
@@ -240,7 +257,7 @@ describe("live logging", () => {
   });
 });
 
-describe("generateAndStoreRecap", () => {
+describeDb("generateAndStoreRecap", () => {
   it("validates, merges live vocab/mistakes, writes memory and marks RECAP_READY", async () => {
     const id = await endedSession();
     await logSessionVocab(id, { word: `${TEST_PREFIX}gracias`, translation: "thank you" });

@@ -57,11 +57,20 @@ export type SessionView = {
   endedAt: Date | null;
   durationSec: number | null;
   estimatedCostCents: number | null;
+  capMinutes: number;
   recap: Recap | null;
   transcript: TranscriptEntry[] | null;
 };
 
 const ENDED_BEFORE_START = "agent ended before start";
+/** Stored directly when the learner never spoke; there is nothing for the recap model to work with. */
+export const EMPTY_RECAP: Recap = {
+  summary: "No conversation was recorded.",
+  mistakes: [],
+  newVocab: [],
+  levelNote: "",
+  memory: "",
+};
 const OPEN: SessionStatus[] = [SessionStatus.CREATED, SessionStatus.ACTIVE];
 const FINISHED: SessionStatus[] = [SessionStatus.ENDED, SessionStatus.RECAP_READY];
 
@@ -76,6 +85,7 @@ const viewSelect = {
   endedAt: true,
   durationSec: true,
   estimatedCostCents: true,
+  brief: true,
   recap: true,
   transcript: true,
   scenario: { select: { title: true } },
@@ -93,6 +103,7 @@ const toView = (row: SessionRow): SessionView => ({
   endedAt: row.endedAt,
   durationSec: row.durationSec,
   estimatedCostCents: row.estimatedCostCents,
+  capMinutes: (row.brief as Brief).capMinutes,
   recap: (row.recap as Recap | null) ?? null,
   transcript: (row.transcript as TranscriptEntry[] | null) ?? null,
 });
@@ -235,8 +246,10 @@ export async function markEnded(
       return failed;
     }
   }
+  const learnerSpoke = transcript.some((entry) => entry.role === "learner");
   return transition(id, OPEN, {
-    status: SessionStatus.ENDED,
+    status: learnerSpoke ? SessionStatus.ENDED : SessionStatus.RECAP_READY,
+    recap: learnerSpoke ? undefined : EMPTY_RECAP,
     transcript,
     durationSec,
     endedAt: new Date(),

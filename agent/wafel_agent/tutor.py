@@ -4,7 +4,7 @@ import asyncio
 import logging
 import time
 from collections.abc import Awaitable, Callable
-from typing import Any, Literal
+from typing import Any, Literal, Protocol
 
 from livekit import rtc
 from livekit.agents import Agent
@@ -20,6 +20,10 @@ logger = logging.getLogger("wafel.tutor")
 
 END_DELAY_SEC = 3.0
 CAP_REASON = "cap"
+CAP_FAREWELL_TIMEOUT_SEC = 12.0
+CAP_FAREWELL_INSTRUCTION = (
+    "Se acabó el tiempo de hoy. Despídete del alumno en una sola frase, en español."
+)
 LEARNER_IDENTITY = "learner"
 LEARNER_GRACE_SEC = 20.0
 LEARNER_LEFT_REASON = "learner left"
@@ -33,6 +37,12 @@ Elapsed = Callable[[], float]
 RequestEnd = Callable[[str], Awaitable[None]]
 
 _CHAT_ROLE_TO_TRANSCRIPT: dict[str, TranscriptRole] = {"assistant": "tutor", "user": "learner"}
+
+
+class ReplySession(Protocol):
+    """The slice of AgentSession the lifecycle needs: ask the tutor to speak and await it."""
+
+    def generate_reply(self, *, instructions: str) -> Awaitable[Any]: ...
 
 
 def _zero() -> float:
@@ -91,6 +101,7 @@ class LessonLifecycle:
         self._cap_seconds = brief.cap_minutes * 60 if cap_seconds is None else cap_seconds
         self._clock = clock
         self._started_at: float | None = None
+        self._session: ReplySession | None = None
         self._ending = False
         self._cap_task: asyncio.Task[None] | None = None
         self.transcript = TranscriptLog(self.elapsed)
@@ -104,8 +115,9 @@ class LessonLifecycle:
     def duration_sec(self) -> int:
         return int(self.elapsed())
 
-    def mark_started(self) -> asyncio.Task[None]:
+    def mark_started(self, session: ReplySession | None = None) -> asyncio.Task[None]:
         self._started_at = self._clock()
+        self._session = session
         return self._start_cap_timer()
 
     async def request_end(self, reason: str) -> None:
@@ -116,9 +128,24 @@ class LessonLifecycle:
         await asyncio.sleep(self._end_delay)
         self._shutdown(reason)
 
+    async def _say_farewell(self) -> None:
+        """The model cannot see the clock, so tell it time is up and let it close the lesson."""
+        if self._session is None:
+            return
+        try:
+            await asyncio.wait_for(
+                self._session.generate_reply(instructions=CAP_FAREWELL_INSTRUCTION),
+                timeout=CAP_FAREWELL_TIMEOUT_SEC,
+            )
+        except TimeoutError:
+            logger.warning("cap farewell did not finish within %.0fs", CAP_FAREWELL_TIMEOUT_SEC)
+        except Exception as exc:
+            logger.warning("cap farewell failed: %s", exc)
+
     def _start_cap_timer(self) -> asyncio.Task[None]:
         async def wait_for_cap() -> None:
             await asyncio.sleep(self._cap_seconds)
+            await self._say_farewell()
             await self.request_end(CAP_REASON)
 
         self._cap_task = asyncio.create_task(wait_for_cap(), name="wafel-cap-timer")
@@ -157,9 +184,18 @@ class LearnerPresence:
     def on_participant_disconnected(self, participant: rtc.RemoteParticipant) -> None:
         if participant.identity != self._identity:
             return
-        logger.info("learner left; ending in %.0fs unless they return", self._grace_seconds)
+        grace = self._grace_for(participant)
+        logger.info("learner left; ending in %.0fs unless they return", grace)
         self.cancel()
-        self._grace_task = asyncio.create_task(self._end_after_grace(), name="wafel-learner-grace")
+        self._grace_task = asyncio.create_task(
+            self._end_after_grace(grace), name="wafel-learner-grace"
+        )
+
+    def _grace_for(self, participant: rtc.RemoteParticipant) -> float:
+        """An explicit End (client-initiated leave) ends now; a dropped connection gets grace."""
+        if participant.disconnect_reason == rtc.DisconnectReason.CLIENT_INITIATED:
+            return 0.0
+        return self._grace_seconds
 
     def on_participant_connected(self, participant: rtc.RemoteParticipant) -> None:
         if participant.identity != self._identity or self._grace_task is None:
@@ -167,8 +203,8 @@ class LearnerPresence:
         logger.info("learner returned; cancelling departure timer")
         self.cancel()
 
-    async def _end_after_grace(self) -> None:
-        await asyncio.sleep(self._grace_seconds)
+    async def _end_after_grace(self, grace: float) -> None:
+        await asyncio.sleep(grace)
         await self._request_end(LEARNER_LEFT_REASON)
 
     def cancel(self) -> None:

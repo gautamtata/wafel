@@ -1,7 +1,7 @@
-import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, afterEach, beforeAll, expect, it } from "vitest";
 import { db } from "@/lib/db";
 import { countUnresolvedMistakes, listMistakes, logMistake, mistakesForSession, setMistakeResolved } from "@/lib/mistakes";
-import { cleanupTestRows, ensureOwner, teardownOwner, TEST_PREFIX } from "@/test/db-fixture";
+import { cleanupTestRows, ensureOwner, describeDb, teardownOwner, TEST_PREFIX } from "@/test/db-fixture";
 
 const sessionId = `${TEST_PREFIX}m1`;
 const input = {
@@ -28,7 +28,7 @@ afterAll(async () => {
   await teardownOwner();
 });
 
-describe("mistakes", () => {
+describeDb("mistakes", () => {
   it("logs a mistake once per normalized original within a session", async () => {
     const first = await logMistake(input);
     const dup = await logMistake({ ...input, original: "yo soy bien!" });
