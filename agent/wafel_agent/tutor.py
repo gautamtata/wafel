@@ -184,9 +184,18 @@ class LearnerPresence:
     def on_participant_disconnected(self, participant: rtc.RemoteParticipant) -> None:
         if participant.identity != self._identity:
             return
-        logger.info("learner left; ending in %.0fs unless they return", self._grace_seconds)
+        grace = self._grace_for(participant)
+        logger.info("learner left; ending in %.0fs unless they return", grace)
         self.cancel()
-        self._grace_task = asyncio.create_task(self._end_after_grace(), name="wafel-learner-grace")
+        self._grace_task = asyncio.create_task(
+            self._end_after_grace(grace), name="wafel-learner-grace"
+        )
+
+    def _grace_for(self, participant: rtc.RemoteParticipant) -> float:
+        """An explicit End (client-initiated leave) ends now; a dropped connection gets grace."""
+        if participant.disconnect_reason == rtc.DisconnectReason.CLIENT_INITIATED:
+            return 0.0
+        return self._grace_seconds
 
     def on_participant_connected(self, participant: rtc.RemoteParticipant) -> None:
         if participant.identity != self._identity or self._grace_task is None:
@@ -194,8 +203,8 @@ class LearnerPresence:
         logger.info("learner returned; cancelling departure timer")
         self.cancel()
 
-    async def _end_after_grace(self) -> None:
-        await asyncio.sleep(self._grace_seconds)
+    async def _end_after_grace(self, grace: float) -> None:
+        await asyncio.sleep(grace)
         await self._request_end(LEARNER_LEFT_REASON)
 
     def cancel(self) -> None:

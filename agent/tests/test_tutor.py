@@ -5,6 +5,7 @@ from types import SimpleNamespace
 from typing import Any
 
 import pytest
+from livekit import rtc
 from livekit.agents.llm import AgentHandoff, ChatMessage
 from livekit.agents.voice.events import ConversationItemAddedEvent
 
@@ -183,6 +184,7 @@ async def test_cancel_stops_cap_timer(brief: Brief) -> None:
 @dataclass
 class FakeParticipant:
     identity: str
+    disconnect_reason: int | None = None
 
 
 ParticipantHandler = Callable[[FakeParticipant], None]
@@ -196,17 +198,40 @@ class FakeRoom:
         self.handlers[event] = handler
 
 
-@pytest.fixture
-def presence() -> tuple[LearnerPresence, FakeRoom, list[str]]:
+def _presence(grace_seconds: float) -> tuple[LearnerPresence, FakeRoom, list[str]]:
     room = FakeRoom()
     reasons: list[str] = []
 
     async def request_end(reason: str) -> None:
         reasons.append(reason)
 
-    watcher = LearnerPresence(room, request_end, grace_seconds=0.01)  # type: ignore[arg-type]
+    watcher = LearnerPresence(room, request_end, grace_seconds=grace_seconds)  # type: ignore[arg-type]
     watcher.watch()
     return watcher, room, reasons
+
+
+@pytest.fixture
+def presence() -> tuple[LearnerPresence, FakeRoom, list[str]]:
+    return _presence(0.01)
+
+
+async def test_client_initiated_leave_ends_without_grace() -> None:
+    watcher, room, reasons = _presence(grace_seconds=30.0)
+    room.handlers["participant_disconnected"](
+        FakeParticipant("learner", rtc.DisconnectReason.CLIENT_INITIATED)
+    )
+    await asyncio.sleep(0.05)
+    assert reasons == [LEARNER_LEFT_REASON]
+
+
+async def test_dropped_connection_keeps_grace() -> None:
+    watcher, room, reasons = _presence(grace_seconds=30.0)
+    room.handlers["participant_disconnected"](
+        FakeParticipant("learner", rtc.DisconnectReason.SIGNAL_CLOSE)
+    )
+    await asyncio.sleep(0.05)
+    assert reasons == []
+    watcher.cancel()
 
 
 async def test_learner_departure_ends_after_grace(presence: tuple) -> None:

@@ -133,7 +133,8 @@ async def test_shutdown_cancels_grace_timer_then_posts_ended(brief: Brief) -> No
     reasons: list[str] = []
     lifecycle = LessonLifecycle(brief, api, reasons.append, end_delay=0.0)
     presence = LearnerPresence(_Room(), lifecycle.request_end, grace_seconds=0.01)  # type: ignore[arg-type]
-    presence.on_participant_disconnected(type("P", (), {"identity": "learner"})())  # type: ignore[arg-type]
+    learner = type("P", (), {"identity": "learner", "disconnect_reason": None})()
+    presence.on_participant_disconnected(learner)  # type: ignore[arg-type]
     await build_shutdown(presence, lifecycle, api)()
     await asyncio.sleep(0.05)
     assert reasons == []
