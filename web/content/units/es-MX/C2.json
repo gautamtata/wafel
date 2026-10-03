@@ -1,0 +1,150 @@
+[
+  {
+    "id": "es-MX-C2-01",
+    "order": 1,
+    "title": "Regional variation within Mexico",
+    "canDo": "I can recognize and discuss regional differences in vocabulary, pronunciation and expressions across Mexico.",
+    "pattern": {
+      "name": "Describing regional variants (es propio de, se usa sobre todo en, tiene un dejo...)",
+      "explanationEn": "Mexican Spanish is far from uniform. The central variety of Mexico City dominates the media, with its weakened unstressed vowels, sing-song intonation and slang such as chido or güey. Northern speech has its own rhythm and many anglicisms (troca, raite, lonche), plus local words like plebe in Sinaloa and Sonora. Speakers on the Veracruz coast aspirate or drop syllable-final s (lo' amigo'), and Yucatecan Spanish carries Maya loanwords and particles such as uay, xix and hach. To talk about variation precisely, use expressions like es propio de, se usa sobre todo en, suena muy norteño or tiene un dejo yucateco.",
+      "examples": [
+        { "es": "En Sonora a los chavos les dicen plebe; en la capital les dicen chamacos.", "en": "In Sonora they call young people plebe; in the capital they call them chamacos." },
+        { "es": "Mi abuela de Mérida dice '¡uay!' cada vez que algo la sorprende.", "en": "My grandmother from Mérida says 'uay!' every time something surprises her." }
+      ]
+    },
+    "targetWords": [
+      { "word": "el dejo", "translation": "accent, lilt", "example": "Tiene un dejo norteño muy marcado." },
+      { "word": "cantadito", "translation": "sing-song (of intonation)", "example": "En el norte dicen que los chilangos hablamos cantadito." },
+      { "word": "chilango / chilanga", "translation": "from Mexico City (informal)", "example": "Los chilangos dicen 'aventón' donde los norteños dicen 'raite'." },
+      { "word": "regio / regia", "translation": "from Monterrey (informal)", "example": "Los regios son famosos por la carne asada." },
+      { "word": "jarocho / jarocha", "translation": "from Veracruz", "example": "El son jarocho se baila sobre una tarima." },
+      { "word": "norteño / norteña", "translation": "northern (Mexican)", "example": "La música norteña suena en toda la frontera." },
+      { "word": "la plebe", "translation": "kids, folks (Sinaloa and Sonora)", "example": "¡Ándale, plebe, ya vámonos!" },
+      { "word": "la troca", "translation": "pickup truck (northern, from English)", "example": "Se fueron al rancho en la troca de su papá." },
+      { "word": "el raite", "translation": "ride, lift (northern, from English)", "example": "¿Me das raite a la central?" },
+      { "word": "el aventón", "translation": "ride, lift (central Mexico)", "example": "Mi vecino me dio un aventón al trabajo." },
+      { "word": "¡uay!", "translation": "wow! oh my! (Yucatán)", "example": "¡Uay, qué calor hace hoy!" },
+      { "word": "el xix", "translation": "leftovers, last bits (Yucatán, from Maya; pronounced 'shish')", "example": "Nomás quedó el xix del frijol en la olla." },
+      { "word": "aspirar", "translation": "to aspirate (a sound)", "example": "En la costa se suele aspirar la ese final." },
+      { "word": "el regionalismo", "translation": "regional word or expression", "example": "Raite es un regionalismo del norte." }
+    ],
+    "modelSentences": [
+      { "es": "Se nota que es regia: tiene un dejo norteño muy marcado.", "en": "You can tell she's from Monterrey: she has a very strong northern lilt." },
+      { "es": "En el norte te ofrecen raite en la troca; en la capital te dan un aventón.", "en": "In the north they offer you a ride in the pickup; in the capital they give you a lift." },
+      { "es": "Los jarochos suelen aspirar las eses al final de la sílaba.", "en": "People from Veracruz tend to aspirate the s at the end of a syllable." },
+      { "es": "¡Uay! Nomás quedó el xix del frijol, como dice mi abuela en Mérida.", "en": "Oh my! Only the last bits of the beans are left, as my grandmother in Mérida says." },
+      { "es": "Para los regios, los chilangos hablamos cantadito; para nosotros, son ellos los que cantan.", "en": "To people from Monterrey, we chilangos speak in a sing-song; to us, they're the ones singing." }
+    ],
+    "scenarioHint": "Compare how people talk back home with fellow travelers from Monterrey, Veracruz and Mérida at a hostel in Oaxaca."
+  },
+  {
+    "id": "es-MX-C2-02",
+    "order": 2,
+    "title": "Legal and bureaucratic Spanish",
+    "canDo": "I can read and explain contracts, official notices and legal procedures, and paraphrase them in plain Spanish.",
+    "pattern": {
+      "name": "Legal-administrative style (nominalization, fixed formulas, futuro de obligación, future subjunctive)",
+      "explanationEn": "Mexican legal and administrative texts favor nominalizations (la realización del pago instead of pagar), long passives and fixed formulas: El que suscribe, Por medio de la presente, En términos de lo dispuesto en.... The simple future expresses obligation, like English 'shall': El arrendatario pagará la renta.... You'll even find the future subjunctive, extinct in speech but alive in laws and contracts: El que incumpliere..., En caso de que hubiere.... The real skill is moving between registers: Por medio de la presente se le notifica que... becomes simply Le avisamos que....",
+      "examples": [
+        { "es": "Por medio de la presente, se le notifica que su solicitud ha sido rechazada.", "en": "You are hereby notified that your application has been rejected." },
+        { "es": "El arrendatario pagará la renta dentro de los primeros cinco días de cada mes.", "en": "The tenant shall pay the rent within the first five days of each month." }
+      ]
+    },
+    "targetWords": [
+      { "word": "por medio de la presente", "translation": "hereby, by means of this letter", "example": "Por medio de la presente, solicito mi baja voluntaria." },
+      { "word": "el que suscribe / la que suscribe", "translation": "the undersigned", "example": "La que suscribe declara que los datos son verídicos." },
+      { "word": "en términos de", "translation": "pursuant to, under", "example": "En términos de lo dispuesto en el contrato, se aplicará una penalización." },
+      { "word": "el arrendatario / la arrendataria", "translation": "tenant, lessee", "example": "El arrendatario no podrá subarrendar el inmueble." },
+      { "word": "el arrendador / la arrendadora", "translation": "landlord, lessor", "example": "El arrendador entregará el inmueble en buen estado." },
+      { "word": "el fiador / la fiadora", "translation": "guarantor (often required for leases in Mexico)", "example": "Para rentar te piden un fiador con propiedad en la ciudad." },
+      { "word": "el inmueble", "translation": "property, real estate", "example": "El inmueble se encuentra libre de gravámenes." },
+      { "word": "incumplir", "translation": "to breach, to fail to comply", "example": "Si la empresa incumple el contrato, deberá pagar daños." },
+      { "word": "la cláusula", "translation": "clause", "example": "Lee bien la cláusula de penalizaciones." },
+      { "word": "la rescisión", "translation": "termination, rescission (of a contract)", "example": "Cualquiera de las partes puede solicitar la rescisión." },
+      { "word": "el notario / la notaria", "translation": "notary public (a senior legal professional in Mexico)", "example": "La compraventa se firma ante notario." },
+      { "word": "el poder notarial", "translation": "power of attorney", "example": "Mi hermano tiene un poder notarial para firmar por mí." },
+      { "word": "el acta", "translation": "official certificate or record", "example": "Necesitas una copia certificada del acta de nacimiento." }
+    ],
+    "modelSentences": [
+      { "es": "Por medio de la presente, el que suscribe solicita la rescisión del contrato.", "en": "The undersigned hereby requests the termination of the contract." },
+      { "es": "En caso de que el arrendatario incumpliere cualquier cláusula, el arrendador podrá rescindir el contrato.", "en": "Should the tenant breach any clause, the landlord may terminate the contract." },
+      { "es": "Para rentar en la Ciudad de México casi siempre te piden un fiador con un inmueble a su nombre.", "en": "To rent in Mexico City they almost always ask for a guarantor with a property in their name." },
+      { "es": "Para vender la casa en representación de su madre, necesita un poder notarial otorgado ante notario.", "en": "To sell the house on your mother's behalf, you need a power of attorney granted before a notary." },
+      { "es": "En palabras sencillas: si no pagas a tiempo, el dueño puede terminar el contrato.", "en": "In plain words: if you don't pay on time, the owner can end the contract." }
+    ],
+    "scenarioHint": "Walk a friend through the fine print of an apartment lease at a notary's office in Puebla, translating the legalese into plain Spanish."
+  },
+  {
+    "id": "es-MX-C2-03",
+    "order": 3,
+    "title": "Cultural references and wordplay",
+    "canDo": "I can understand and play with refranes, calaveritas, puns and cultural allusions in Mexican Spanish.",
+    "pattern": {
+      "name": "Wordplay and cultural allusion (truncated refranes, calaveritas literarias, puns, pop-culture references)",
+      "explanationEn": "At this level, much of the meaning lies in what is alluded to rather than said. Refranes are often cut short, expecting you to finish them: Camarón que se duerme... (se lo lleva la corriente). Around Día de Muertos, people write calaveritas literarias, short rhyming mock-epitaphs that tease the living, often politicians, coworkers and friends. Puns exploit homophones and double meanings, and references to figures like Cantinflas, Chespirito or classic telenovelas shape everyday jokes: cantinflear means to talk at length without saying anything. A refrán at the right moment signals real fluency, but too many sound forced.",
+      "examples": [
+        { "es": "—Llegaron tarde y ya no había boletos. —Pues camarón que se duerme...", "en": "—They got there late and the tickets were gone. —Well, you snooze, you lose..." },
+        { "es": "El diputado cantinfleó toda la entrevista y no contestó nada.", "en": "The congressman rambled through the whole interview and didn't answer a thing." }
+      ]
+    },
+    "targetWords": [
+      { "word": "el refrán", "translation": "proverb, saying", "example": "Mi abuela tiene un refrán para cada ocasión." },
+      { "word": "la calaverita literaria", "translation": "rhyming mock-epitaph written for Día de Muertos", "example": "En la escuela nos pidieron escribir una calaverita literaria." },
+      { "word": "la Catrina", "translation": "elegant skeleton figure created by José Guadalupe Posada", "example": "Se disfrazó de Catrina para el desfile." },
+      { "word": "la calaca", "translation": "skeleton; death personified (colloquial)", "example": "Ya merito se lo llevaba la calaca." },
+      { "word": "la ofrenda", "translation": "Day of the Dead altar with offerings", "example": "Pusimos pan de muerto y cempasúchil en la ofrenda." },
+      { "word": "cantinflear", "translation": "to talk at length without saying anything (from Cantinflas)", "example": "No cantinflees y dime la verdad." },
+      { "word": "el juego de palabras", "translation": "pun, wordplay", "example": "El anuncio es un juego de palabras con el nombre del candidato." },
+      { "word": "echar indirectas", "translation": "to drop hints, to make veiled digs", "example": "Deja de echarme indirectas y dime qué te pasa." },
+      { "word": "dar el avión", "translation": "to humor someone, to pretend to listen (Mexico)", "example": "Le di el avión a mi tío toda la cena." },
+      { "word": "camarón que se duerme, se lo lleva la corriente", "translation": "you snooze, you lose", "example": "Se vendieron todos los boletos; camarón que se duerme, se lo lleva la corriente." },
+      { "word": "al que madruga, Dios lo ayuda", "translation": "the early bird catches the worm", "example": "Llegué a las siete al tianguis; al que madruga, Dios lo ayuda." },
+      { "word": "más vale pájaro en mano que ciento volando", "translation": "a bird in the hand is worth two in the bush", "example": "Acepté la oferta; más vale pájaro en mano que ciento volando." }
+    ],
+    "modelSentences": [
+      { "es": "Le pregunté por el presupuesto, pero cantinfleó media hora y no dijo nada concreto.", "en": "I asked him about the budget, but he rambled for half an hour and said nothing concrete." },
+      { "es": "Para la ofrenda de la oficina, cada quien escribió una calaverita literaria sobre el jefe.", "en": "For the office altar, everyone wrote a calaverita about the boss." },
+      { "es": "Estaba el licenciado revisando su cuenta, cuando llegó la Catrina y le cobró la renta.", "en": "The lawyer was going over his accounts when La Catrina showed up and collected the rent." },
+      { "es": "No te hagas, ya sé que me estás echando indirectas.", "en": "Don't play dumb, I know you're dropping hints at me." },
+      { "es": "Más vale pájaro en mano que ciento volando: acepté la primera oferta de chamba.", "en": "A bird in the hand is worth two in the bush: I took the first job offer." }
+    ],
+    "scenarioHint": "Write and read calaveritas literarias with coworkers for the office Día de Muertos ofrenda in Oaxaca, trading refranes and puns."
+  },
+  {
+    "id": "es-MX-C2-04",
+    "order": 4,
+    "title": "Mentoring and explaining complex ideas",
+    "canDo": "I can explain complex ideas clearly to different audiences, check understanding, and guide someone through a difficult problem.",
+    "pattern": {
+      "name": "Explaining and scaffolding (o sea, dicho de otro modo, pongamos por caso, ¿me explico?, ¿qué pasaría si...?)",
+      "explanationEn": "Explaining well means reformulating: o sea, es decir, dicho de otro modo, en otras palabras. Make abstractions concrete with examples and analogies: pongamos por caso que..., es como cuando..., imagínate que.... Check understanding without condescension (¿me explico?, ¿hasta aquí vamos bien?, ¿tiene sentido?) and invite the other person to reformulate: ¿cómo lo explicarías tú?. Guide rather than tell, using hypothetical questions: ¿Qué pasaría si...?, ¿Y si probaras...?. Adjust your register to the audience: the same idea is explained differently to a new intern than to the director general.",
+      "examples": [
+        { "es": "O sea, el problema no es el código, sino cómo se organizó el equipo.", "en": "I mean, the problem isn't the code, it's how the team was organized." },
+        { "es": "Pongamos por caso que el peso se devalúa: ¿qué pasaría con tus costos?", "en": "Let's suppose the peso is devalued: what would happen to your costs?" }
+      ]
+    },
+    "targetWords": [
+      { "word": "o sea", "translation": "I mean, that is", "example": "O sea, no es que esté mal, sino que se puede mejorar." },
+      { "word": "es decir", "translation": "that is to say", "example": "El proyecto es rentable, es decir, genera más de lo que cuesta." },
+      { "word": "dicho de otro modo", "translation": "put another way", "example": "Dicho de otro modo, necesitamos menos juntas y más decisiones." },
+      { "word": "pongamos por caso", "translation": "let's suppose, say for instance", "example": "Pongamos por caso que el proveedor falla." },
+      { "word": "¿me explico?", "translation": "am I making sense?", "example": "Primero se valida, luego se publica, ¿me explico?" },
+      { "word": "desglosar", "translation": "to break down (into parts)", "example": "Vamos a desglosar el presupuesto por área." },
+      { "word": "replantear", "translation": "to rethink, to reframe", "example": "Hay que replantear la estrategia desde cero." },
+      { "word": "el enfoque", "translation": "approach, focus", "example": "Me gusta tu enfoque, pero falta considerar al usuario." },
+      { "word": "el reto", "translation": "challenge", "example": "El reto es hacerlo sin aumentar los costos." },
+      { "word": "la retroalimentación", "translation": "feedback", "example": "Te doy retroalimentación después de la presentación." },
+      { "word": "la analogía", "translation": "analogy", "example": "Usó una analogía con el futbol para explicarlo." },
+      { "word": "el becario / la becaria", "translation": "intern (Mexico)", "example": "La becaria propuso una idea muy buena." },
+      { "word": "el flujo de efectivo", "translation": "cash flow", "example": "Sin clientes nuevos, el flujo de efectivo se complica." }
+    ],
+    "modelSentences": [
+      { "es": "Vamos a desglosar el problema paso por paso; ¿hasta aquí vamos bien?", "en": "Let's break the problem down step by step; are we good so far?" },
+      { "es": "Dicho de otro modo, el reto no es técnico sino de comunicación.", "en": "Put another way, the challenge isn't technical, it's about communication." },
+      { "es": "Pongamos por caso que el cliente cancela: ¿qué pasaría con el flujo de efectivo?", "en": "Let's suppose the client cancels: what would happen to cash flow?" },
+      { "es": "Es como cuando aprendes a manejar en el Periférico: primero sufres y luego ya ni lo piensas.", "en": "It's like learning to drive on the Periférico: first you suffer, and then you don't even think about it." },
+      { "es": "Antes de darte mi retroalimentación, ¿cómo replantearías tú el enfoque?", "en": "Before I give you my feedback, how would you reframe the approach?" }
+    ],
+    "scenarioHint": "Mentor a new intern at a tech startup in Guadalajara through a project that went wrong, explaining the underlying concepts."
+  }
+]

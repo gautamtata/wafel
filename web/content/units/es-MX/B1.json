@@ -1,0 +1,300 @@
+[
+  {
+    "id": "es-MX-B1-01",
+    "order": 1,
+    "title": "Telling stories about the past",
+    "canDo": "I can tell a story about something that happened to me, setting the scene and narrating the events.",
+    "pattern": {
+      "name": "Pretérito vs. imperfecto in narration",
+      "explanationEn": "Use the imperfect to set the scene: background, descriptions, time, ongoing actions and habits (era, estaba, había, llovía, iba). Use the preterite for the events that move the story forward, actions with a clear beginning or end (llegué, vi, se cayó, dijo). A classic combination is an ongoing action interrupted by an event: Estaba en el Metro cuando sonó mi celular. Words like de repente, de pronto and entonces usually introduce preterite events, while mientras, siempre and todos los días usually go with the imperfect.",
+      "examples": [
+        { "es": "Eran las once de la noche y llovía un chorro cuando se fue la luz.", "en": "It was eleven at night and it was pouring when the power went out." },
+        { "es": "Mientras esperaba el camión, me encontré a un amigo de la prepa.", "en": "While I was waiting for the bus, I ran into a friend from high school." }
+      ]
+    },
+    "targetWords": [
+      { "word": "de repente", "translation": "suddenly", "example": "Estábamos platicando y de repente empezó a temblar." },
+      { "word": "de pronto", "translation": "all of a sudden", "example": "De pronto, alguien gritó mi nombre." },
+      { "word": "mientras", "translation": "while", "example": "Mientras yo cocinaba, mi hermano ponía la mesa." },
+      { "word": "el camión", "translation": "bus (Mexico)", "example": "Tomé el camión equivocado y llegué tardísimo." },
+      { "word": "el temblor", "translation": "earthquake, tremor", "example": "Cuando fue el temblor, todos salimos a la calle." },
+      { "word": "la alerta sísmica", "translation": "earthquake warning alarm", "example": "La alerta sísmica sonó a las seis de la mañana." },
+      { "word": "darse cuenta (de)", "translation": "to realize", "example": "Me di cuenta de que no traía mi cartera." },
+      { "word": "acordarse (de)", "translation": "to remember", "example": "No me acuerdo de cómo se llamaba la colonia." },
+      { "word": "tardísimo", "translation": "really late", "example": "Ese día llegué tardísimo a la chamba." },
+      { "word": "la prepa", "translation": "high school (short for preparatoria)", "example": "En la prepa jugaba futbol todas las tardes." },
+      { "word": "asustarse", "translation": "to get scared", "example": "Mi perro se asustó con los cohetes." },
+      { "word": "los cohetes", "translation": "fireworks, firecrackers (Mexico)", "example": "En las fiestas del pueblo siempre tronaban cohetes." },
+      { "word": "ni modo", "translation": "oh well, nothing to be done", "example": "Se me fue el último Metro; ni modo, tomé un taxi." }
+    ],
+    "modelSentences": [
+      { "es": "Era muy temprano y todavía estaba dormido cuando sonó la alerta sísmica.", "en": "It was very early and I was still asleep when the earthquake alarm went off." },
+      { "es": "Mientras esperaba el camión, de repente empezó a llover.", "en": "While I was waiting for the bus, it suddenly started to rain." },
+      { "es": "Cuando llegué a la casa, me di cuenta de que no traía las llaves.", "en": "When I got home, I realized I didn't have my keys on me." },
+      { "es": "De niño siempre me asustaba con los cohetes de las fiestas del pueblo.", "en": "As a kid I always got scared of the fireworks at the town festivals." },
+      { "es": "Llegué tardísimo a la fiesta porque el Metro iba lleno; ni modo.", "en": "I got to the party really late because the Metro was packed; oh well." }
+    ],
+    "scenarioHint": "Tell a friend over coffee in Coyoacán about the day the earthquake alarm went off while you were on the Metro."
+  },
+  {
+    "id": "es-MX-B1-02",
+    "order": 2,
+    "title": "Wishes and requests",
+    "canDo": "I can say what I want or hope others will do, and ask people for favors, using the present subjunctive.",
+    "pattern": {
+      "name": "Present subjunctive after wishes and requests (querer que, esperar que, pedir que, ojalá)",
+      "explanationEn": "When one person wants, hopes or asks someone else to do something, the second verb goes in the present subjunctive: Quiero que vengas. To form it, take the yo form of the present, drop the -o and switch the vowel: -ar verbs take -e (hable, hables) and -er/-ir verbs take -a (coma, vivas). Common irregulars: ser → sea, ir → vaya, estar → esté, saber → sepa, and verbs with an irregular yo form keep it (tengo → tenga, hago → haga). If there is only one subject, use the infinitive: Quiero ir vs. Quiero que tú vayas. Ojalá (que) always takes the subjunctive: Ojalá que no llueva.",
+      "examples": [
+        { "es": "Mi mamá quiere que vayamos a comer el domingo.", "en": "My mom wants us to go over for lunch on Sunday." },
+        { "es": "Ojalá que no haya tráfico en Periférico.", "en": "Hopefully there's no traffic on the Periférico." },
+        { "es": "Te pido que me avises antes de venir.", "en": "Please let me know before you come over." }
+      ]
+    },
+    "targetWords": [
+      { "word": "ojalá", "translation": "hopefully, I hope", "example": "Ojalá que me den la chamba." },
+      { "word": "esperar que", "translation": "to hope that", "example": "Espero que te guste el mole de mi abuela." },
+      { "word": "pedir que", "translation": "to ask (someone to do something)", "example": "Siempre te pido que me llames antes de venir." },
+      { "word": "recomendar que", "translation": "to recommend that", "example": "Te recomiendo que pruebes los tacos de canasta." },
+      { "word": "sugerir que", "translation": "to suggest that", "example": "Sugiero que salgamos temprano para evitar el tráfico." },
+      { "word": "necesitar que", "translation": "to need (someone to do something)", "example": "Necesito que me ayudes a cargar unas cajas." },
+      { "word": "dejar que", "translation": "to let, to allow", "example": "Mi casero no deja que tengamos perros." },
+      { "word": "avisar", "translation": "to let (someone) know", "example": "Avísame cuando estés afuera." },
+      { "word": "echar la mano", "translation": "to lend a hand (Mexico)", "example": "¿Me echas la mano con estas cajas?" },
+      { "word": "la mudanza", "translation": "move (to a new home)", "example": "La mudanza es el sábado en la mañana." },
+      { "word": "el casero", "translation": "landlord", "example": "El casero quiere que le paguemos en efectivo." },
+      { "word": "el depa", "translation": "apartment (short for departamento)", "example": "Mis papás quieren que busque un depa más cerca de la chamba." },
+      { "word": "el aguinaldo", "translation": "year-end bonus (required by law in Mexico)", "example": "Espero que el aguinaldo llegue antes de Navidad." }
+    ],
+    "modelSentences": [
+      { "es": "Necesito que me eches la mano con la mudanza el sábado.", "en": "I need you to give me a hand with the move on Saturday." },
+      { "es": "Ojalá que el aguinaldo llegue antes de las vacaciones.", "en": "Hopefully the year-end bonus arrives before the holidays." },
+      { "es": "Mi jefa quiere que le avise cuando termine el reporte.", "en": "My boss wants me to let her know when I finish the report." },
+      { "es": "Te recomiendo que busques un depa cerca del Metro.", "en": "I recommend you look for an apartment near the Metro." },
+      { "es": "El casero no deja que pintemos las paredes, pero ojalá que cambie de opinión.", "en": "The landlord won't let us paint the walls, but hopefully he changes his mind." }
+    ],
+    "scenarioHint": "You're moving to a new apartment in the Narvarte neighborhood and need to ask friends and your new landlord for favors."
+  },
+  {
+    "id": "es-MX-B1-03",
+    "order": 3,
+    "title": "Doubts, feelings and reactions",
+    "canDo": "I can express doubt and disbelief, and react emotionally to what other people do.",
+    "pattern": {
+      "name": "Subjunctive after doubt, denial and emotion (no creo que, dudo que, me alegra que, qué padre que)",
+      "explanationEn": "Use the subjunctive after expressions of doubt or denial: Dudo que..., No creo que..., No es cierto que.... When you are sure, use the indicative instead: Creo que viene vs. No creo que venga. Reactions to someone else's actions also take the subjunctive: Me alegra que estés aquí, Me molesta que lleguen tarde, Qué lástima que no puedas venir. Es posible que and puede que also trigger the subjunctive. In Mexico, ¡Qué padre que...! is a very common way to celebrate someone's news.",
+      "examples": [
+        { "es": "No creo que el Metro siga abierto tan tarde.", "en": "I don't think the Metro is still open this late." },
+        { "es": "¡Qué padre que vengas a la boda!", "en": "How great that you're coming to the wedding!" },
+        { "es": "Me preocupa que mi abuela viva sola.", "en": "It worries me that my grandmother lives alone." }
+      ]
+    },
+    "targetWords": [
+      { "word": "dudar", "translation": "to doubt", "example": "Dudo que lleguemos a tiempo con este tráfico." },
+      { "word": "qué padre", "translation": "how cool, how great (Mexico)", "example": "Qué padre que te guste la comida oaxaqueña." },
+      { "word": "qué lástima", "translation": "what a shame", "example": "Qué lástima que no puedas venir a la posada." },
+      { "word": "me alegra", "translation": "it makes me happy", "example": "Me alegra que te sientas mejor." },
+      { "word": "me da gusto", "translation": "I'm glad", "example": "Me da gusto que estés aquí con nosotros." },
+      { "word": "me molesta", "translation": "it bothers me", "example": "Me molesta que la gente no respete la fila." },
+      { "word": "me preocupa", "translation": "it worries me", "example": "Me preocupa que no contestes el teléfono." },
+      { "word": "es posible", "translation": "it's possible", "example": "Es posible que llueva en la tarde." },
+      { "word": "puede que", "translation": "it may be that, maybe", "example": "Puede que el banco ya esté cerrado." },
+      { "word": "extrañar", "translation": "to miss (someone or something)", "example": "Extraño a mi familia, pero me alegra que estén bien." },
+      { "word": "la posada", "translation": "pre-Christmas neighborhood party", "example": "Este año la posada es en casa de mi tía." },
+      { "word": "la fila", "translation": "line, queue", "example": "La fila para el trámite estaba larguísima." },
+      { "word": "no manches", "translation": "no way! (informal, mild; only with friends)", "example": "¡No manches! ¿Renunció? No creo que sea cierto." }
+    ],
+    "modelSentences": [
+      { "es": "No creo que la posada empiece a tiempo; aquí todo empieza tarde.", "en": "I don't think the posada will start on time; everything starts late here." },
+      { "es": "Me da gusto que estés aquí, pero qué lástima que no venga tu hermana.", "en": "I'm glad you're here, but it's a shame your sister isn't coming." },
+      { "es": "Dudo que la fila avance rápido; puede que tengamos que regresar mañana.", "en": "I doubt the line will move fast; we may have to come back tomorrow." },
+      { "es": "Me preocupa que mi abuelo maneje de noche.", "en": "It worries me that my grandfather drives at night." },
+      { "es": "¡No manches, qué padre que te guste tanto la comida mexicana!", "en": "No way, how great that you like Mexican food so much!" }
+    ],
+    "scenarioHint": "React to relatives' news and gossip at a family posada in Puebla."
+  },
+  {
+    "id": "es-MX-B1-04",
+    "order": 4,
+    "title": "Polite requests and what-ifs",
+    "canDo": "I can make polite requests, give advice and talk about hypothetical situations.",
+    "pattern": {
+      "name": "Conditional for politeness, advice and hypotheticals",
+      "explanationEn": "The conditional adds -ía endings to the infinitive: hablaría, comerías, viviríamos. Irregular verbs use the same stems as the future: tener → tendría, poder → podría, hacer → haría, decir → diría, salir → saldría. Use it to soften requests (¿Podría...?, ¿Me podrías...?, Me gustaría...), to give advice (Yo que tú, iría al doctor; Deberías descansar) and to imagine situations: Con más tiempo, viajaría a Oaxaca. In Mexico, people use usted and these soft forms a lot with strangers, waiters and clerks.",
+      "examples": [
+        { "es": "¿Me podría traer la cuenta, por favor?", "en": "Could you bring me the check, please?" },
+        { "es": "Yo que tú, no tomaría el Metro a la hora pico.", "en": "If I were you, I wouldn't take the Metro at rush hour." }
+      ]
+    },
+    "targetWords": [
+      { "word": "podría", "translation": "could (I / you, formal)", "example": "¿Podría repetirlo más despacio, por favor?" },
+      { "word": "me gustaría", "translation": "I would like", "example": "Me gustaría reservar una mesa para cuatro." },
+      { "word": "me encantaría", "translation": "I would love to", "example": "Me encantaría conocer Guanajuato." },
+      { "word": "deberías", "translation": "you should", "example": "Deberías probar el pozole de aquí." },
+      { "word": "yo que tú", "translation": "if I were you", "example": "Yo que tú, pediría factura." },
+      { "word": "la factura", "translation": "official tax invoice", "example": "¿Me podría hacer factura? Le paso mi RFC." },
+      { "word": "la hora pico", "translation": "rush hour", "example": "A la hora pico el Metro va lleno." },
+      { "word": "¿mande?", "translation": "pardon? / yes? (polite, Mexico)", "example": "¿Mande? No le escuché bien." },
+      { "word": "valer la pena", "translation": "to be worth it", "example": "Valdría la pena salir más temprano." },
+      { "word": "la propina", "translation": "tip", "example": "Yo dejaría un quince por ciento de propina." },
+      { "word": "amable", "translation": "kind", "example": "¿Sería tan amable de cerrar la ventana?" },
+      { "word": "regalar", "translation": "to give (as a gift); polite 'can I have' in shops (Mexico)", "example": "¿Me regala una bolsa, por favor?" }
+    ],
+    "modelSentences": [
+      { "es": "Disculpe, ¿me podría hacer factura, por favor?", "en": "Excuse me, could you give me a tax invoice, please?" },
+      { "es": "Yo que tú, saldría antes de la hora pico.", "en": "If I were you, I'd leave before rush hour." },
+      { "es": "Me encantaría conocer Oaxaca, pero no sé si valdría la pena ir solo un fin de semana.", "en": "I'd love to visit Oaxaca, but I don't know if it would be worth going for just a weekend." },
+      { "es": "Deberías dejar propina; el mesero fue muy amable.", "en": "You should leave a tip; the waiter was very kind." },
+      { "es": "Con más vacaciones, viajaría por todo México.", "en": "With more vacation time, I would travel all over Mexico." }
+    ],
+    "scenarioHint": "At a busy restaurant in Polanco, politely ask the waiter for help, the check and a tax invoice, using usted."
+  },
+  {
+    "id": "es-MX-B1-05",
+    "order": 5,
+    "title": "Lending, giving and sending",
+    "canDo": "I can talk about lending, giving, sending and explaining things to people without repeating the nouns.",
+    "pattern": {
+      "name": "Double object pronouns (me lo, te la, se lo)",
+      "explanationEn": "When a verb has both an indirect object (to whom) and a direct object (what), the indirect pronoun comes first: Me lo dio, Te la presto. Le and les change to se before lo, la, los, las: Le di el regalo → Se lo di. The pronouns go before a conjugated verb, or attach to an infinitive, a gerund or an affirmative command: Te lo voy a mandar = Voy a mandártelo, ¡Dámelo! When two pronouns are attached, add a written accent to keep the stress: explícamelo, dárselo. In Mexico you'll often hear se los to mean 'it to them' (Se los dije = I told them), a very common colloquial form.",
+      "examples": [
+        { "es": "—¿Me prestas tu cargador? —Sí, ahorita te lo paso.", "en": "—Can you lend me your charger? —Sure, I'll pass it to you in a sec." },
+        { "es": "Mi abuela quería la receta del mole, así que se la mandé por WhatsApp.", "en": "My grandmother wanted the mole recipe, so I sent it to her on WhatsApp." }
+      ]
+    },
+    "targetWords": [
+      { "word": "prestar", "translation": "to lend", "example": "¿Me prestas tu pluma? Ahorita te la regreso." },
+      { "word": "pasar", "translation": "to pass, to hand over", "example": "Pásame la salsa, porfa." },
+      { "word": "mandar", "translation": "to send", "example": "Tengo el documento; te lo mando por correo." },
+      { "word": "regresar", "translation": "to give back (Mexico); to return", "example": "Mañana te regreso el libro." },
+      { "word": "devolver", "translation": "to return (an item)", "example": "Tengo que devolverle la chamarra a mi primo." },
+      { "word": "explicar", "translation": "to explain", "example": "No entendí; ¿me lo explicas otra vez?" },
+      { "word": "enseñar", "translation": "to show; to teach", "example": "Enséñame las fotos de la boda." },
+      { "word": "ahorita", "translation": "in a moment; right now (Mexico)", "example": "Ahorita te lo traigo." },
+      { "word": "la pluma", "translation": "pen (Mexico)", "example": "¿Tienes una pluma que me prestes?" },
+      { "word": "el cargador", "translation": "charger", "example": "Se me olvidó el cargador en la oficina." },
+      { "word": "la chamarra", "translation": "jacket (Mexico)", "example": "Llévate una chamarra; en la noche hace frío." },
+      { "word": "la receta", "translation": "recipe; prescription", "example": "El doctor me dio la receta y se la llevé a la farmacia." },
+      { "word": "el recado", "translation": "message (left for someone)", "example": "Dejaron un recado para ti en la recepción." },
+      { "word": "porfa", "translation": "please (casual, short for por favor)", "example": "Pásame las tortillas, porfa." }
+    ],
+    "modelSentences": [
+      { "es": "¿Me prestas tu cargador? Ahorita te lo regreso.", "en": "Can you lend me your charger? I'll give it back in a minute." },
+      { "es": "Mi primo me pidió la chamarra y se la presté.", "en": "My cousin asked me for the jacket and I lent it to him." },
+      { "es": "Si no entiendes la receta, yo te la explico.", "en": "If you don't understand the recipe, I'll explain it to you." },
+      { "es": "Tengo las fotos de la boda; ¿quieres que te las mande?", "en": "I have the wedding photos; do you want me to send them to you?" },
+      { "es": "La señora dejó un recado para tu papá; dáselo cuando llegue, porfa.", "en": "The lady left a message for your dad; give it to him when he gets home, please." }
+    ],
+    "scenarioHint": "Sort out who borrowed what and who needs to give it back among roommates sharing an apartment in Guadalajara."
+  },
+  {
+    "id": "es-MX-B1-06",
+    "order": 6,
+    "title": "How things are done here",
+    "canDo": "I can explain how things are done, what is sold and what is allowed, without saying who does it.",
+    "pattern": {
+      "name": "Impersonal and passive se (se dice, se vende, se necesitan)",
+      "explanationEn": "Spanish uses se to talk about actions without saying who does them. With a singular noun or an action, the verb is singular: Se vende casa, Se habla español, Aquí se come muy bien. With a plural noun, the verb is plural: Se venden elotes, Se necesitan meseros. You'll see this on signs and in instructions, and hear it in questions like ¿Cómo se dice...? or ¿Dónde se paga?. It's often the most natural way to translate a general 'you' or 'people' in English.",
+      "examples": [
+        { "es": "En este puesto se venden los mejores tamales de la colonia.", "en": "This stand sells the best tamales in the neighborhood." },
+        { "es": "¿Dónde se paga el predial?", "en": "Where do you pay property tax?" }
+      ]
+    },
+    "targetWords": [
+      { "word": "se vende / se venden", "translation": "for sale; is/are sold", "example": "En la esquina se venden elotes y esquites." },
+      { "word": "se renta", "translation": "for rent", "example": "Se renta depa amueblado en la Roma." },
+      { "word": "se solicita", "translation": "wanted, now hiring", "example": "Se solicita mesero con experiencia." },
+      { "word": "el puesto", "translation": "stall, stand; job position", "example": "Hay un puesto de jugos afuera del Metro." },
+      { "word": "el tianguis", "translation": "open-air street market", "example": "Los martes se pone el tianguis en mi calle." },
+      { "word": "el trámite", "translation": "official procedure, paperwork", "example": "¿Qué papeles se necesitan para el trámite?" },
+      { "word": "la ventanilla", "translation": "service window, counter", "example": "Se paga en la ventanilla tres." },
+      { "word": "el predial", "translation": "property tax", "example": "El predial se paga a principios de año." },
+      { "word": "los esquites", "translation": "corn kernels served in a cup", "example": "Los esquites se preparan con mayonesa, queso y chile." },
+      { "word": "prohibir", "translation": "to prohibit", "example": "Se prohíbe tirar basura." },
+      { "word": "la cochera", "translation": "garage, driveway", "example": "No se estacione frente a la cochera." },
+      { "word": "la credencial del INE", "translation": "Mexican voter ID card (main official ID)", "example": "Para casi cualquier trámite se pide la credencial del INE." },
+      { "word": "el comprobante de domicilio", "translation": "proof of address", "example": "Se necesita un comprobante de domicilio reciente." }
+    ],
+    "modelSentences": [
+      { "es": "Se solicitan meseros para el fin de semana.", "en": "Waiters wanted for the weekend." },
+      { "es": "En el tianguis se venden frutas, ropa y hasta celulares.", "en": "At the street market they sell fruit, clothes and even cell phones." },
+      { "es": "¿Para este trámite se necesita la credencial del INE o el pasaporte?", "en": "For this procedure, do you need the INE voter ID or a passport?" },
+      { "es": "Aquí no se puede estacionar; se prohíbe bloquear la cochera.", "en": "You can't park here; blocking the driveway is prohibited." },
+      { "es": "El predial se paga en la ventanilla o en línea.", "en": "Property tax is paid at the counter or online." }
+    ],
+    "scenarioHint": "Ask a clerk at a municipal office in Toluca what documents are needed and where to pay for a trámite."
+  },
+  {
+    "id": "es-MX-B1-07",
+    "order": 7,
+    "title": "Still, just, again, no longer",
+    "canDo": "I can describe ongoing, recent, repeated and finished actions with common verb phrases.",
+    "pattern": {
+      "name": "Verbal periphrases (seguir + gerundio, llevar + tiempo + gerundio, acabar de, volver a, dejar de)",
+      "explanationEn": "Seguir + gerund means 'to still be doing' or 'to keep doing': Sigo viviendo en Iztapalapa. Llevar + time + gerund says how long something has been going on: Llevo tres años trabajando aquí. Acabar de + infinitive means 'to have just done': Acabo de llegar. Volver a + infinitive means 'to do again' (Volví a perder las llaves), and dejar de + infinitive means 'to stop doing' (Dejé de fumar). Only the first verb is conjugated; gerunds end in -ando or -iendo.",
+      "examples": [
+        { "es": "Llevo dos horas esperando el camión y sigue sin pasar.", "en": "I've been waiting for the bus for two hours and it still hasn't come." },
+        { "es": "Acabo de salir de la chamba; ahorita te marco.", "en": "I just got off work; I'll call you in a minute." }
+      ]
+    },
+    "targetWords": [
+      { "word": "seguir", "translation": "to keep (doing), to still (be doing)", "example": "¿Sigues trabajando en la misma empresa?" },
+      { "word": "llevar", "translation": "to have been (doing something for a time)", "example": "Llevo seis meses estudiando español." },
+      { "word": "acabar de", "translation": "to have just (done)", "example": "Acabamos de comer; ¿quieres un cafecito?" },
+      { "word": "volver a", "translation": "to (do something) again", "example": "No vuelvo a comer tantos tacos al pastor." },
+      { "word": "dejar de", "translation": "to stop (doing)", "example": "Dejé de tomar refresco." },
+      { "word": "todavía", "translation": "still", "example": "Todavía no termino; sigo haciendo el reporte." },
+      { "word": "ya no", "translation": "no longer, not anymore", "example": "Ya no vivo en Monterrey." },
+      { "word": "la chamba", "translation": "job, work (Mexico, informal)", "example": "Llevo años buscando una chamba mejor." },
+      { "word": "marcar", "translation": "to call (on the phone)", "example": "Te marco en cuanto salga." },
+      { "word": "el refresco", "translation": "soda, soft drink", "example": "En la fonda te dan agua de jamaica o refresco." },
+      { "word": "el gimnasio", "translation": "gym", "example": "Volví a ir al gimnasio después de un mes." },
+      { "word": "estar crudo", "translation": "to be hungover (Mexico)", "example": "Sigo crudo desde la boda del sábado." },
+      { "word": "echar la hueva", "translation": "to laze around (very informal, slightly crude)", "example": "El domingo nomás eché la hueva en el sillón." }
+    ],
+    "modelSentences": [
+      { "es": "Llevo tres años trabajando en esta chamba y sigo aprendiendo.", "en": "I've been working at this job for three years and I'm still learning." },
+      { "es": "Acabo de salir del gimnasio; te marco en diez minutos.", "en": "I just left the gym; I'll call you in ten minutes." },
+      { "es": "Dejé de tomar refresco y ya no me duele tanto la cabeza.", "en": "I stopped drinking soda and my head doesn't hurt as much anymore." },
+      { "es": "Juan sigue crudo después de la boda y dice que no vuelve a tomar tequila.", "en": "Juan is still hungover after the wedding and says he's never drinking tequila again." },
+      { "es": "El domingo volví a echar la hueva todo el día; ni modo.", "en": "On Sunday I lazed around all day again; oh well." }
+    ],
+    "scenarioHint": "Catch up with an old university friend you run into at a café in Monterrey, talking about what has and hasn't changed."
+  },
+  {
+    "id": "es-MX-B1-08",
+    "order": 8,
+    "title": "Describing people, places and things",
+    "canDo": "I can give precise descriptions of people, places and things by linking ideas with relative clauses.",
+    "pattern": {
+      "name": "Relative clauses (que, quien, donde, lo que, el/la que)",
+      "explanationEn": "Que is the all-purpose relative pronoun for people and things: El señor que vende tamales, La película que vimos. After a preposition, use el que / la que / los que / las que, or quien for people: La amiga con la que viajé, El chavo con quien hablaste. Donde refers to places: El mercado donde compro fruta. Lo que means 'what' or 'the thing that' when it refers to an idea: Lo que más me gusta es la comida. When you describe something you're looking for that may not exist, the relative clause takes the subjunctive: Busco un depa que tenga terraza.",
+      "examples": [
+        { "es": "El mercado donde compro la fruta está a dos cuadras.", "en": "The market where I buy fruit is two blocks away." },
+        { "es": "Lo que más extraño de Mérida es la cochinita pibil.", "en": "What I miss most about Mérida is the cochinita pibil." }
+      ]
+    },
+    "targetWords": [
+      { "word": "el chavo / la chava", "translation": "young guy / young woman (Mexico)", "example": "El chavo que trabaja en la tiendita estudia ingeniería." },
+      { "word": "buena onda", "translation": "nice, easygoing (person)", "example": "Tu vecina es muy buena onda." },
+      { "word": "la tiendita", "translation": "corner store", "example": "En la tiendita de la esquina venden pan dulce." },
+      { "word": "la cuadra", "translation": "city block", "example": "El Metro está a tres cuadras de mi casa." },
+      { "word": "la colonia", "translation": "neighborhood (Mexico)", "example": "Vivo en una colonia muy tranquila." },
+      { "word": "el vecino / la vecina", "translation": "neighbor", "example": "Los vecinos del tercer piso hacen mucho ruido." },
+      { "word": "platicar", "translation": "to chat (Mexico)", "example": "Me encanta platicar con la señora de la fonda." },
+      { "word": "lo que", "translation": "what, the thing that", "example": "No entendí lo que dijiste." },
+      { "word": "con quien", "translation": "with whom", "example": "Ella es la amiga con quien fui a Chiapas." },
+      { "word": "la terraza", "translation": "terrace, rooftop", "example": "Hicimos una carne asada en la terraza." },
+      { "word": "la cochinita pibil", "translation": "Yucatecan slow-roasted pork", "example": "Los domingos desayunamos tacos de cochinita pibil." },
+      { "word": "tener ganas de", "translation": "to feel like (doing something)", "example": "Tengo ganas de ir al lugar donde comimos la otra vez." },
+      { "word": "recomendar", "translation": "to recommend", "example": "El restaurante que me recomendaste estaba buenísimo." }
+    ],
+    "modelSentences": [
+      { "es": "El chavo que atiende la tiendita de la esquina es muy buena onda.", "en": "The guy who runs the corner store is really nice." },
+      { "es": "Vivo en una colonia donde todos los vecinos se conocen.", "en": "I live in a neighborhood where all the neighbors know each other." },
+      { "es": "La vecina con la que platico en las mañanas es de Mérida.", "en": "The neighbor I chat with in the mornings is from Mérida." },
+      { "es": "Lo que más me gusta de mi depa es la terraza.", "en": "What I like most about my apartment is the terrace." },
+      { "es": "Tengo ganas de ir a un lugar que tenga buena cochinita pibil; ¿qué me recomiendas?", "en": "I feel like going somewhere that has good cochinita pibil; what do you recommend?" }
+    ],
+    "scenarioHint": "Describe your colonia, your neighbors and your favorite spots to a new coworker who just moved to Mexico City."
+  }
+]
