@@ -43,6 +43,11 @@ export async function requireOwner(): Promise<void> {
   }
 }
 
+export function safeNextPath(next: string | string[] | undefined): string {
+  if (typeof next !== "string" || !/^\/(?![/\\])/.test(next)) return "/";
+  return next;
+}
+
 export function safeEqual(a: string, b: string): boolean {
   const left = Buffer.from(a);
   const right = Buffer.from(b);

@@ -1,5 +1,10 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { isAgentRequest, signSession, verifySession } from "@/lib/auth";
+import {
+  isAgentRequest,
+  safeNextPath,
+  signSession,
+  verifySession,
+} from "@/lib/auth";
 
 const SECRET = "test-secret-0123456789abcdef0123456789abcdef";
 
@@ -59,5 +64,20 @@ describe("isAgentRequest", () => {
     vi.stubEnv("AGENT_SHARED_SECRET", "");
     expect(isAgentRequest(agentRequest(""))).toBe(false);
     expect(isAgentRequest(agentRequest())).toBe(false);
+  });
+});
+
+describe("safeNextPath", () => {
+  it.each([
+    ["/vocab?tab=due", "/vocab?tab=due"],
+    ["/", "/"],
+    [undefined, "/"],
+    [["/a", "/b"], "/"],
+    ["https://evil.example", "/"],
+    ["//evil.example", "/"],
+    ["/\\evil.example", "/"],
+    ["vocab", "/"],
+  ])("maps %j to %s", (input, expected) => {
+    expect(safeNextPath(input)).toBe(expected);
   });
 });
