@@ -1,12 +1,22 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   isAgentRequest,
+  requireOwner,
+  SESSION_COOKIE,
   safeNextPath,
   signSession,
   verifySession,
 } from "@/lib/auth";
 
 const SECRET = "test-secret-0123456789abcdef0123456789abcdef";
+
+const cookieJar = new Map<string, string>();
+vi.mock("next/headers", () => ({
+  cookies: async () => ({
+    get: (name: string) =>
+      cookieJar.has(name) ? { name, value: cookieJar.get(name) } : undefined,
+  }),
+}));
 
 describe("session tokens", () => {
   it("verifies a freshly signed token", async () => {
@@ -79,5 +89,25 @@ describe("safeNextPath", () => {
     ["vocab", "/"],
   ])("maps %j to %s", (input, expected) => {
     expect(safeNextPath(input)).toBe(expected);
+  });
+});
+
+describe("requireOwner", () => {
+  afterEach(() => {
+    cookieJar.clear();
+    vi.unstubAllEnvs();
+  });
+
+  it("resolves with a valid session cookie", async () => {
+    vi.stubEnv("APP_SECRET", SECRET);
+    cookieJar.set(SESSION_COOKIE, await signSession(SECRET));
+    await expect(requireOwner()).resolves.toBeUndefined();
+  });
+
+  it("throws a 401 Response without a valid cookie", async () => {
+    vi.stubEnv("APP_SECRET", SECRET);
+    const thrown = await requireOwner().catch((e: unknown) => e);
+    expect(thrown).toBeInstanceOf(Response);
+    expect((thrown as Response).status).toBe(401);
   });
 });
