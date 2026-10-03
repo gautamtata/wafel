@@ -22,7 +22,7 @@ export function Dashboard({ view, now }: { view: DashboardView; now: Date }) {
   return (
     <div className="flex flex-col gap-10">
       <Greeting subtitle={`Level ${level} · ${LEVEL_DESCRIPTORS[level].title}`} />
-      <TodayCard suggestion={view.nextSuggestion} />
+      <TodayCard suggestion={view.nextSuggestion} currentUnit={view.currentUnit} />
 
       <section aria-label="Your progress" className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <StatTile

@@ -9,15 +9,16 @@ import { NativeSelect } from "@/components/forms/native-select";
 import { Segmented } from "@/components/forms/segmented";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import type { Cefr, CorrectionMode, Pace } from "@/generated/prisma/enums";
+import type { Cefr, CorrectionMode, Dialect, Pace } from "@/generated/prisma/enums";
 import { GOALS_MAX_LENGTH } from "@/lib/learner-limits";
 import { NATIVE_LANGUAGES } from "@/lib/native-languages";
-import { CORRECTION_MODES, LEVEL_DESCRIPTORS, PACES, VOICES } from "@/lib/prompts-meta";
+import { CORRECTION_MODES, DIALECTS, LEVEL_DESCRIPTORS, PACES, VOICES } from "@/lib/prompts-meta";
 import { LogoutButton } from "./logout-button";
 import { SettingsSection } from "./settings-section";
 
 export type LearnerSettings = {
   level: Cefr;
+  dialect: Dialect;
   correctionMode: CorrectionMode;
   pace: Pace;
   voice: string;
@@ -35,6 +36,7 @@ const toOptions = <K extends string>(record: Record<K, { label: string }>) =>
 
 const CORRECTION_OPTIONS = toOptions(CORRECTION_MODES);
 const PACE_OPTIONS = toOptions(PACES);
+const DIALECT_OPTIONS = toOptions(DIALECTS);
 
 export function SettingsForm({ initial }: { initial: LearnerSettings }) {
   const router = useRouter();
@@ -86,6 +88,19 @@ export function SettingsForm({ initial }: { initial: LearnerSettings }) {
             {entries(LEVEL_DESCRIPTORS).map(([level, { title }]) => (
               <option key={level} value={level}>
                 {level} · {title}
+              </option>
+            ))}
+          </NativeSelect>
+        </Field>
+        <Field label="Spanish variety" hint={DIALECTS[values.dialect].description} htmlFor="dialect">
+          <NativeSelect
+            id="dialect"
+            value={values.dialect}
+            onChange={(event) => set("dialect", event.target.value as Dialect)}
+          >
+            {DIALECT_OPTIONS.map(({ value, label }) => (
+              <option key={value} value={value}>
+                {label}
               </option>
             ))}
           </NativeSelect>
@@ -157,13 +172,13 @@ export function SettingsForm({ initial }: { initial: LearnerSettings }) {
             ))}
           </NativeSelect>
         </Field>
-        <Field label="Goals" htmlFor="goals">
+        <Field label="Goals" hint="Your tutor steers conversations toward them." htmlFor="goals">
           <Textarea
             id="goals"
             value={values.goals}
             maxLength={GOALS_MAX_LENGTH}
             onChange={(event) => set("goals", event.target.value)}
-            placeholder="What you want the language for"
+            placeholder="e.g. talk with my Mexican friends in California"
             className="min-h-24 rounded-xl px-4 py-3 text-base md:text-base"
           />
         </Field>
@@ -178,7 +193,7 @@ export function SettingsForm({ initial }: { initial: LearnerSettings }) {
       </SettingsSection>
 
       {dirty && (
-        <div className="sticky bottom-[calc(env(safe-area-inset-bottom)+4.75rem)] duration-300 animate-in fade-in slide-in-from-bottom-3 md:bottom-6">
+        <div className="sticky bottom-[calc(env(safe-area-inset-bottom)+4.75rem)] duration-300 animate-in fade-in slide-in-from-bottom-3 motion-reduce:animate-none md:bottom-6">
           <Button
             onClick={save}
             disabled={pending}

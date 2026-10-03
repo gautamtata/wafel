@@ -34,7 +34,7 @@ const STEPS: readonly StepMeta[] = [
   },
   {
     title: "How should your tutor sound?",
-    subtitle: "There are no wrong answers here. Everything can be changed in settings.",
+    subtitle: "Pick the Spanish you want to hear and how it is delivered. Everything can be changed in settings.",
   },
 ];
 
@@ -47,6 +47,7 @@ export function OnboardingFlow({ languages }: { languages: readonly Language[] }
     nativeLanguage: "en",
     goals: "",
     level: null,
+    dialect: "MX",
     voice: VOICES[0].id,
     correctionMode: "SUBTLE",
     pace: "SLOW",

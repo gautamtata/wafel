@@ -83,9 +83,20 @@ describe("period starts", () => {
 });
 
 describe("pickSuggestion", () => {
-  const base = { level: "A1" as const, coveredTopics: [], unresolvedMistakes: 0, wordsDue: 0 };
+  const base = { level: "A1" as const, coveredTopics: [], unit: null, unresolvedMistakes: 0, wordsDue: 0 };
+  const unit = { id: "es-MX-A1-02", title: "At the taquería", canDo: "I can order tacos." };
 
-  it("suggests the next lesson topic by default", () => {
+  it("suggests the current unit when there is one", () => {
+    expect(pickSuggestion({ ...base, unit })).toEqual({
+      type: "LESSON",
+      unit,
+      topic: unit.title,
+      reason: "Your first A1 lesson. About ten minutes, all spoken.",
+    });
+    expect(pickSuggestion({ ...base, unit, unresolvedMistakes: 3 }).unit).toBeUndefined();
+  });
+
+  it("falls back to the next curriculum topic without units", () => {
     const covered = [CURRICULUM.A1[0]];
     expect(pickSuggestion({ ...base, coveredTopics: covered })).toMatchObject({
       type: "LESSON",
@@ -129,7 +140,7 @@ describe("buildDashboard", () => {
   ];
 
   const view = buildDashboard(
-    { level: "A1", sessions, wordsDue: 4, unresolvedMistakes: 1 },
+    { level: "A1", sessions, wordsDue: 4, unresolvedMistakes: 1, nextUnit: null },
     NOW,
     TZ,
   );
@@ -141,6 +152,14 @@ describe("buildDashboard", () => {
     expect(view.wordsDue).toBe(4);
     expect(view.unresolvedMistakes).toBe(1);
     expect(view.level).toBe("A1");
+  });
+
+  it("exposes the current unit alongside any suggestion", () => {
+    const nextUnit = { id: "es-MX-A1-02", title: "At the taquería", canDo: "I can order tacos." };
+    const busy = buildDashboard({ level: "A1", sessions, wordsDue: 0, unresolvedMistakes: 5, nextUnit }, NOW, TZ);
+    expect(busy.currentUnit).toEqual(nextUnit);
+    expect(busy.nextSuggestion.type).toBe("MISTAKE_REVIEW");
+    expect(view.currentUnit).toBeNull();
   });
 
   it("suggests the first lesson topic not yet covered", () => {
@@ -165,7 +184,7 @@ describe("buildDashboard", () => {
   it("caps recent sessions at ten", () => {
     const many = Array.from({ length: 14 }, (_, i) => session({ at: daysAgo(i) }));
     const capped = buildDashboard(
-      { level: "B1", sessions: many, wordsDue: 0, unresolvedMistakes: 0 },
+      { level: "B1", sessions: many, wordsDue: 0, unresolvedMistakes: 0, nextUnit: null },
       NOW,
       TZ,
     );

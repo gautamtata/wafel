@@ -1,15 +1,24 @@
-import type { CorrectionMode, Pace } from "@/generated/prisma/enums";
+import type { CorrectionMode, Dialect, Pace } from "@/generated/prisma/enums";
 import { ChoiceCards } from "@/components/forms/choice-cards";
 import { Field } from "@/components/forms/field";
 import { tutorChoices } from "@/components/forms/tutor-choices";
 
-export type TutorStyle = { voice: string; correctionMode: CorrectionMode; pace: Pace };
+export type TutorStyle = { dialect: Dialect; voice: string; correctionMode: CorrectionMode; pace: Pace };
 
 type VoiceStepProps = TutorStyle & { onChange: (patch: Partial<TutorStyle>) => void };
 
-export function VoiceStep({ voice, correctionMode, pace, onChange }: VoiceStepProps) {
+export function VoiceStep({ dialect, voice, correctionMode, pace, onChange }: VoiceStepProps) {
   return (
     <div className="flex flex-col gap-10">
+      <Field label="Spanish variety">
+        <ChoiceCards
+          name="dialect"
+          label="Spanish variety"
+          value={dialect}
+          onChange={(value) => onChange({ dialect: value })}
+          choices={tutorChoices.dialects}
+        />
+      </Field>
       <Field label="Voice">
         <ChoiceCards
           name="voice"

@@ -23,6 +23,9 @@ describe("sessionHref", () => {
 describe("suggestionHref", () => {
   it("routes vocab review to the deck and everything else to practice", () => {
     expect(suggestionHref({ type: "VOCAB_REVIEW" } as never)).toBe("/vocab");
-    expect(suggestionHref({ type: "LESSON", topic: "Food" } as never)).toBe("/practice?type=LESSON&topic=Food");
+    expect(suggestionHref({ type: "MISTAKE_REVIEW", reason: "" })).toBe("/practice?type=MISTAKE_REVIEW");
+    expect(
+      suggestionHref({ type: "LESSON", unit: { id: "es-MX-A1-02", title: "Tacos", canDo: "I can order." }, reason: "" }),
+    ).toBe("/practice?type=LESSON&unitId=es-MX-A1-02");
   });
 });

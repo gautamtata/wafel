@@ -1,4 +1,4 @@
-import type { Cefr, CorrectionMode, Pace } from "@/generated/prisma/enums";
+import type { Cefr, CorrectionMode, Dialect, Pace, UnitStatus } from "@/generated/prisma/enums";
 
 export type LevelDescriptor = { title: string; description: string };
 export type OptionMeta = { label: string; description: string };
@@ -49,6 +49,27 @@ export const CORRECTION_MODES: Record<CorrectionMode, OptionMeta> = {
 export const PACES: Record<Pace, OptionMeta> = {
   SLOW: { label: "Slow", description: "Clear, unhurried speech with pauses between ideas." },
   NATURAL: { label: "Natural", description: "Everyday conversational speed." },
+};
+
+export const DIALECTS: Record<Dialect, OptionMeta> = {
+  MX: {
+    label: "Mexico",
+    description: "Mexican Spanish: ustedes, Mexican vocabulary and everyday Mexican settings. Your unit path is written for it.",
+  },
+  ES: {
+    label: "Spain",
+    description: "Castilian Spanish: vosotros and peninsular vocabulary. The unit path is Mexican-only for now.",
+  },
+  NEUTRAL: {
+    label: "Neutral",
+    description: "Broadly understood Latin American Spanish without strong regional slang. The unit path is Mexican-only for now.",
+  },
+};
+
+export const UNIT_STATUS_LABELS: Record<UnitStatus, string> = {
+  NOT_STARTED: "Not started",
+  IN_PROGRESS: "In progress",
+  MASTERED: "Mastered",
 };
 
 export const VOICES: readonly VoiceMeta[] = [

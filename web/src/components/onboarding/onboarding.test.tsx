@@ -82,6 +82,8 @@ describe("OnboardingFlow", () => {
     fireEvent.click(screen.getByRole("radio", { name: /Elementary/ }));
     next();
     expect(screen.getByText("Step 4 of 4")).toBeInTheDocument();
+    expect(screen.getByRole("radio", { name: /Mexico/ })).toBeChecked();
+    fireEvent.click(screen.getByRole("radio", { name: /Neutral/ }));
     fireEvent.click(screen.getByRole("radio", { name: /Explicit/ }));
     fireEvent.click(screen.getByRole("button", { name: "Start learning" }));
 
@@ -96,6 +98,7 @@ describe("OnboardingFlow", () => {
       level: "A2",
       voice: "marin",
       correctionMode: "EXPLICIT",
+      dialect: "NEUTRAL",
       pace: "SLOW",
       goals: "Trips to Oaxaca",
     });

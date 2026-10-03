@@ -13,9 +13,19 @@ import {
 import { ConnectionState } from "livekit-client";
 import { useCallback, useMemo, useState } from "react";
 import { useElapsedSeconds, useTutorPresence } from "@/hooks/use-tutor-presence";
-import { formatClock, type Note, NOTE_TOPIC, parseNote, toTurns } from "@/lib/session-live";
+import {
+  formatClock,
+  type Note,
+  NOTE_TOPIC,
+  parseNote,
+  parsePhrase,
+  type Phrase,
+  PHRASE_TOPIC,
+  toTurns,
+} from "@/lib/session-live";
 import { cn } from "@/lib/utils";
 import { NoteStack } from "./note-card";
+import { PhraseCard } from "./phrase-card";
 import { SessionBar } from "./session-bar";
 import { StatusBanner } from "./status-banner";
 import { TranscriptFeed } from "./transcript-feed";
@@ -46,6 +56,17 @@ function useNotes(): { notes: Note[]; dismiss: (id: string) => void } {
   return { notes, dismiss };
 }
 
+function useLatestPhrase(): { phrase: Phrase | null; dismiss: () => void } {
+  const [phrase, setPhrase] = useState<Phrase | null>(null);
+  const onMessage = useCallback((message: { payload: Uint8Array }) => {
+    const next = parsePhrase(message.payload);
+    if (next) setPhrase({ ...next, id: crypto.randomUUID() });
+  }, []);
+  useDataChannel(PHRASE_TOPIC, onMessage);
+  const dismiss = useCallback(() => setPhrase(null), []);
+  return { phrase, dismiss };
+}
+
 const tutorState = (state: ReturnType<typeof useVoiceAssistant>["state"]): TutorState =>
   state === "speaking" || state === "listening" || state === "thinking" ? state : "idle";
 
@@ -57,6 +78,7 @@ export function LiveSession({ label, title, capMinutes, micError, onTutorMissing
   const streams = useTranscriptions();
   const turns = useMemo(() => toTurns(streams), [streams]);
   const { notes, dismiss } = useNotes();
+  const { phrase, dismiss: dismissPhrase } = useLatestPhrase();
   const { isMicrophoneEnabled, localParticipant } = useLocalParticipant();
   const connected = connection === ConnectionState.Connected;
   const elapsed = useElapsedSeconds(connected);
@@ -99,8 +121,23 @@ export function LiveSession({ label, title, capMinutes, micError, onTutorMissing
       </div>
 
       <div className="flex min-h-0 flex-1 flex-col items-center">
-        <div className="flex h-[min(42dvh,22rem)] shrink-0 items-center justify-center">
-          <TutorOrb state={tutorState(state)} level={level} className="size-44 sm:size-56" />
+        <div
+          className={cn(
+            "flex shrink-0 items-center justify-center transition-[height] duration-500 motion-reduce:transition-none",
+            phrase ? "h-[min(24dvh,13rem)]" : "h-[min(42dvh,22rem)]",
+          )}
+        >
+          <TutorOrb
+            state={tutorState(state)}
+            level={level}
+            className={cn(
+              "transition-[width,height] duration-500 motion-reduce:transition-none",
+              phrase ? "size-28 sm:size-36" : "size-44 sm:size-56",
+            )}
+          />
+        </div>
+        <div className="w-full max-w-xl">
+          <PhraseCard phrase={phrase} onDismiss={dismissPhrase} />
         </div>
         <TranscriptFeed
           turns={turns}
@@ -109,7 +146,7 @@ export function LiveSession({ label, title, capMinutes, micError, onTutorMissing
       </div>
 
       <div className="mx-auto flex w-full max-w-xl flex-col gap-4 pt-3">
-        <NoteStack notes={notes} onDismiss={dismiss} />
+        {!phrase && <NoteStack notes={notes} onDismiss={dismiss} />}
         <SessionBar
           muted={!isMicrophoneEnabled}
           onToggleMute={() => void localParticipant.setMicrophoneEnabled(!isMicrophoneEnabled)}

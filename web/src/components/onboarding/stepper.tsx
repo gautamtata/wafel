@@ -59,7 +59,7 @@ export function Stepper({
 
       <section
         key={current}
-        className="flex-1 pt-8 pb-10 duration-500 animate-in fade-in slide-in-from-bottom-2 sm:pt-14"
+        className="flex-1 pt-8 pb-10 duration-500 animate-in fade-in slide-in-from-bottom-2 motion-reduce:animate-none sm:pt-14"
       >
         <p className="eyebrow">
           Step {current + 1} of {steps.length}
