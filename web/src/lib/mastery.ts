@@ -11,7 +11,21 @@ export const MASTERY_SCORE = 2;
 export const MASTERY_SESSIONS = 2;
 export const MASTERY_WORD_RATIO = 0.8;
 
-export const normalizeWord = (word: string): string => word.trim().toLowerCase();
+const ARTICLE = /^(el|la|los|las|un|una)\s+/;
+const PUNCTUATION = /[¿?¡!…,.]/g;
+
+/** Loose form used to match a rating target against a unit word ("¿Cuánto cuesta?" → "cuánto cuesta"). */
+export function normalizeWord(word: string): string {
+  return word
+    .normalize("NFC")
+    .toLowerCase()
+    .split("/")[0]
+    .replace(PUNCTUATION, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(ARTICLE, "")
+    .trim();
+}
 
 export const emptyProgress = (): MasteryProgress => ({ wordScores: {}, patternScore: 0 });
 
@@ -34,8 +48,15 @@ export function masteredWordCount(progress: MasteryProgress, unit: UnitWords): n
   return unit.targetWords.filter(({ word }) => isWordMastered(progress.wordScores[normalizeWord(word)])).length;
 }
 
-export function computeUnitStatus(progress: MasteryProgress, unit: UnitWords): UnitStatus {
-  const rated = Object.keys(progress.wordScores).length > 0 || progress.patternScore > 0;
+/** Whether any rating is recorded; a PATTERN rating of 0 leaves no trace, so callers that just applied one pass `rated`. */
+export const hasRatings = (progress: MasteryProgress): boolean =>
+  Object.keys(progress.wordScores).length > 0 || progress.patternScore > 0;
+
+export function computeUnitStatus(
+  progress: MasteryProgress,
+  unit: UnitWords,
+  rated: boolean = hasRatings(progress),
+): UnitStatus {
   if (!rated) return "NOT_STARTED";
   const total = unit.targetWords.length;
   const mastered = total > 0 && masteredWordCount(progress, unit) / total >= MASTERY_WORD_RATIO;

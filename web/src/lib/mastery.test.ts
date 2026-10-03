@@ -5,6 +5,7 @@ import {
   emptyProgress,
   isWordMastered,
   masteredWordCount,
+  normalizeWord,
   type MasteryProgress,
 } from "@/lib/mastery";
 
@@ -13,6 +14,29 @@ const unit = { targetWords: words.map((word) => ({ word })) };
 
 const rate = (progress: MasteryProgress, target: string, score: 0 | 1 | 2 | 3, session: string) =>
   applyRating(progress, { target, kind: "WORD", score }, session);
+
+describe("normalizeWord", () => {
+  it.each([
+    ["¿Cuánto cuesta?", "cuánto cuesta"],
+    ["cuánto cuesta", "cuánto cuesta"],
+    ["¡Hola!", "hola"],
+    ["hermano / hermana", "hermano"],
+    ["más … que", "más que"],
+    ["son las…", "son las"],
+    ["el Metro", "metro"],
+    ["La   farmacia.", "farmacia"],
+    ["una torta, por favor", "torta por favor"],
+    ["  Buenos días  ", "buenos días"],
+    ["cuánto cuesta".normalize("NFD"), "cuánto cuesta"],
+  ])("normalizes %j to %j", (input, expected) => {
+    expect(normalizeWord(input)).toBe(expected);
+  });
+
+  it("keeps article-like words that are part of the phrase", () => {
+    expect(normalizeWord("el")).toBe("el");
+    expect(normalizeWord("las vacaciones")).toBe("vacaciones");
+  });
+});
 
 describe("isWordMastered", () => {
   it("needs best >= 2 in at least two distinct sessions", () => {
@@ -40,6 +64,22 @@ describe("applyRating", () => {
     expect(start.wordScores).toEqual({});
   });
 
+  it("matches loosely written targets against unit words", () => {
+    const loose = {
+      targetWords: [{ word: "¿cuánto cuesta?" }, { word: "el Metro" }, { word: "más … que" }, { word: "son las…" }, { word: "hermano / hermana" }],
+    };
+    let p = emptyProgress();
+    for (const session of ["s1", "s2"]) {
+      p = rate(p, "cuánto cuesta", 2, session);
+      p = rate(p, "Metro", 2, session);
+      p = rate(p, "más que", 2, session);
+      p = rate(p, "Son las", 2, session);
+      p = rate(p, "hermana", 2, session);
+    }
+    expect(masteredWordCount(p, loose)).toBe(4);
+    expect(Object.keys(p.wordScores).sort()).toEqual(["cuánto cuesta", "hermana", "metro", "más que", "son las"]);
+  });
+
   it("keeps the best pattern score", () => {
     let p = applyRating(emptyProgress(), { target: "ser", kind: "PATTERN", score: 2 }, "s1");
     p = applyRating(p, { target: "ser", kind: "PATTERN", score: 1 }, "s2");
@@ -54,6 +94,12 @@ describe("computeUnitStatus", () => {
     expect(computeUnitStatus(rate(emptyProgress(), "hola", 0, "s1"), unit)).toBe("IN_PROGRESS");
     const patternOnly = applyRating(emptyProgress(), { target: "ser", kind: "PATTERN", score: 1 }, "s1");
     expect(computeUnitStatus(patternOnly, unit)).toBe("IN_PROGRESS");
+  });
+
+  it("is IN_PROGRESS after a PATTERN rating of 0 when the caller marks it rated", () => {
+    const zero = applyRating(emptyProgress(), { target: "ser", kind: "PATTERN", score: 0 }, "s1");
+    expect(computeUnitStatus(zero, unit, true)).toBe("IN_PROGRESS");
+    expect(computeUnitStatus(emptyProgress(), unit, false)).toBe("NOT_STARTED");
   });
 
   it("is MASTERED at >= 80% words mastered and pattern >= 2", () => {
