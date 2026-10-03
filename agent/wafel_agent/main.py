@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import logging
 import os
+from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 
 from dotenv import load_dotenv
@@ -88,6 +89,17 @@ def build_llm(brief: Brief) -> GPTLiveModel:
     )
 
 
+def build_shutdown(
+    presence: LearnerPresence, lifecycle: LessonLifecycle, api: WafelApi
+) -> Callable[[], Awaitable[None]]:
+    async def on_shutdown() -> None:
+        presence.cancel()
+        await lifecycle.post_ended()
+        await api.aclose()
+
+    return on_shutdown
+
+
 async def entrypoint(ctx: JobContext) -> None:
     settings = Settings.from_env()
     api = WafelApi(settings.api_url, settings.agent_secret)
@@ -105,13 +117,7 @@ async def entrypoint(ctx: JobContext) -> None:
     session = AgentSession(llm=build_llm(brief))
     session.on("conversation_item_added", lifecycle.transcript.on_item)
     presence = LearnerPresence(ctx.room, lifecycle.request_end)
-
-    async def on_shutdown() -> None:
-        presence.cancel()
-        await lifecycle.post_ended()
-        await api.aclose()
-
-    ctx.add_shutdown_callback(on_shutdown)
+    ctx.add_shutdown_callback(build_shutdown(presence, lifecycle, api))
 
     presence.watch()
     await session.start(WafelTutor(brief, tools), room=ctx.room, room_options=room_options())

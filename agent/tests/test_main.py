@@ -1,3 +1,4 @@
+import asyncio
 import json
 from pathlib import Path
 
@@ -12,11 +13,12 @@ from wafel_agent.main import (
     VOICE_MODEL,
     Settings,
     build_llm,
+    build_shutdown,
     resolve_brief,
     room_options,
     session_id_from_metadata,
 )
-from wafel_agent.tutor import LEARNER_IDENTITY
+from wafel_agent.tutor import LEARNER_IDENTITY, LearnerPresence, LessonLifecycle
 
 BASE = "http://wafel.test"
 
@@ -114,3 +116,22 @@ def test_room_options_link_learner_and_survive_refresh() -> None:
     assert LEARNER_IDENTITY == "learner"
     assert opts.participant_identity == LEARNER_IDENTITY
     assert opts.close_on_disconnect is False
+
+
+class _Room:
+    def on(self, event: str, handler: object) -> None:
+        pass
+
+
+@respx.mock
+async def test_shutdown_cancels_grace_timer_then_posts_ended(brief: Brief) -> None:
+    ended = respx.post(f"{BASE}/api/agent/sessions/sample-session/ended").respond(204)
+    api = WafelApi(BASE, "s")
+    reasons: list[str] = []
+    lifecycle = LessonLifecycle(brief, api, reasons.append, end_delay=0.0)
+    presence = LearnerPresence(_Room(), lifecycle.request_end, grace_seconds=0.01)  # type: ignore[arg-type]
+    presence.on_participant_disconnected(type("P", (), {"identity": "learner"})())  # type: ignore[arg-type]
+    await build_shutdown(presence, lifecycle, api)()
+    await asyncio.sleep(0.05)
+    assert reasons == []
+    assert ended.called

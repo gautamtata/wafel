@@ -65,7 +65,12 @@ class WafelTutor(Agent):
         super().__init__(instructions=build_voice_prompt(brief), tools=list(tools))
 
     async def on_enter(self) -> None:
-        self.session.generate_reply(instructions=GREETING_INSTRUCTION)
+        # GPT-Live occasionally never starts the first reply (10 s timeout in livekit-agents,
+        # surfaced on the handle rather than raised); give the greeting one more try.
+        handle = await self.session.generate_reply(instructions=GREETING_INSTRUCTION)
+        if handle.exception() is not None and not handle.interrupted:
+            logger.warning("greeting did not start (%s); retrying once", handle.exception())
+            self.session.generate_reply(instructions=GREETING_INSTRUCTION)
 
 
 class LessonLifecycle:
