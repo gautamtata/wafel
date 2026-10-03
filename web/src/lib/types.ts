@@ -61,7 +61,8 @@ export type RecapUnit = {
   id: string;
   title: string;
   status: UnitStatus;
-  wordsRated: { word: string; score: Score }[];
+  /** `best` is the learner's best score so far for the word, not only this session's attempt. */
+  wordsRated: { word: string; best: Score }[];
   patternScore: number;
   masteredWords: number;
   totalWords: number;
@@ -71,7 +72,8 @@ export type RecapUnit = {
 /** The part of the recap written by the text model; the rest comes from the live log and unit progress. */
 export type RecapText = { summary: string; levelNote: string; memory: string; nextStep: string };
 
-export type Recap = RecapText & {
+export type Recap = Omit<RecapText, "nextStep"> & {
+  nextStep?: string;
   mistakes: RecapMistake[];
   newVocab: (VocabEntry & { example: string })[];
   unit?: RecapUnit;

@@ -94,7 +94,7 @@ function wordsRatedIn(unit: Unit, scores: WordScores, sessionId: string): RecapU
   const labels = new Map(unitContent(unit).targetWords.map(({ word }) => [normalizeWord(word), word]));
   return Object.entries(scores)
     .filter(([, entry]) => entry.sessions.includes(sessionId))
-    .map(([key, entry]) => ({ word: labels.get(key) ?? key, score: entry.best }));
+    .map(([key, entry]) => ({ word: labels.get(key) ?? key, best: entry.best }));
 }
 
 export async function recapUnitFor(unit: Unit, sessionId: string, learner: ProgressLearner): Promise<RecapUnit> {

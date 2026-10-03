@@ -24,33 +24,6 @@ const rate = (sessionId: string, target: string, score: 0 | 1 | 2 | 3, kind: "WO
 
 const progress = () => getProgress(OWNER_ID, unitId);
 
-beforeAll(async () => {
-  await ensureOwner();
-  learner = await db.learner.findUniqueOrThrow({ where: { id: OWNER_ID } });
-  await db.unit.create({
-    data: {
-      id: unitId,
-      language: learner.targetLanguage,
-      dialect: learner.dialect,
-      level: learner.level,
-      order: 9101,
-      title: "Ratings test unit",
-      canDo: "I can test ratings.",
-      pattern: {},
-      targetWords: words.map((word) => ({ word, translation: word, example: word })),
-      modelSentences: [],
-    },
-  });
-});
-afterEach(async () => {
-  await db.unitProgress.deleteMany({ where: { unitId } });
-  await cleanupTestRows();
-});
-afterAll(async () => {
-  await db.unit.deleteMany({ where: { id: unitId } });
-  await teardownOwner();
-});
-
 it("ratingSchema accepts the agent body and rejects bad scores and kinds", () => {
   expect(ratingSchema.safeParse({ target: "hola", kind: "WORD", score: 2 }).success).toBe(true);
   expect(ratingSchema.safeParse({ target: "ser", kind: "PATTERN", score: 3, note: "good" }).success).toBe(true);
@@ -61,6 +34,33 @@ it("ratingSchema accepts the agent body and rejects bad scores and kinds", () =>
 });
 
 describeDb("recordRating", () => {
+  beforeAll(async () => {
+    await ensureOwner();
+    learner = await db.learner.findUniqueOrThrow({ where: { id: OWNER_ID } });
+    await db.unit.create({
+      data: {
+        id: unitId,
+        language: learner.targetLanguage,
+        dialect: learner.dialect,
+        level: learner.level,
+        order: 9101,
+        title: "Ratings test unit",
+        canDo: "I can test ratings.",
+        pattern: {},
+        targetWords: words.map((word) => ({ word, translation: word, example: word })),
+        modelSentences: [],
+      },
+    });
+  });
+  afterEach(async () => {
+    await db.unitProgress.deleteMany({ where: { unitId } });
+    await cleanupTestRows();
+  });
+  afterAll(async () => {
+    await db.unit.deleteMany({ where: { id: unitId } });
+    await teardownOwner();
+  });
+
   it("404s for unknown sessions and 400s for sessions without a unit", async () => {
     await expect(rate("test-missing", "hola", 2)).rejects.toMatchObject({ status: 404 });
     const noUnit = await newSession("nounit", false);

@@ -144,7 +144,7 @@ async function resolveUnit(input: CreateSessionInput, learner: Learner): Promise
   if (!UNIT_TYPES.includes(input.type)) return null;
   if (!input.unitId) return nextUnitFor(learner);
   const unit = await getUnit(input.unitId);
-  if (!unit || unit.language !== learner.targetLanguage) throw notFound("Unit");
+  if (!unit || unit.language !== learner.targetLanguage || unit.dialect !== learner.dialect) throw notFound("Unit");
   return unit;
 }
 
@@ -301,7 +301,7 @@ export async function generateAndStoreRecap(id: string, openai?: OpenAI): Promis
   const transcript = transcriptSchema.parse(session.transcript ?? []);
   const [rows, sessionVocab, unit] = await Promise.all([
     mistakesForSession(id),
-    db.vocabItem.findMany({ where: { learnerId: OWNER_ID, sourceSessionId: id }, orderBy: { word: "asc" } }),
+    db.vocabItem.findMany({ where: { learnerId: OWNER_ID, sourceSessionId: id }, orderBy: { id: "asc" } }),
     recapUnit(session),
   ]);
   const mistakes = rows.map(({ original, corrected, explanation, category }) => ({ original, corrected, explanation, category }));

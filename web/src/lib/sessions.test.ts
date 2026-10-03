@@ -65,24 +65,26 @@ const endedSession = async (unitId?: string) => {
 };
 
 const testUnitId = `${TEST_PREFIX}sessions-unit`;
+const foreignDialectUnitId = `${TEST_PREFIX}sessions-unit-foreign`;
 const testWords = ["hola", "adiós", "gracias", "por favor", "¿mande?"];
 let learner: Learner;
 beforeAll(async () => {
   await ensureOwner();
   learner = await db.learner.findUniqueOrThrow({ where: { id: OWNER_ID } });
-  await db.unit.create({
-    data: {
-      id: testUnitId,
-      language: learner.targetLanguage,
-      dialect: learner.dialect,
-      level: learner.level,
-      order: 9201,
-      title: "Sessions test unit",
-      canDo: "I can test sessions.",
-      pattern: { name: "ser", explanationEn: "x", examples: [] },
-      targetWords: testWords.map((word) => ({ word, translation: word, example: word })),
-      modelSentences: [],
-    },
+  const content = {
+    language: learner.targetLanguage,
+    level: learner.level,
+    canDo: "I can test sessions.",
+    pattern: { name: "ser", explanationEn: "x", examples: [] },
+    targetWords: testWords.map((word) => ({ word, translation: word, example: word })),
+    modelSentences: [],
+  };
+  const foreignDialect = learner.dialect === "ES" ? "MX" : "ES";
+  await db.unit.createMany({
+    data: [
+      { id: testUnitId, dialect: learner.dialect, order: 9201, title: "Sessions test unit", ...content },
+      { id: foreignDialectUnitId, dialect: foreignDialect, order: 9201, title: "Foreign dialect unit", ...content },
+    ],
   });
 });
 afterEach(async () => {
@@ -91,7 +93,7 @@ afterEach(async () => {
   vi.clearAllMocks();
 });
 afterAll(async () => {
-  await db.unit.deleteMany({ where: { id: testUnitId } });
+  await db.unit.deleteMany({ where: { id: { in: [testUnitId, foreignDialectUnitId] } } });
   await teardownOwner();
 });
 
@@ -143,8 +145,9 @@ describeDb("createSession", () => {
     expect((await getBrief(second.sessionId)).unit?.wordScores).toEqual({ hola: { best: 2, sessions: [first.sessionId] } });
   });
 
-  it("404s for unknown or foreign-language units", async () => {
+  it("404s for unknown, foreign-language or foreign-dialect units", async () => {
     await expect(createSession({ type: "LESSON", unitId: "test-nope" })).rejects.toMatchObject({ status: 404 });
+    await expect(createSession({ type: "LESSON", unitId: foreignDialectUnitId })).rejects.toMatchObject({ status: 404 });
   });
 
 
@@ -305,7 +308,7 @@ describeDb("generateAndStoreRecap", () => {
         id: testUnitId,
         title: "Sessions test unit",
         status: "IN_PROGRESS",
-        wordsRated: [{ word: "hola", score: 3 }, { word: "¿mande?", score: 2 }],
+        wordsRated: [{ word: "hola", best: 3 }, { word: "¿mande?", best: 2 }],
         patternScore: 2,
         masteredWords: 0,
         totalWords: 5,
