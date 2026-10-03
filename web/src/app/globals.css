@@ -41,14 +41,15 @@
 
 :root {
   --background: #f7f1e8;
-  --foreground: #2b1d14;
+  --espresso: #2b1d14;
+  --foreground: var(--espresso);
   --card: #fffbf5;
   --card-foreground: var(--foreground);
   --popover: var(--card);
   --popover-foreground: var(--foreground);
   --honey: #d9a441;
   --primary: var(--honey);
-  --primary-foreground: var(--foreground);
+  --primary-foreground: var(--espresso);
   --secondary: var(--muted);
   --secondary-foreground: var(--foreground);
   --muted: #ede4d6;

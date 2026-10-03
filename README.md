@@ -13,7 +13,7 @@ Requires [bun](https://bun.sh) and the Vercel CLI (`vercel login`, team `northli
 
 ```sh
 cd web
-bun install
+bun install                                             # also runs prisma generate
 vercel link --yes --project wafel --scope northlight
 vercel env pull .env.local --environment development   # DATABASE_URL etc.
 bun run db:migrate                                      # prisma migrate dev
