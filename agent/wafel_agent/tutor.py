@@ -4,7 +4,7 @@ import asyncio
 import logging
 import time
 from collections.abc import Awaitable, Callable
-from typing import Any, Literal
+from typing import Any, Literal, Protocol
 
 from livekit import rtc
 from livekit.agents import Agent
@@ -33,6 +33,12 @@ Elapsed = Callable[[], float]
 RequestEnd = Callable[[str], Awaitable[None]]
 
 _CHAT_ROLE_TO_TRANSCRIPT: dict[str, TranscriptRole] = {"assistant": "tutor", "user": "learner"}
+
+
+class ReplySession(Protocol):
+    """The slice of AgentSession the lifecycle needs: ask the tutor to speak and await it."""
+
+    def generate_reply(self, *, instructions: str) -> Awaitable[Any]: ...
 
 
 def _zero() -> float:
@@ -91,6 +97,7 @@ class LessonLifecycle:
         self._cap_seconds = brief.cap_minutes * 60 if cap_seconds is None else cap_seconds
         self._clock = clock
         self._started_at: float | None = None
+        self._session: ReplySession | None = None
         self._ending = False
         self._cap_task: asyncio.Task[None] | None = None
         self.transcript = TranscriptLog(self.elapsed)
@@ -104,8 +111,9 @@ class LessonLifecycle:
     def duration_sec(self) -> int:
         return int(self.elapsed())
 
-    def mark_started(self) -> asyncio.Task[None]:
+    def mark_started(self, session: ReplySession | None = None) -> asyncio.Task[None]:
         self._started_at = self._clock()
+        self._session = session
         return self._start_cap_timer()
 
     async def request_end(self, reason: str) -> None:
