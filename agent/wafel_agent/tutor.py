@@ -28,7 +28,8 @@ LEARNER_IDENTITY = "learner"
 LEARNER_GRACE_SEC = 20.0
 LEARNER_LEFT_REASON = "learner left"
 GREETING_INSTRUCTION = (
-    "Saluda al alumno en español, preséntate brevemente y haz la primera pregunta."
+    "Saluda al alumno en una frase, preséntate brevemente y empieza el paso uno del guion de "
+    "la sesión: di el objetivo, y antes de cada ejemplo llama a show_phrase."
 )
 
 TranscriptRole = Literal["tutor", "learner"]

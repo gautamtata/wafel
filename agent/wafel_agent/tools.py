@@ -10,21 +10,38 @@ from livekit.agents import function_tool
 from livekit.agents.llm.tool_context import FunctionTool
 
 from wafel_agent.api import WafelApi
-from wafel_agent.brief import MistakeCategory
+from wafel_agent.brief import MistakeCategory, TargetKind
 
 logger = logging.getLogger("wafel.tools")
 
 NOTE_TOPIC = "wafel.note"
+PHRASE_TOPIC = "wafel.phrase"
+SCORE_RANGE = range(0, 4)
 
 RequestEnd = Callable[[str], Awaitable[None]]
 
 
-class ToolResult(TypedDict):
+class ToolResult(TypedDict, total=False):
     ok: bool
+    error: str
 
 
 def _result(ok: bool) -> ToolResult:
     return {"ok": ok}
+
+
+def _error(message: str) -> ToolResult:
+    return {"ok": False, "error": message}
+
+
+def _validate_rating(kind: str, score: int) -> tuple[TargetKind, int] | ToolResult:
+    try:
+        target_kind = TargetKind(kind.strip().upper())
+    except ValueError:
+        return _error(f"kind must be WORD or PATTERN, got {kind!r}")
+    if score not in SCORE_RANGE:
+        return _error(f"score must be an integer from 0 to 3, got {score!r}")
+    return target_kind, score
 
 
 def _category(value: str) -> MistakeCategory:
@@ -33,6 +50,17 @@ def _category(value: str) -> MistakeCategory:
     except ValueError:
         logger.warning("unknown mistake category %r, using OTHER", value)
         return MistakeCategory.OTHER
+
+
+async def _publish(room: rtc.Room, topic: str, payload: dict[str, str]) -> ToolResult:
+    try:
+        await room.local_participant.publish_data(
+            json.dumps(payload).encode(), reliable=True, topic=topic
+        )
+    except Exception as exc:
+        logger.warning("%s publish failed: %s", topic, exc)
+        return _result(False)
+    return _result(True)
 
 
 def build_tools(
@@ -75,13 +103,41 @@ def build_tools(
             title: Short card title.
             body: Plain-text body, under 400 characters.
         """
-        payload = json.dumps({"type": "note", "title": title, "body": body}).encode()
-        try:
-            await room.local_participant.publish_data(payload, reliable=True, topic=NOTE_TOPIC)
-        except Exception as exc:
-            logger.warning("show_note publish failed: %s", exc)
-            return _result(False)
-        return _result(True)
+        return await _publish(room, NOTE_TOPIC, {"type": "note", "title": title, "body": body})
+
+    @function_tool(name="show_phrase")
+    async def show_phrase(spanish: str, english: str) -> ToolResult:
+        """Show a phrase card on screen: the Spanish line with its English meaning.
+
+        Call it for every phrase you present or ask the learner to repeat.
+
+        Args:
+            spanish: The exact Spanish phrase or word.
+            english: Its English translation.
+        """
+        return await _publish(
+            room, PHRASE_TOPIC, {"type": "phrase", "spanish": spanish, "english": english}
+        )
+
+    @function_tool(name="rate_attempt")
+    async def rate_attempt(
+        target: str, kind: str, score: int, note: str | None = None
+    ) -> ToolResult:
+        """Grade the learner's attempt at a unit target word, or the unit pattern at the end.
+
+        Args:
+            target: The unit's target word string exactly as listed (verbatim), or the
+                pattern name for kind PATTERN.
+            kind: WORD or PATTERN.
+            score: 0 (no attempt / unintelligible), 1 (serious errors),
+                2 (understandable with a slip), 3 (correct and natural).
+            note: Optional short remark about the attempt.
+        """
+        validated = _validate_rating(kind, score)
+        if isinstance(validated, dict):
+            return validated
+        target_kind, valid_score = validated
+        return _result(await api.rate_attempt(session_id, target, target_kind, valid_score, note))
 
     @function_tool(name="end_lesson")
     async def end_lesson(reason: str) -> ToolResult:
@@ -93,4 +149,4 @@ def build_tools(
         await request_end(reason)
         return _result(True)
 
-    return [save_vocab, log_mistake, show_note, end_lesson]
+    return [save_vocab, log_mistake, show_note, show_phrase, rate_attempt, end_lesson]

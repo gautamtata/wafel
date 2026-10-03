@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 
 import httpx
+import pytest
 import respx
 
 from wafel_agent.api import WafelApi
@@ -14,6 +15,7 @@ from wafel_agent.main import (
     LEARNER_NEVER_JOINED,
     VOICE_MODEL,
     Settings,
+    agent_name,
     build_llm,
     build_shutdown,
     resolve_brief,
@@ -26,8 +28,12 @@ from wafel_agent.tutor import LEARNER_IDENTITY, LearnerPresence, LessonLifecycle
 BASE = "http://wafel.test"
 
 
-def test_agent_name() -> None:
+def test_agent_name(monkeypatch: pytest.MonkeyPatch) -> None:
     assert AGENT_NAME == "wafel-tutor"
+    monkeypatch.delenv("WAFEL_AGENT_NAME", raising=False)
+    assert agent_name() == "wafel-tutor"
+    monkeypatch.setenv("WAFEL_AGENT_NAME", "wafel-tutor-dev")
+    assert agent_name() == "wafel-tutor-dev"
 
 
 def test_session_id_from_metadata() -> None:

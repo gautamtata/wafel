@@ -334,3 +334,9 @@ async def test_repeated_learner_disconnects_end_once(presence: tuple) -> None:
     room.handlers["participant_disconnected"](FakeParticipant("learner"))
     await asyncio.sleep(0.05)
     assert reasons == [LEARNER_LEFT_REASON]
+
+
+def test_greeting_instruction_starts_the_script() -> None:
+    assert "paso uno del guion" in GREETING_INSTRUCTION
+    assert "show_phrase" in GREETING_INSTRUCTION
+    assert "primera pregunta" not in GREETING_INSTRUCTION

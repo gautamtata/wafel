@@ -9,7 +9,7 @@ from dataclasses import dataclass
 
 from dotenv import load_dotenv
 from livekit import rtc
-from livekit.agents import AgentSession, JobContext, WorkerOptions, cli
+from livekit.agents import AgentSession, JobContext, JobProcess, WorkerOptions, cli
 from livekit.agents.voice.room_io import RoomOptions
 from livekit.plugins.openai.realtime import GPTLiveModel
 
@@ -168,9 +168,20 @@ async def entrypoint(ctx: JobContext) -> None:
     await run_lesson(ctx, brief, api)
 
 
+def agent_name() -> str:
+    return os.environ.get("WAFEL_AGENT_NAME") or AGENT_NAME
+
+
+def prewarm(proc: JobProcess) -> None:
+    """Import the OpenAI plugin in the warmed process so the first job starts faster."""
+    import livekit.plugins.openai  # noqa: F401
+
+
 def main() -> None:
     load_dotenv()
-    cli.run_app(WorkerOptions(entrypoint_fnc=entrypoint, agent_name=AGENT_NAME))
+    cli.run_app(
+        WorkerOptions(entrypoint_fnc=entrypoint, prewarm_fnc=prewarm, agent_name=agent_name())
+    )
 
 
 if __name__ == "__main__":
