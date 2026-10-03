@@ -10,13 +10,14 @@ export default async function SettingsPage() {
   const learner = await getLearner();
   if (!learner) redirect("/onboarding");
 
-  const { level, correctionMode, pace, voice, sessionCapMinutes, nativeLanguage, goals } = learner;
+  const { level, dialect, correctionMode, pace, voice, sessionCapMinutes, nativeLanguage, goals } = learner;
   return (
     <div className="flex flex-col gap-10">
       <PageHeader title="Settings" subtitle="Changes apply from your next session." />
       <SettingsForm
         initial={{
           level,
+          dialect,
           correctionMode,
           pace,
           voice,
