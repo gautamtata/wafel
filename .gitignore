@@ -22,3 +22,6 @@ __pycache__/
 
 # os
 .DS_Store
+
+# sdd workspace
+.superpowers/
