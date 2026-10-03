@@ -21,20 +21,25 @@ export function parseNote(payload: Uint8Array): Omit<Note, "id"> | null {
 }
 
 const FINAL_ATTRIBUTE = "lk.transcription_final";
+const SEGMENT_ATTRIBUTE = "lk.segment_id";
 
 const roleOf = (identity: string): TurnRole => (identity === LEARNER_IDENTITY ? "learner" : "tutor");
 
 export function toTurns(streams: readonly TextStreamData[]): Turn[] {
-  return streams
-    .filter((stream) => stream.text.trim().length > 0)
-    .map(({ text, participantInfo, streamInfo }) => ({
-      id: streamInfo.id,
+  const bySegment = new Map<string, Turn>();
+  for (const { text, participantInfo, streamInfo } of streams) {
+    const trimmed = text.trim();
+    if (!trimmed) continue;
+    const id = streamInfo.attributes?.[SEGMENT_ATTRIBUTE] ?? streamInfo.id;
+    bySegment.set(id, {
+      id,
       role: roleOf(participantInfo.identity),
-      text: text.trim(),
+      text: trimmed,
       at: streamInfo.timestamp,
       final: streamInfo.attributes?.[FINAL_ATTRIBUTE] === "true",
-    }))
-    .sort((a, b) => a.at - b.at);
+    });
+  }
+  return [...bySegment.values()];
 }
 
 export function formatClock(totalSeconds: number): string {

@@ -11,15 +11,9 @@ import {
   useVoiceAssistant,
 } from "@livekit/components-react";
 import { ConnectionState } from "livekit-client";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import {
-  formatClock,
-  type Note,
-  NOTE_TOPIC,
-  parseNote,
-  toTurns,
-  TUTOR_ARRIVAL_TIMEOUT_MS,
-} from "@/lib/session-live";
+import { useCallback, useMemo, useState } from "react";
+import { useElapsedSeconds, useTutorPresence } from "@/hooks/use-tutor-presence";
+import { formatClock, type Note, NOTE_TOPIC, parseNote, toTurns } from "@/lib/session-live";
 import { cn } from "@/lib/utils";
 import { NoteStack } from "./note-card";
 import { SessionBar } from "./session-bar";
@@ -36,32 +30,6 @@ type LiveSessionProps = {
   micError: string | null;
   onTutorMissing: () => void;
 };
-
-function useElapsedSeconds(): number {
-  const [elapsed, setElapsed] = useState(0);
-  useEffect(() => {
-    const startedAt = Date.now();
-    const timer = setInterval(() => setElapsed(Math.floor((Date.now() - startedAt) / 1000)), 1000);
-    return () => clearInterval(timer);
-  }, []);
-  return elapsed;
-}
-
-function useTutorPresence(present: boolean, onMissing: () => void, onLeft: () => void): void {
-  const arrived = useRef(false);
-  useEffect(() => {
-    if (present) {
-      arrived.current = true;
-      return;
-    }
-    if (arrived.current) {
-      onLeft();
-      return;
-    }
-    const timer = setTimeout(onMissing, TUTOR_ARRIVAL_TIMEOUT_MS);
-    return () => clearTimeout(timer);
-  }, [present, onMissing, onLeft]);
-}
 
 function useNotes(): { notes: Note[]; dismiss: (id: string) => void } {
   const [notes, setNotes] = useState<Note[]>([]);
@@ -90,14 +58,15 @@ export function LiveSession({ label, title, capMinutes, micError, onTutorMissing
   const turns = useMemo(() => toTurns(streams), [streams]);
   const { notes, dismiss } = useNotes();
   const { isMicrophoneEnabled, localParticipant } = useLocalParticipant();
-  const elapsed = useElapsedSeconds();
+  const connected = connection === ConnectionState.Connected;
+  const elapsed = useElapsedSeconds(connected);
   const [ending, setEnding] = useState(false);
 
   const end = useCallback(() => {
     setEnding(true);
     void room.disconnect();
   }, [room]);
-  useTutorPresence(agent !== undefined, onTutorMissing, end);
+  useTutorPresence(agent !== undefined, connected, { onMissing: onTutorMissing, onLeft: end });
 
   const capSeconds = capMinutes * 60;
   const overCap = elapsed >= capSeconds;

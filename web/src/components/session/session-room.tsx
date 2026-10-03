@@ -94,15 +94,19 @@ export function SessionRoom({ id, type, status, label, title, capMinutes }: Sess
   useEffect(() => {
     if (poll === "ready") router.replace(`/session/${id}/recap`);
   }, [poll, id, router]);
+  useEffect(() => {
+    if (initial.kind !== "pre-start" && initial.kind !== "loading") clearCredentials(id);
+  }, [id, initial.kind]);
 
   const onTutorMissing = useCallback(() => {
     setPhase({ kind: "tutor-missing" });
+    clearCredentials(id);
     void markFailed(id, "tutor did not arrive");
   }, [id]);
-  const onDisconnected = useCallback(
-    () => setPhase((previous) => (previous?.kind === "live" ? { kind: "wrapping" } : previous)),
-    [],
-  );
+  const onDisconnected = useCallback(() => {
+    clearCredentials(id);
+    setPhase((previous) => (previous?.kind === "live" ? { kind: "wrapping" } : previous));
+  }, [id]);
 
   function retry() {
     setRetrying(true);
@@ -129,9 +133,11 @@ export function SessionRoom({ id, type, status, label, title, capMinutes }: Sess
           connect
           audio
           video={false}
-          onConnected={() => clearCredentials(id)}
           onDisconnected={onDisconnected}
-          onError={() => setPhase(error("connect"))}
+          onError={() => {
+            clearCredentials(id);
+            setPhase(error("connect"));
+          }}
           onMediaDeviceFailure={() => setMicError("Allow microphone access in your browser settings, then start again.")}
           className="contents"
         >

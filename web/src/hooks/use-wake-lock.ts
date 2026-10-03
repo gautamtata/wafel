@@ -15,7 +15,7 @@ export function useWakeLock(active: boolean): void {
       }
     };
     const onVisible = () => {
-      if (document.visibilityState === "visible") void acquire();
+      if (document.visibilityState === "visible" && (sentinel === null || sentinel.released)) void acquire();
     };
 
     void acquire();
