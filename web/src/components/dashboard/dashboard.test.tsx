@@ -14,6 +14,7 @@ const VIEW: DashboardView = {
   wordsDue: 7,
   monthSpendCents: 340,
   unresolvedMistakes: 1,
+  currentUnit: { id: "es-MX-A2-03", title: "Making plans", canDo: "I can invite a friend out and agree on a time." },
   nextSuggestion: {
     type: "LESSON",
     topic: "Making plans",
@@ -59,7 +60,7 @@ describe("Dashboard", () => {
     expect(within(tile("This month")).getByText("$3.40")).toBeInTheDocument();
   });
 
-  it("shows today's unit with a start link and a link to the path", () => {
+  it("shows today's unit once, with a start link and a link to the path", () => {
     render(<Dashboard view={VIEW} now={NOW} />);
     const today = within(screen.getByRole("region", { name: "Today" }));
     expect(today.getByRole("heading", { name: "Making plans" })).toBeInTheDocument();
@@ -69,6 +70,7 @@ describe("Dashboard", () => {
       "/practice?type=LESSON&unitId=es-MX-A2-03",
     );
     expect(today.getByRole("link", { name: "See your path" })).toHaveAttribute("href", "/path");
+    expect(today.queryByRole("link", { name: /Start unit/ })).not.toBeInTheDocument();
   });
 
   it("offers other practice for non-lesson suggestions", () => {
@@ -78,8 +80,15 @@ describe("Dashboard", () => {
         now={NOW}
       />,
     );
-    expect(screen.getByRole("heading", { name: "Revisit your mistakes" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Or choose something else" })).toHaveAttribute("href", "/practice");
+    const today = within(screen.getByRole("region", { name: "Today" }));
+    expect(today.getByRole("heading", { name: "Revisit your mistakes" })).toBeInTheDocument();
+    expect(today.getByRole("link", { name: "Or choose something else" })).toHaveAttribute("href", "/practice");
+    expect(today.getByText("Making plans")).toBeInTheDocument();
+    expect(today.getByRole("link", { name: /Start unit/ })).toHaveAttribute(
+      "href",
+      "/practice?type=LESSON&unitId=es-MX-A2-03",
+    );
+    expect(today.getByRole("link", { name: "See your path" })).toHaveAttribute("href", "/path");
   });
 
   it("links recent sessions to their recap or session page", () => {

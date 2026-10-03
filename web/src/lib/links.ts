@@ -1,11 +1,16 @@
-import type { SessionStatus } from "@/generated/prisma/enums";
+import type { SessionStatus, SessionType } from "@/generated/prisma/enums";
 import type { Suggestion } from "@/lib/dashboard";
 
-export function suggestionHref({ type, unit }: Suggestion): string {
-  if (type === "VOCAB_REVIEW") return "/vocab";
+export const PATH_HREF = "/path";
+
+export function practiceHref(type: SessionType, unitId?: string): string {
   const params = new URLSearchParams({ type });
-  if (unit) params.set("unitId", unit.id);
+  if (unitId) params.set("unitId", unitId);
   return `/practice?${params}`;
+}
+
+export function suggestionHref({ type, unit }: Suggestion): string {
+  return type === "VOCAB_REVIEW" ? "/vocab" : practiceHref(type, unit?.id);
 }
 
 const RECAP_STATUSES: readonly SessionStatus[] = ["ENDED", "RECAP_READY", "FAILED"];

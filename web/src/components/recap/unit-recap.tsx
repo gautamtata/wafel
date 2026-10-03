@@ -3,6 +3,7 @@ import Link from "next/link";
 import { MasteryRing } from "@/components/units/mastery-ring";
 import { ScorePips } from "@/components/units/score-pips";
 import { UnitStatusBadge } from "@/components/units/unit-status-badge";
+import { PATH_HREF } from "@/lib/links";
 import type { RecapUnit } from "@/lib/types";
 import { unitLevelOf } from "@/lib/unit-schema";
 
@@ -69,7 +70,7 @@ export function UnitRecap({ unit }: { unit: RecapUnit }) {
 
       <div className="flex flex-col gap-2 border-t bg-muted/40 px-5 py-4 text-sm sm:px-6">
         <NextStepLine unit={unit} />
-        <Link href="/path" className="flex w-fit items-center gap-1 font-medium text-muted-foreground hover:text-foreground">
+        <Link href={PATH_HREF} className="flex w-fit items-center gap-1 font-medium text-muted-foreground hover:text-foreground">
           See your path
           <ArrowRight className="size-3.5" />
         </Link>

@@ -35,6 +35,7 @@ export type DashboardView = {
   wordsDue: number;
   monthSpendCents: number;
   unresolvedMistakes: number;
+  currentUnit: SuggestedUnit | null;
   nextSuggestion: Suggestion;
   recentSessions: RecentSession[];
 };
@@ -150,6 +151,7 @@ export function buildDashboard(
       sessions.filter((s) => s.createdAt >= monthStart).map((s) => s.estimatedCostCents ?? 0),
     ),
     unresolvedMistakes,
+    currentUnit: nextUnit,
     nextSuggestion: pickSuggestion({ level, coveredTopics, unit: nextUnit, unresolvedMistakes, wordsDue }),
     recentSessions: sessions
       .filter((s) => s.status !== "CREATED")

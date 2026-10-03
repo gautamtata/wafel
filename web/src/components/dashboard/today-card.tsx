@@ -1,8 +1,8 @@
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
-import type { Suggestion, SuggestionType } from "@/lib/dashboard";
-import { suggestionHref } from "@/lib/links";
+import type { SuggestedUnit, Suggestion, SuggestionType } from "@/lib/dashboard";
+import { PATH_HREF, practiceHref, suggestionHref } from "@/lib/links";
 import { cn } from "@/lib/utils";
 import { TutorPresence } from "./tutor-presence";
 
@@ -14,10 +14,38 @@ const COPY: Record<SuggestionType, { label: string; title?: string; cta: string 
 
 const secondaryLink = (suggestion: Suggestion) =>
   suggestion.type === "LESSON"
-    ? { href: "/path", label: "See your path" }
+    ? { href: PATH_HREF, label: "See your path" }
     : { href: "/practice", label: "Or choose something else" };
 
-export function TodayCard({ suggestion }: { suggestion: Suggestion }) {
+function CurrentUnitStrip({ unit }: { unit: SuggestedUnit }) {
+  return (
+    <div className="relative mt-7 flex flex-col gap-3 border-t pt-5 sm:flex-row sm:items-end sm:justify-between">
+      <div className="min-w-0">
+        <p className="eyebrow">Your unit</p>
+        <p className="mt-1.5 font-display text-lg leading-tight font-medium tracking-tight">{unit.title}</p>
+        <p className="mt-0.5 text-sm text-pretty text-muted-foreground">{unit.canDo}</p>
+      </div>
+      <div className="flex shrink-0 gap-2">
+        <Link
+          href={practiceHref("LESSON", unit.id)}
+          className={cn(buttonVariants({ variant: "outline" }), "h-11 flex-1 rounded-xl px-4 sm:flex-none")}
+        >
+          Start unit
+        </Link>
+        <Link
+          href={PATH_HREF}
+          className={cn(buttonVariants({ variant: "ghost" }), "h-11 flex-1 rounded-xl px-4 text-muted-foreground sm:flex-none")}
+        >
+          See your path
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+type TodayCardProps = { suggestion: Suggestion; currentUnit: SuggestedUnit | null };
+
+export function TodayCard({ suggestion, currentUnit }: TodayCardProps) {
   const copy = COPY[suggestion.type];
   const { unit } = suggestion;
   const secondary = secondaryLink(suggestion);
@@ -61,6 +89,7 @@ export function TodayCard({ suggestion }: { suggestion: Suggestion }) {
           {secondary.label}
         </Link>
       </div>
+      {suggestion.type !== "LESSON" && currentUnit && <CurrentUnitStrip unit={currentUnit} />}
     </section>
   );
 }

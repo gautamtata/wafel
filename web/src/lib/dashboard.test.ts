@@ -154,6 +154,14 @@ describe("buildDashboard", () => {
     expect(view.level).toBe("A1");
   });
 
+  it("exposes the current unit alongside any suggestion", () => {
+    const nextUnit = { id: "es-MX-A1-02", title: "At the taquería", canDo: "I can order tacos." };
+    const busy = buildDashboard({ level: "A1", sessions, wordsDue: 0, unresolvedMistakes: 5, nextUnit }, NOW, TZ);
+    expect(busy.currentUnit).toEqual(nextUnit);
+    expect(busy.nextSuggestion.type).toBe("MISTAKE_REVIEW");
+    expect(view.currentUnit).toBeNull();
+  });
+
   it("suggests the first lesson topic not yet covered", () => {
     expect(view.nextSuggestion).toMatchObject({ type: "LESSON", topic: CURRICULUM.A1[2] });
   });

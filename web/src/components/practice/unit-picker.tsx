@@ -4,6 +4,7 @@ import { Check } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { UnitStatusBadge } from "@/components/units/unit-status-badge";
+import { PATH_HREF } from "@/lib/links";
 import type { UnitSummary } from "@/lib/unit-progress";
 import { cn } from "@/lib/utils";
 
@@ -44,7 +45,7 @@ export function UnitPicker({ units, current, value, onChange }: UnitPickerProps)
         <button type="button" aria-expanded={open} onClick={() => setOpen((current) => !current)} className={linkClass}>
           {open ? "Hide units" : "Choose a different unit"}
         </button>
-        <Link href="/path" className={linkClass}>
+        <Link href={PATH_HREF} className={linkClass}>
           See your path
         </Link>
       </div>
