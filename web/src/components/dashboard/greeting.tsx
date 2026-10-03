@@ -1,7 +1,6 @@
 "use client";
 
 import { useClientValue } from "@/hooks/use-hydrated";
-import { cn } from "@/lib/utils";
 
 const DATE_FORMAT = new Intl.DateTimeFormat("en-US", {
   weekday: "long",
@@ -18,10 +17,9 @@ function greetingFor(hour: number): string {
 export function Greeting({ subtitle }: { subtitle: string }) {
   const greeting = useClientValue(() => greetingFor(new Date().getHours()));
   const date = useClientValue(() => DATE_FORMAT.format(new Date()));
-  const hidden = greeting === null;
 
   return (
-    <header className={cn("transition-opacity duration-700", hidden && "opacity-0")}>
+    <header>
       <p className="eyebrow">{date ?? " "}</p>
       <h1 className="mt-2 font-display text-[2.75rem] leading-none font-medium tracking-tight sm:text-6xl">
         {greeting ?? "Hola"}

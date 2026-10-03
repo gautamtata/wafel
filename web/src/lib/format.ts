@@ -1,4 +1,4 @@
-const DAY_MS = 86_400_000;
+import { appTimeZone, dayNumber } from "@/lib/timezone";
 
 export function formatCents(cents: number): string {
   return `$${(cents / 100).toFixed(2)}`;
@@ -9,18 +9,14 @@ export function formatDuration(seconds: number | null): string | null {
   return seconds < 60 ? "<1 min" : `${Math.round(seconds / 60)} min`;
 }
 
-const dayStart = (date: Date) =>
-  new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
-
-const SHORT_DATE = new Intl.DateTimeFormat("en-US", {
-  weekday: "short",
-  month: "short",
-  day: "numeric",
-});
-
-export function formatDay(date: Date, now: Date): string {
-  const daysAgo = Math.round((dayStart(now) - dayStart(date)) / DAY_MS);
+export function formatDay(date: Date, now: Date, timeZone: string = appTimeZone()): string {
+  const daysAgo = dayNumber(now, timeZone) - dayNumber(date, timeZone);
   if (daysAgo === 0) return "Today";
   if (daysAgo === 1) return "Yesterday";
-  return SHORT_DATE.format(date);
+  return new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+  }).format(date);
 }

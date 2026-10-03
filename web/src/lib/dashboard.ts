@@ -2,6 +2,7 @@ import type { Cefr, SessionStatus, SessionType } from "@/generated/prisma/enums"
 import { nextTopic } from "@/lib/curriculum";
 import { db } from "@/lib/db";
 import { getLearner, OWNER_ID } from "@/lib/learner";
+import { appTimeZone, dayNumber, midnightOf, monthStartDay, weekday } from "@/lib/timezone";
 
 export const MISTAKE_REVIEW_THRESHOLD = 3;
 export const VOCAB_REVIEW_THRESHOLD = 10;
@@ -43,32 +44,23 @@ export type DashboardSource = {
   unresolvedMistakes: number;
 };
 
-const startOfDay = (date: Date) =>
-  new Date(date.getFullYear(), date.getMonth(), date.getDate());
-
-const dayKey = (date: Date) => startOfDay(date).getTime();
-
-export function startOfWeek(now: Date): Date {
-  const day = startOfDay(now);
-  const sinceMonday = (day.getDay() + 6) % 7;
-  return new Date(day.getFullYear(), day.getMonth(), day.getDate() - sinceMonday);
+export function startOfWeek(now: Date, timeZone: string): Date {
+  const sinceMonday = (weekday(now, timeZone) + 6) % 7;
+  return midnightOf(dayNumber(now, timeZone) - sinceMonday, timeZone);
 }
 
-export function startOfMonth(now: Date): Date {
-  return new Date(now.getFullYear(), now.getMonth(), 1);
+export function startOfMonth(now: Date, timeZone: string): Date {
+  return midnightOf(monthStartDay(now, timeZone), timeZone);
 }
 
-export function computeStreak(dates: readonly Date[], now: Date): number {
-  const days = new Set(dates.map(dayKey));
-  const today = startOfDay(now);
-  const shift = (date: Date, by: number) =>
-    new Date(date.getFullYear(), date.getMonth(), date.getDate() - by);
-
-  let cursor = days.has(today.getTime()) ? today : shift(today, 1);
+export function computeStreak(dates: readonly Date[], now: Date, timeZone: string): number {
+  const days = new Set(dates.map((date) => dayNumber(date, timeZone)));
+  const today = dayNumber(now, timeZone);
+  let cursor = days.has(today) ? today : today - 1;
   let streak = 0;
-  while (days.has(cursor.getTime())) {
+  while (days.has(cursor)) {
     streak += 1;
-    cursor = shift(cursor, 1);
+    cursor -= 1;
   }
   return streak;
 }
@@ -126,11 +118,15 @@ function toRecent(s: SessionSource): RecentSession {
   };
 }
 
-export function buildDashboard(source: DashboardSource, now: Date): DashboardView {
+export function buildDashboard(
+  source: DashboardSource,
+  now: Date,
+  timeZone: string = appTimeZone(),
+): DashboardView {
   const { level, sessions, wordsDue, unresolvedMistakes } = source;
   const completed = sessions.filter((s) => COMPLETED.includes(s.status));
-  const weekStart = startOfWeek(now);
-  const monthStart = startOfMonth(now);
+  const weekStart = startOfWeek(now, timeZone);
+  const monthStart = startOfMonth(now, timeZone);
 
   const coveredTopics = completed
     .filter((s) => s.type === "LESSON" && s.topic)
@@ -142,7 +138,7 @@ export function buildDashboard(source: DashboardSource, now: Date): DashboardVie
 
   return {
     level,
-    streakDays: computeStreak(completed.map(completedAt), now),
+    streakDays: computeStreak(completed.map(completedAt), now, timeZone),
     minutesThisWeek: Math.round(weekSeconds / 60),
     wordsDue,
     monthSpendCents: sum(

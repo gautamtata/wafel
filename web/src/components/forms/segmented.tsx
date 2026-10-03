@@ -30,7 +30,7 @@ export function Segmented<T extends string>({
         <label
           key={option}
           className={cn(
-            "flex h-9 cursor-pointer items-center justify-center gap-1.5 rounded-lg text-sm font-medium text-muted-foreground transition-all has-focus-visible:ring-3 has-focus-visible:ring-ring/50",
+            "flex h-11 cursor-pointer items-center justify-center gap-1.5 rounded-lg text-sm font-medium text-muted-foreground transition-all has-focus-visible:ring-3 has-focus-visible:ring-ring/50",
             option === value && "bg-card text-foreground shadow-soft",
           )}
         >
