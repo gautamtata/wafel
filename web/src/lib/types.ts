@@ -1,5 +1,13 @@
-import type { Cefr, CorrectionMode, Dialect, MistakeCategory, Pace, SessionType } from "@/generated/prisma/enums";
-import type { WordScores } from "@/lib/mastery";
+import type {
+  Cefr,
+  CorrectionMode,
+  Dialect,
+  MistakeCategory,
+  Pace,
+  SessionType,
+  UnitStatus,
+} from "@/generated/prisma/enums";
+import type { Score, WordScores } from "@/lib/mastery";
 import type { ModelSentence, TargetWord, UnitPattern } from "@/lib/unit-schema";
 
 export type VocabEntry = { word: string; translation: string };
@@ -47,10 +55,24 @@ export type RecapMistake = {
   category: MistakeCategory;
 };
 
-export type Recap = {
-  summary: string;
+export type RecapUnitNextStep = { unitId: string | null; title: string | null; raiseLevelSuggested: boolean };
+
+export type RecapUnit = {
+  id: string;
+  title: string;
+  status: UnitStatus;
+  wordsRated: { word: string; score: Score }[];
+  patternScore: number;
+  masteredWords: number;
+  totalWords: number;
+  nextStep: RecapUnitNextStep;
+};
+
+/** The part of the recap written by the text model; the rest comes from the live log and unit progress. */
+export type RecapText = { summary: string; levelNote: string; memory: string; nextStep: string };
+
+export type Recap = RecapText & {
   mistakes: RecapMistake[];
   newVocab: (VocabEntry & { example: string })[];
-  levelNote: string;
-  memory: string;
+  unit?: RecapUnit;
 };

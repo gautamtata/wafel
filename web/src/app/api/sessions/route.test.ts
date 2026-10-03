@@ -2,7 +2,7 @@ import { afterAll, afterEach, beforeAll, beforeEach, expect, it, vi } from "vite
 import { db } from "@/lib/db";
 import { OWNER_ID } from "@/lib/owner";
 import { getSessionView, markStarted } from "@/lib/sessions";
-import type { Recap } from "@/lib/types";
+import type { RecapText } from "@/lib/types";
 import { cleanupTestRows, ensureOwner, describeDb, teardownOwner, TEST_PREFIX } from "@/test/db-fixture";
 import { ctx, loginAsOwner, logout, request, TEST_AGENT_SECRET, TEST_APP_SECRET } from "@/test/http";
 import { POST as createSession } from "./route";
@@ -37,13 +37,13 @@ vi.mock("@/lib/livekit", async (importOriginal) => ({
   createSessionRoom: async (id: string) => ({ roomName: `wafel-${id}`, token: "jwt", url: "wss://lk.test" }),
 }));
 
-const canned: Recap = {
+const canned: RecapText = {
   summary: "Practicaste saludos.",
-  mistakes: [{ original: "yo soy muy bien", corrected: "estoy muy bien", explanation: "estar", category: "GRAMMAR" }],
-  newVocab: [{ word: `${TEST_PREFIX}playa`, translation: "beach", example: "Me gusta la playa." }],
   levelNote: "A1.",
   memory: "Likes the beach.",
+  nextStep: "Review greetings.",
 };
+const loggedMistake = { original: "yo soy muy bien", corrected: "estoy muy bien", explanation: "estar", category: "GRAMMAR" };
 const parse = vi.fn(async () => ({ output_parsed: canned }));
 vi.mock("openai", () => ({
   default: class {
@@ -187,6 +187,7 @@ describeDb("agent routes", () => {
   it("ended returns 204 before the recap, which runs after the response", async () => {
     const id = await newSession();
     await markStarted(id);
+    await agentMistakes(request("", { method: "POST", body: loggedMistake, ...agent() }), ctx(id));
     const res = await agentEnded(request("", { method: "POST", body: { transcript, durationSec: 125 }, ...agent() }), ctx(id));
     expect(res.status).toBe(204);
     expect(parse).not.toHaveBeenCalled();
@@ -195,7 +196,7 @@ describeDb("agent routes", () => {
     await runScheduled();
     const view = await getSessionView(id);
     expect(view).toMatchObject({ status: "RECAP_READY", durationSec: 125, estimatedCostCents: 11 });
-    expect(view.recap?.mistakes).toEqual(canned.mistakes);
+    expect(view.recap).toMatchObject({ ...canned, mistakes: [loggedMistake], newVocab: [] });
     expect(parse).toHaveBeenCalledTimes(1);
   });
 

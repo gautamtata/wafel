@@ -1,6 +1,7 @@
 import { cache } from "react";
 import type { Learner } from "@/generated/prisma/client";
 import { Cefr, CorrectionMode, Dialect, Pace } from "@/generated/prisma/enums";
+import { ApiError } from "@/lib/api";
 import { db } from "@/lib/db";
 import { GOALS_MAX_LENGTH, SESSION_CAP_RANGE } from "@/lib/learner-limits";
 import { VOICES } from "@/lib/prompts-meta";
@@ -95,6 +96,12 @@ const CREATE_DEFAULTS = {
 export const getLearner = cache(
   (): Promise<Learner | null> => db.learner.findUnique({ where: { id: OWNER_ID } }),
 );
+
+export async function requireLearner(): Promise<Learner> {
+  const learner = await getLearner();
+  if (!learner) throw new ApiError("Learner has not completed onboarding", 409);
+  return learner;
+}
 
 export function upsertLearner(data: LearnerUpdate): Promise<Learner> {
   return db.learner.upsert({
