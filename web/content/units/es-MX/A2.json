@@ -1,0 +1,311 @@
+[
+  {
+    "id": "es-MX-A2-01",
+    "order": 1,
+    "title": "Last weekend",
+    "canDo": "I can say what I did last weekend and ask others about theirs.",
+    "pattern": {
+      "name": "Preterite of regular verbs",
+      "explanationEn": "The preterite (pretérito) is the past tense for finished actions: yesterday, last Saturday, last night. For -ar verbs the endings are -é, -aste, -ó, -amos, -aron: visité, visitaste, visitó, visitamos, visitaron. For -er and -ir verbs they are -í, -iste, -ió, -imos, -ieron: comí, comiste, comió, comimos, comieron. The accent matters: hablo means 'I speak', but habló means 'he spoke'. Time words like ayer, anoche and el sábado pasado tell you to use this tense.",
+      "examples": [
+        { "es": "Ayer cociné enchiladas para mis amigos.", "en": "Yesterday I cooked enchiladas for my friends." },
+        { "es": "¿Saliste anoche? — Sí, salí con mi prima.", "en": "Did you go out last night? — Yes, I went out with my cousin." },
+        { "es": "El domingo comimos en un mercado de Coyoacán.", "en": "On Sunday we ate at a market in Coyoacán." }
+      ]
+    },
+    "targetWords": [
+      { "word": "ayer", "translation": "yesterday", "example": "Ayer trabajé hasta las ocho." },
+      { "word": "anoche", "translation": "last night", "example": "Anoche cené en casa de mi tía." },
+      { "word": "el fin de semana pasado", "translation": "last weekend", "example": "El fin de semana pasado descansé mucho." },
+      { "word": "visitar", "translation": "to visit", "example": "Visité a mis abuelos en Puebla." },
+      { "word": "caminar", "translation": "to walk", "example": "Caminamos por el Bosque de Chapultepec." },
+      { "word": "cocinar", "translation": "to cook", "example": "Mi papá cocinó pozole para todos." },
+      { "word": "bailar", "translation": "to dance", "example": "Bailamos cumbia toda la noche." },
+      { "word": "salir", "translation": "to go out, leave", "example": "Salí con mis amigos el viernes." },
+      { "word": "descansar", "translation": "to rest", "example": "El domingo descansé todo el día." },
+      { "word": "limpiar", "translation": "to clean", "example": "Limpié mi departamento en la mañana." },
+      { "word": "conocer", "translation": "to meet (for the first time); to get to know a place", "example": "Conocí a la novia de mi hermano." },
+      { "word": "pasarla bien", "translation": "to have a good time", "example": "¿Cómo la pasaste? — La pasé muy bien." },
+      { "word": "todo el día", "translation": "all day", "example": "Llovió todo el día." }
+    ],
+    "modelSentences": [
+      { "es": "El sábado pasado visité a mis tíos en Puebla y comí mole poblano.", "en": "Last Saturday I visited my aunt and uncle in Puebla and ate mole poblano." },
+      { "es": "Anoche salí con mis amigos y bailamos cumbia hasta las dos.", "en": "Last night I went out with my friends and we danced cumbia until two." },
+      { "es": "¿Y tú, cómo la pasaste el fin de semana?", "en": "And you, how was your weekend?" },
+      { "es": "El domingo descansé todo el día y limpié mi departamento.", "en": "On Sunday I rested all day and cleaned my apartment." },
+      { "es": "La pasé muy bien: caminamos por Coyoacán y conocí a una chava de Veracruz.", "en": "I had a great time: we walked around Coyoacán and I met a girl from Veracruz." }
+    ],
+    "scenarioHint": "It's Monday morning at the office in CDMX and a coworker asks what you did over the weekend; tell them, then ask about theirs."
+  },
+  {
+    "id": "es-MX-A2-02",
+    "order": 2,
+    "title": "When I was a kid",
+    "canDo": "I can describe what my life was like and what I used to do as a child.",
+    "pattern": {
+      "name": "Imperfect for 'used to' and descriptions",
+      "explanationEn": "The imperfect (imperfecto) describes how things were or what you used to do again and again in the past. For -ar verbs add -aba, -abas, -aba, -ábamos, -aban: jugaba (I used to play). For -er and -ir verbs add -ía, -ías, -ía, -íamos, -ían: vivía (I used to live), comía. Only three verbs are irregular: ser (era), ir (iba) and ver (veía). Start a childhood story with Cuando era niño, or Cuando era chiquito as many Mexicans say.",
+      "examples": [
+        { "es": "Cuando era niña, vivía en Querétaro.", "en": "When I was a girl, I lived in Querétaro." },
+        { "es": "Mis hermanos y yo jugábamos en la calle.", "en": "My brothers and I used to play in the street." },
+        { "es": "Los domingos íbamos al parque con mi papá.", "en": "On Sundays we used to go to the park with my dad." }
+      ]
+    },
+    "targetWords": [
+      { "word": "de niño / de niña", "translation": "as a child", "example": "De niño, no me gustaba la escuela." },
+      { "word": "chiquito / chiquita", "translation": "little, small (affectionate)", "example": "Cuando era chiquita, tenía un perro." },
+      { "word": "jugar", "translation": "to play", "example": "Jugábamos fútbol después de clases." },
+      { "word": "la primaria", "translation": "elementary school", "example": "Mi primaria estaba cerca de mi casa." },
+      { "word": "el recreo", "translation": "recess", "example": "En el recreo comíamos tortas." },
+      { "word": "el pueblo", "translation": "small town, village", "example": "Mi abuelo vivía en un pueblo de Michoacán." },
+      { "word": "los vecinos", "translation": "the neighbors", "example": "Los vecinos siempre nos invitaban a sus fiestas." },
+      { "word": "las caricaturas", "translation": "cartoons", "example": "Veía caricaturas todas las mañanas." },
+      { "word": "los dulces", "translation": "candy, sweets", "example": "Me encantaban los dulces de tamarindo." },
+      { "word": "la tiendita", "translation": "the corner store", "example": "Comprábamos refrescos en la tiendita." },
+      { "word": "cada verano", "translation": "every summer", "example": "Cada verano íbamos a Acapulco." },
+      { "word": "antes", "translation": "before, in the past", "example": "Antes vivía en Puebla; ahora vivo aquí." },
+      { "word": "la abuelita", "translation": "grandma (affectionate)", "example": "Mi abuelita hacía las mejores tortillas." }
+    ],
+    "modelSentences": [
+      { "es": "Cuando era chiquito, vivía en un pueblo cerca de Guanajuato.", "en": "When I was little, I lived in a small town near Guanajuato." },
+      { "es": "Todas las tardes jugaba fútbol en la calle con los vecinos.", "en": "Every afternoon I used to play soccer in the street with the neighbors." },
+      { "es": "En la primaria, compraba dulces en la tiendita antes del recreo.", "en": "In elementary school, I used to buy candy at the corner store before recess." },
+      { "es": "Los sábados en la mañana veía caricaturas con mi hermano.", "en": "On Saturday mornings I used to watch cartoons with my brother." },
+      { "es": "Cada verano íbamos a casa de mi abuelita en Veracruz.", "en": "Every summer we used to go to my grandma's house in Veracruz." }
+    ],
+    "scenarioHint": "Over café de olla with an older neighbor in Guanajuato, you swap stories about what your childhoods were like and what you used to do."
+  },
+  {
+    "id": "es-MX-A2-03",
+    "order": 3,
+    "title": "At the pharmacy",
+    "canDo": "I can say what hurts, describe simple symptoms, and understand basic advice.",
+    "pattern": {
+      "name": "doler (me duele) and informal commands",
+      "explanationEn": "Doler (to hurt) works like gustar: the body part is the subject. Say me duele + one thing and me duelen + several things: Me duele la cabeza (my head hurts), Me duelen los pies (my feet hurt). Use te duele to ask a friend: ¿Te duele mucho? Use el or la with body parts, not 'my'. To give a friend advice, use the informal command, which for most verbs looks like the él/ella form of the present: toma (take), descansa (rest), come (eat); with a reflexive verb, the pronoun goes on the end: tómate, cuídate.",
+      "examples": [
+        { "es": "Me duele el estómago desde anoche.", "en": "My stomach has hurt since last night." },
+        { "es": "¿Te duelen los ojos? Descansa un rato.", "en": "Do your eyes hurt? Rest for a while." },
+        { "es": "Tómate esta pastilla y toma mucha agua.", "en": "Take this pill and drink lots of water." }
+      ]
+    },
+    "targetWords": [
+      { "word": "me duele", "translation": "it hurts me, I have a pain", "example": "Me duele mucho la muela." },
+      { "word": "la cabeza", "translation": "the head", "example": "Me duele la cabeza por el tráfico." },
+      { "word": "el estómago", "translation": "the stomach", "example": "Comí demasiado y me duele el estómago." },
+      { "word": "la garganta", "translation": "the throat", "example": "Me duele la garganta y no puedo hablar bien." },
+      { "word": "la espalda", "translation": "the back", "example": "Trabajo sentado y me duele la espalda." },
+      { "word": "la gripa", "translation": "a cold, the flu (in Mexico)", "example": "Creo que tengo gripa." },
+      { "word": "la fiebre", "translation": "fever", "example": "El niño tiene fiebre desde ayer." },
+      { "word": "la tos", "translation": "cough", "example": "Tengo mucha tos en la noche." },
+      { "word": "la pastilla", "translation": "the pill", "example": "Tómate una pastilla cada ocho horas." },
+      { "word": "el jarabe", "translation": "cough syrup", "example": "Este jarabe es bueno para la tos." },
+      { "word": "la receta", "translation": "the prescription", "example": "Para este medicamento necesitas receta." },
+      { "word": "la farmacia", "translation": "the pharmacy", "example": "Hay una farmacia con consultorio en la esquina." },
+      { "word": "sentirse", "translation": "to feel", "example": "Hoy me siento mucho mejor." },
+      { "word": "cuídate", "translation": "take care (of yourself)", "example": "Cuídate mucho y descansa." }
+    ],
+    "modelSentences": [
+      { "es": "Buenas tardes. Me duele mucho la garganta y tengo un poco de fiebre.", "en": "Good afternoon. My throat really hurts and I have a bit of a fever." },
+      { "es": "Me siento mal desde ayer; creo que tengo gripa.", "en": "I've felt bad since yesterday; I think I have a cold." },
+      { "es": "Tómate una pastilla cada ocho horas y toma mucha agua.", "en": "Take one pill every eight hours and drink lots of water." },
+      { "es": "Para la tos, este jarabe es muy bueno, y no necesitas receta.", "en": "For the cough, this syrup is very good, and you don't need a prescription." },
+      { "es": "Descansa hoy y cuídate. Si mañana te duele la espalda, ve al doctor.", "en": "Rest today and take care. If your back hurts tomorrow, go to the doctor." }
+    ],
+    "scenarioHint": "You wake up sick in Oaxaca and go to a neighborhood farmacia with a consultorio; explain your symptoms and follow the young pharmacist's friendly advice."
+  },
+  {
+    "id": "es-MX-A2-04",
+    "order": 4,
+    "title": "Directions around the city",
+    "canDo": "I can give and follow simple directions using landmarks.",
+    "pattern": {
+      "name": "Informal commands for directions + prepositions of place",
+      "explanationEn": "To give directions to someone you call tú, use the informal command, which looks like the él/ella present form: sigue (keep going), camina (walk), cruza (cross), da vuelta (turn). Say a la derecha (to the right) and a la izquierda (to the left), and count blocks with cuadras: Sigue derecho dos cuadras. To describe where something is, combine estar with a place word: enfrente de (across from), al lado de (next to), entre (between), atrás de (behind), en la esquina (on the corner). Remember that de + el becomes del: enfrente del parque.",
+      "examples": [
+        { "es": "Sigue derecho y da vuelta a la derecha.", "en": "Go straight and turn right." },
+        { "es": "El banco está al lado de la farmacia.", "en": "The bank is next to the pharmacy." },
+        { "es": "Cruza la calle; el café está enfrente del parque.", "en": "Cross the street; the café is across from the park." }
+      ]
+    },
+    "targetWords": [
+      { "word": "sigue derecho", "translation": "go straight ahead", "example": "Sigue derecho hasta el semáforo." },
+      { "word": "da vuelta", "translation": "turn", "example": "Da vuelta en la siguiente calle." },
+      { "word": "a la derecha", "translation": "to the right", "example": "El museo está a la derecha." },
+      { "word": "a la izquierda", "translation": "to the left", "example": "Da vuelta a la izquierda en Madero." },
+      { "word": "cruza", "translation": "cross (command)", "example": "Cruza la avenida con cuidado." },
+      { "word": "la cuadra", "translation": "the city block", "example": "La taquería está a tres cuadras." },
+      { "word": "la esquina", "translation": "the street corner", "example": "Te espero en la esquina." },
+      { "word": "el semáforo", "translation": "the traffic light", "example": "En el semáforo, da vuelta a la derecha." },
+      { "word": "enfrente de", "translation": "across from, in front of", "example": "El Oxxo está enfrente de la iglesia." },
+      { "word": "al lado de", "translation": "next to", "example": "Vivo al lado de una panadería." },
+      { "word": "entre", "translation": "between", "example": "El banco está entre el café y la farmacia." },
+      { "word": "atrás de", "translation": "behind", "example": "El estacionamiento está atrás del mercado." },
+      { "word": "la glorieta", "translation": "the traffic circle, roundabout", "example": "En la glorieta, toma la segunda salida." }
+    ],
+    "modelSentences": [
+      { "es": "Sigue derecho dos cuadras y en el semáforo da vuelta a la izquierda.", "en": "Go straight two blocks and turn left at the traffic light." },
+      { "es": "Cruza la avenida; el museo está enfrente del parque.", "en": "Cross the avenue; the museum is across from the park." },
+      { "es": "La farmacia está en la esquina, al lado de un Oxxo.", "en": "The pharmacy is on the corner, next to an Oxxo." },
+      { "es": "Camina por Madero y vas a ver Bellas Artes a la derecha.", "en": "Walk along Madero and you'll see Bellas Artes on the right." },
+      { "es": "El estacionamiento está atrás del mercado, entre la iglesia y el banco.", "en": "The parking lot is behind the market, between the church and the bank." }
+    ],
+    "scenarioHint": "You're standing in the Zócalo in CDMX and a tourist asks how to walk to the Palacio de Bellas Artes; give clear directions with landmarks and answer their questions."
+  },
+  {
+    "id": "es-MX-A2-05",
+    "order": 5,
+    "title": "Work and studies",
+    "canDo": "I can talk about my job or studies, my schedule, and why I do what I do.",
+    "pattern": {
+      "name": "por vs. para (basic uses) + professions",
+      "explanationEn": "Por and para both can mean 'for', but they are used differently. Para points to a goal: a purpose (Estudio para ser maestra), a deadline (para el viernes), a recipient (para mi jefe) or a destination (Voy para la oficina). Por points to a cause or a route: because of (por el tráfico), through or around a place (por el Centro), and in exchange for (por cien pesos). To say your job, use ser + profession with no 'a': Soy ingeniero, not 'Soy un ingeniero'. In Mexico la chamba is a very common casual word for 'work' or 'job'.",
+      "examples": [
+        { "es": "Soy maestra y trabajo por la colonia Narvarte.", "en": "I'm a teacher and I work around the Narvarte neighborhood." },
+        { "es": "Necesito el reporte para mañana.", "en": "I need the report for tomorrow." },
+        { "es": "Llegué tarde por el tráfico.", "en": "I arrived late because of the traffic." }
+      ]
+    },
+    "targetWords": [
+      { "word": "la chamba", "translation": "work, job (casual)", "example": "¿Cómo va la chamba?" },
+      { "word": "el trabajo", "translation": "work, job", "example": "Mi trabajo está en Santa Fe." },
+      { "word": "el jefe / la jefa", "translation": "the boss", "example": "Mi jefa es muy buena onda." },
+      { "word": "la empresa", "translation": "the company", "example": "Trabajo en una empresa de software." },
+      { "word": "el horario", "translation": "the schedule, hours", "example": "Mi horario es de nueve a seis." },
+      { "word": "ingeniero / ingeniera", "translation": "engineer", "example": "Mi hermano es ingeniero civil." },
+      { "word": "maestro / maestra", "translation": "teacher", "example": "Soy maestro de inglés en una prepa." },
+      { "word": "enfermero / enfermera", "translation": "nurse", "example": "Mi mamá es enfermera en el Seguro Social." },
+      { "word": "abogado / abogada", "translation": "lawyer", "example": "Quiero ser abogada como mi tía." },
+      { "word": "la carrera", "translation": "college degree program, major", "example": "¿Qué carrera estudias?" },
+      { "word": "la prepa", "translation": "high school", "example": "Terminé la prepa en Guadalajara." },
+      { "word": "el sueldo", "translation": "the salary, pay", "example": "El sueldo no es malo, pero el horario sí." },
+      { "word": "la entrevista", "translation": "the interview", "example": "Tengo una entrevista de trabajo el lunes." },
+      { "word": "ganar", "translation": "to earn; to win", "example": "Gano más en mi nuevo trabajo." }
+    ],
+    "modelSentences": [
+      { "es": "Soy enfermera y trabajo en un hospital por la colonia Del Valle.", "en": "I'm a nurse and I work at a hospital around the Del Valle neighborhood." },
+      { "es": "Estudio la carrera de ingeniería para trabajar en una empresa grande.", "en": "I'm studying engineering in order to work for a big company." },
+      { "es": "Mi jefe necesita el reporte para el viernes.", "en": "My boss needs the report by Friday." },
+      { "es": "Ayer llegué tarde a la chamba por el tráfico en Periférico.", "en": "Yesterday I got to work late because of the traffic on Periférico." },
+      { "es": "El lunes tengo una entrevista para un trabajo con mejor sueldo.", "en": "On Monday I have an interview for a job with better pay." }
+    ],
+    "scenarioHint": "At a friend's birthday party in Guadalajara you meet someone new; talk about what you do, where you work or study, your schedule, and why you chose it."
+  },
+  {
+    "id": "es-MX-A2-06",
+    "order": 6,
+    "title": "Comparisons and opinions",
+    "canDo": "I can compare places and things and give my opinion.",
+    "pattern": {
+      "name": "Comparatives (más/menos … que, tan … como) + creo que",
+      "explanationEn": "To compare two things, use más + adjective + que (more … than) or menos + adjective + que (less … than): Oaxaca es más tranquila que la Ciudad de México. To say two things are equal, use tan + adjective + como: Es tan caro como aquí. A few comparatives are special: mejor (better) and peor (worse), never 'más bueno'. To give an opinion, start with creo que (I think that), me parece que (it seems to me that) or para mí (for me). To agree, say Estoy de acuerdo.",
+      "examples": [
+        { "es": "El Metro es más rápido que el carro.", "en": "The Metro is faster than the car." },
+        { "es": "Creo que Mérida es tan bonita como Oaxaca.", "en": "I think Mérida is as pretty as Oaxaca." },
+        { "es": "Para mí, estos tacos son mejores que los de ayer.", "en": "For me, these tacos are better than yesterday's." }
+      ]
+    },
+    "targetWords": [
+      { "word": "más … que", "translation": "more … than", "example": "Monterrey es más caro que Puebla." },
+      { "word": "menos … que", "translation": "less … than", "example": "El camión es menos cómodo que el Metrobús." },
+      { "word": "tan … como", "translation": "as … as", "example": "Mi colonia es tan segura como la tuya." },
+      { "word": "mejor", "translation": "better", "example": "Este café es mejor que el de la oficina." },
+      { "word": "peor", "translation": "worse", "example": "El tráfico hoy está peor que ayer." },
+      { "word": "creo que", "translation": "I think that", "example": "Creo que va a llover en la tarde." },
+      { "word": "me parece que", "translation": "it seems to me that", "example": "Me parece que este restaurante es muy caro." },
+      { "word": "para mí", "translation": "for me, in my opinion", "example": "Para mí, el mejor mole es el de Puebla." },
+      { "word": "estar de acuerdo", "translation": "to agree", "example": "Estoy de acuerdo contigo." },
+      { "word": "caro / cara", "translation": "expensive", "example": "La renta en la Condesa es muy cara." },
+      { "word": "tranquilo / tranquila", "translation": "calm, quiet", "example": "Mi colonia es muy tranquila en la noche." },
+      { "word": "ruidoso / ruidosa", "translation": "noisy", "example": "El Centro es bonito, pero muy ruidoso." },
+      { "word": "seguro / segura", "translation": "safe", "example": "Esta zona es segura para caminar." },
+      { "word": "qué padre", "translation": "how cool, awesome", "example": "¿Te vas a Mérida? ¡Qué padre!" }
+    ],
+    "modelSentences": [
+      { "es": "Para mí, Guadalajara es más tranquila que la Ciudad de México.", "en": "For me, Guadalajara is calmer than Mexico City." },
+      { "es": "Creo que los tacos de aquí son mejores que los de la otra esquina.", "en": "I think the tacos here are better than the ones on the other corner." },
+      { "es": "La renta en la Condesa es más cara que en Coyoacán, pero la zona es menos ruidosa.", "en": "Rent in Condesa is more expensive than in Coyoacán, but the area is less noisy." },
+      { "es": "Mérida no es tan grande como Monterrey, pero me parece más segura.", "en": "Mérida isn't as big as Monterrey, but it seems safer to me." },
+      { "es": "¡Qué padre! Estoy de acuerdo: el Metro es más rápido que el carro.", "en": "How cool! I agree: the Metro is faster than the car." }
+    ],
+    "scenarioHint": "A Mexican friend is helping you decide whether to move to Guadalajara, Monterrey or Mérida; compare the cities and trade opinions on cost, safety and lifestyle."
+  },
+  {
+    "id": "es-MX-A2-07",
+    "order": 7,
+    "title": "Invitations and making plans",
+    "canDo": "I can invite someone out, accept or decline, and agree on a time and place.",
+    "pattern": {
+      "name": "querer/poder + infinitive and quedar de + infinitive",
+      "explanationEn": "To invite someone, ask ¿Quieres + infinitive? (Do you want to…?): ¿Quieres ir al cine? To ask if they're available, use poder: ¿Puedes el sábado? (Can you on Saturday?); the forms are puedo, puedes, puede, podemos, pueden. Accept with ¡Me encantaría! or ¡Órale!, and decline politely with No puedo porque… plus a reason. In Mexico, to fix a time to meet you say quedar de + infinitive: Quedamos de vernos a las ocho (We agreed to meet at eight). A very Mexican way to ask 'Are you in?' is ¿Te late?",
+      "examples": [
+        { "es": "¿Quieres cenar el viernes? — ¡Me encantaría!", "en": "Do you want to have dinner on Friday? — I'd love to!" },
+        { "es": "No puedo el sábado porque trabajo. ¿Puedes el domingo?", "en": "I can't on Saturday because I work. Can you on Sunday?" },
+        { "es": "Quedamos de vernos en la entrada del Metro.", "en": "We agreed to meet at the Metro entrance." }
+      ]
+    },
+    "targetWords": [
+      { "word": "invitar", "translation": "to invite; to treat (pay for someone)", "example": "Te invito un café." },
+      { "word": "¿te late?", "translation": "are you in? sound good? (casual)", "example": "Vamos por unos tacos, ¿te late?" },
+      { "word": "me encantaría", "translation": "I'd love to", "example": "¡Me encantaría ir a tu fiesta!" },
+      { "word": "órale", "translation": "okay, sure, let's do it", "example": "¿Nos vemos a las siete? — ¡Órale!" },
+      { "word": "no puedo", "translation": "I can't", "example": "Hoy no puedo, tengo mucha chamba." },
+      { "word": "quedar de", "translation": "to agree to (meet, do something)", "example": "Quedé de ver a Lalo en el Zócalo." },
+      { "word": "ahorita", "translation": "right now; in a bit (it depends!)", "example": "Ahorita voy, dame cinco minutos." },
+      { "word": "al rato", "translation": "later, in a while", "example": "Al rato te marco." },
+      { "word": "ni modo", "translation": "oh well, it can't be helped", "example": "Se canceló el concierto. Ni modo." },
+      { "word": "otro día", "translation": "another day", "example": "Mejor lo dejamos para otro día." },
+      { "word": "pasar por", "translation": "to pick up (someone)", "example": "Paso por ti a las ocho." },
+      { "word": "avisar", "translation": "to let (someone) know", "example": "Te aviso mañana si puedo." },
+      { "word": "el antro", "translation": "the nightclub", "example": "El sábado vamos al antro en Polanco." },
+      { "word": "platicar", "translation": "to chat, talk", "example": "Vamos a un café para platicar." }
+    ],
+    "modelSentences": [
+      { "es": "¿Quieres ir al cine el viernes en la noche? ¿Te late?", "en": "Do you want to go to the movies Friday night? Are you in?" },
+      { "es": "¡Me encantaría! Pero no puedo el viernes; ¿puedes el sábado?", "en": "I'd love to! But I can't on Friday; can you on Saturday?" },
+      { "es": "Órale, quedamos de vernos a las ocho afuera del Metro Coyoacán.", "en": "Sure, let's meet at eight outside Coyoacán Metro station." },
+      { "es": "Ahorita no puedo platicar, pero al rato te aviso.", "en": "I can't talk right now, but I'll let you know later." },
+      { "es": "Ni modo, vamos al antro otro día. ¿Paso por ti el sábado a las diez?", "en": "Oh well, we'll go to the club another day. Shall I pick you up Saturday at ten?" }
+    ],
+    "scenarioHint": "You call a friend in CDMX to invite them out this weekend; suggest a plan, work around their schedule, and agree on a day, time and meeting place."
+  },
+  {
+    "id": "es-MX-A2-08",
+    "order": 8,
+    "title": "Telling a story",
+    "canDo": "I can tell a short story about something that happened, in order.",
+    "pattern": {
+      "name": "Irregular preterite + story connectors",
+      "explanationEn": "Many very common verbs are irregular in the preterite and have no written accent: ir and ser share fui, fuiste, fue, fuimos, fueron; tener becomes tuve, estar becomes estuve, hacer becomes hice (hizo), poder becomes pude, and decir becomes dije. Use them for the main events of a story, and use the imperfect from earlier for background, like Era tarde or Hacía frío. Connect the events with primero (first), luego and después (then, afterwards), de repente (suddenly), entonces (so, then) and al final (in the end). Mexicans often react to a story with ¿Y qué pasó? (And what happened?).",
+      "examples": [
+        { "es": "Primero fui al banco y luego tuve una reunión.", "en": "First I went to the bank and then I had a meeting." },
+        { "es": "De repente, mi amigo me dijo: «¡Mira, es Luis Miguel!»", "en": "Suddenly, my friend said to me: 'Look, it's Luis Miguel!'" },
+        { "es": "Al final no pude dormir en toda la noche.", "en": "In the end I couldn't sleep all night." }
+      ]
+    },
+    "targetWords": [
+      { "word": "primero", "translation": "first", "example": "Primero fuimos al mercado." },
+      { "word": "luego", "translation": "then, next", "example": "Luego comimos en una fonda." },
+      { "word": "después", "translation": "afterwards, later", "example": "Después estuvimos en el parque." },
+      { "word": "de repente", "translation": "suddenly", "example": "De repente empezó a llover." },
+      { "word": "entonces", "translation": "so, then", "example": "No había camión, entonces tomé un taxi." },
+      { "word": "al final", "translation": "in the end", "example": "Al final todo salió bien." },
+      { "word": "por suerte", "translation": "luckily", "example": "Por suerte traía mi paraguas." },
+      { "word": "¿qué pasó?", "translation": "what happened?", "example": "¿Y luego qué pasó?" },
+      { "word": "perder", "translation": "to lose; to miss (a bus, flight)", "example": "Perdí el camión de las siete." },
+      { "word": "encontrar", "translation": "to find", "example": "Encontré mis llaves en el carro." },
+      { "word": "darse cuenta", "translation": "to realize", "example": "Me di cuenta de que no traía mi celular." },
+      { "word": "el susto", "translation": "the scare, fright", "example": "¡Qué susto me diste!" },
+      { "word": "la cartera", "translation": "the wallet", "example": "Dejé la cartera en el taxi." },
+      { "word": "la neta", "translation": "honestly, the truth (casual)", "example": "La neta, fue un día increíble." }
+    ],
+    "modelSentences": [
+      { "es": "El viernes fui a Guadalajara en camión y tuve un problema.", "en": "On Friday I went to Guadalajara by bus and I had a problem." },
+      { "es": "Primero estuve una hora en la central; luego me di cuenta de que no tenía mi cartera.", "en": "First I spent an hour at the bus station; then I realized I didn't have my wallet." },
+      { "es": "De repente, un señor me dijo: «Oiga, ¿esta cartera es suya?»", "en": "Suddenly, a man said to me: 'Excuse me, is this wallet yours?'" },
+      { "es": "¡Qué susto! Pero por suerte no perdí nada y pude tomar mi camión.", "en": "What a scare! But luckily I didn't lose anything and I was able to catch my bus." },
+      { "es": "Al final hice nuevos amigos en el viaje, y la neta fue muy padre.", "en": "In the end I made new friends on the trip, and honestly it was really cool." }
+    ],
+    "scenarioHint": "Over drinks with friends in CDMX, tell the story of a trip or a day when something went wrong, using connectors to keep it moving while they react and ask what happened."
+  }
+]

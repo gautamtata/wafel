@@ -1,0 +1,312 @@
+[
+  {
+    "id": "es-MX-A1-01",
+    "order": 1,
+    "title": "Greetings and introductions",
+    "canDo": "I can greet people, say my name, and say where I'm from.",
+    "pattern": {
+      "name": "ser for name, origin and nationality",
+      "explanationEn": "Use the verb ser (to be) to say who you are, where you're from, and your nationality. The key forms are yo soy (I am), tú eres (you are), él/ella es (he/she is), nosotros somos (we are) and ustedes/ellos son (you all/they are). To say where you're from, use ser + de + place: Soy de Texas. Nationalities change ending for a woman: mexicano becomes mexicana. To give your name, Mexicans usually say Me llamo… or simply Soy…",
+      "examples": [
+        { "es": "Soy Ana y soy de Monterrey.", "en": "I'm Ana and I'm from Monterrey." },
+        { "es": "¿De dónde eres? — Soy de Canadá.", "en": "Where are you from? — I'm from Canada." },
+        { "es": "Mi amigo es mexicano y su esposa es estadounidense.", "en": "My friend is Mexican and his wife is American." }
+      ]
+    },
+    "targetWords": [
+      { "word": "hola", "translation": "hi, hello", "example": "¡Hola! ¿Cómo estás?" },
+      { "word": "buenos días", "translation": "good morning", "example": "Buenos días, señora. ¿Cómo está?" },
+      { "word": "buenas tardes", "translation": "good afternoon", "example": "Buenas tardes, me llamo Daniel." },
+      { "word": "me llamo", "translation": "my name is", "example": "Me llamo Sofía, ¿y tú?" },
+      { "word": "¿cómo te llamas?", "translation": "what's your name?", "example": "Hola, ¿cómo te llamas?" },
+      { "word": "mucho gusto", "translation": "nice to meet you", "example": "Mucho gusto, Javier." },
+      { "word": "igualmente", "translation": "likewise, you too", "example": "Mucho gusto. — Igualmente." },
+      { "word": "¿de dónde eres?", "translation": "where are you from?", "example": "¿De dónde eres, Paola?" },
+      { "word": "mexicano / mexicana", "translation": "Mexican (man / woman)", "example": "Mi mamá es mexicana, de Jalisco." },
+      { "word": "estadounidense", "translation": "American (from the U.S.)", "example": "Soy estadounidense, de California." },
+      { "word": "¿cómo estás?", "translation": "how are you?", "example": "¿Cómo estás, Luis? — Muy bien, gracias." },
+      { "word": "¿qué onda?", "translation": "what's up? (casual)", "example": "¿Qué onda, Memo? ¿Todo bien?" },
+      { "word": "nos vemos", "translation": "see you", "example": "Bueno, nos vemos mañana." }
+    ],
+    "modelSentences": [
+      { "es": "Hola, buenos días. Me llamo Lupita y soy de Oaxaca.", "en": "Hi, good morning. My name is Lupita and I'm from Oaxaca." },
+      { "es": "¿Y tú? ¿Cómo te llamas y de dónde eres?", "en": "And you? What's your name and where are you from?" },
+      { "es": "Mucho gusto, Daniel. ¿Eres estadounidense?", "en": "Nice to meet you, Daniel. Are you American?" },
+      { "es": "Sí, soy de Chicago, pero mi mamá es mexicana.", "en": "Yes, I'm from Chicago, but my mom is Mexican." },
+      { "es": "Igualmente. Bueno, nos vemos el lunes en la oficina.", "en": "Likewise. Well, see you Monday at the office." }
+    ],
+    "scenarioHint": "It's your first day at an office in Colonia Roma, CDMX, and you introduce yourself to a new coworker: names, where you're from, and nationality."
+  },
+  {
+    "id": "es-MX-A1-02",
+    "order": 2,
+    "title": "Numbers, prices and time",
+    "canDo": "I can ask what there is, how much things cost, and what time it is.",
+    "pattern": {
+      "name": "hay, ¿cuánto cuesta? and telling time",
+      "explanationEn": "Hay means both 'there is' and 'there are', and it never changes: Hay agua. Hay tres tortas. To ask a price, say ¿Cuánto cuesta? for one thing and ¿Cuánto cuestan? for several things; the answer is cuesta or cuestan + number + pesos. To ask the time, say ¿Qué hora es? The answer is Es la una for one o'clock and Son las + number for every other hour, adding y media (half past) or y cuarto (quarter past).",
+      "examples": [
+        { "es": "¿Hay tortas? — Sí, hay de jamón y de pollo.", "en": "Are there tortas? — Yes, there are ham and chicken ones." },
+        { "es": "¿Cuánto cuestan los chicles? — Cuestan diez pesos.", "en": "How much is the gum? — It's ten pesos." },
+        { "es": "¿Qué hora es? — Son las cuatro y media.", "en": "What time is it? — It's four thirty." }
+      ]
+    },
+    "targetWords": [
+      { "word": "hay", "translation": "there is / there are", "example": "¿Hay café aquí?" },
+      { "word": "¿cuánto cuesta?", "translation": "how much does it cost?", "example": "¿Cuánto cuesta esta agua?" },
+      { "word": "peso", "translation": "peso (Mexican currency)", "example": "El chicle cuesta cinco pesos." },
+      { "word": "diez", "translation": "ten", "example": "Son diez pesos, por favor." },
+      { "word": "veinte", "translation": "twenty", "example": "Las papitas cuestan veinte pesos." },
+      { "word": "cincuenta", "translation": "fifty", "example": "La torta cuesta cincuenta pesos." },
+      { "word": "cien", "translation": "one hundred", "example": "Aquí tienes cien pesos." },
+      { "word": "¿qué hora es?", "translation": "what time is it?", "example": "Disculpa, ¿qué hora es?" },
+      { "word": "son las…", "translation": "it's … o'clock", "example": "Son las ocho de la noche." },
+      { "word": "y media", "translation": "half past", "example": "Son las dos y media." },
+      { "word": "y cuarto", "translation": "quarter past", "example": "Es la una y cuarto." },
+      { "word": "abierto", "translation": "open", "example": "El Oxxo está abierto las veinticuatro horas." },
+      { "word": "cerrado", "translation": "closed", "example": "El banco está cerrado los domingos." },
+      { "word": "cambio", "translation": "change (money back)", "example": "Aquí está tu cambio." }
+    ],
+    "modelSentences": [
+      { "es": "Disculpa, ¿hay agua fría?", "en": "Excuse me, is there any cold water?" },
+      { "es": "¿Cuánto cuesta el agua? — Cuesta quince pesos.", "en": "How much is the water? — It's fifteen pesos." },
+      { "es": "Las tortas cuestan cincuenta pesos cada una.", "en": "The tortas are fifty pesos each." },
+      { "es": "Son setenta pesos. Aquí tienes cien, y tu cambio son treinta.", "en": "That's seventy pesos. Here's a hundred, and your change is thirty." },
+      { "es": "¿Qué hora es? — Son las once y media, y el Oxxo está abierto.", "en": "What time is it? — It's eleven thirty, and the Oxxo is open." }
+    ],
+    "scenarioHint": "You're at an Oxxo in Guadalajara buying snacks and a drink: ask what they have, how much things cost, pay in pesos, and ask the time."
+  },
+  {
+    "id": "es-MX-A1-03",
+    "order": 3,
+    "title": "Ordering at a taquería",
+    "canDo": "I can order food and drinks at a taquería and ask for the bill.",
+    "pattern": {
+      "name": "Ordering with me da, quiero and por favor",
+      "explanationEn": "In Mexico the most natural way to order is ¿Me da…? (Can you give me…?), followed by what you want and por favor. You can also say Quiero… (I want…) or the softer Quisiera… (I'd like…). Add con (with) or sin (without) to say how you want it, and con todo means with onion and cilantro. When the server asks ¿Para aquí o para llevar?, answer para aquí (to eat here) or para llevar (to go).",
+      "examples": [
+        { "es": "¿Me da tres tacos de suadero, por favor?", "en": "Can I have three suadero tacos, please?" },
+        { "es": "Quiero dos tacos de bistec sin salsa.", "en": "I want two steak tacos without salsa." },
+        { "es": "¿Para aquí o para llevar? — Para llevar, por favor.", "en": "For here or to go? — To go, please." }
+      ]
+    },
+    "targetWords": [
+      { "word": "taco", "translation": "taco", "example": "Los tacos de esta taquería son buenísimos." },
+      { "word": "al pastor", "translation": "spit-roasted marinated pork", "example": "Me da cuatro tacos al pastor, por favor." },
+      { "word": "con todo", "translation": "with everything (onion and cilantro)", "example": "¿Los quiere con todo? — Sí, con todo." },
+      { "word": "sin", "translation": "without", "example": "Uno sin cebolla, por favor." },
+      { "word": "salsa", "translation": "salsa, sauce", "example": "Cuidado, la salsa verde pica mucho." },
+      { "word": "torta", "translation": "Mexican sandwich", "example": "Quiero una torta de milanesa." },
+      { "word": "quesadilla", "translation": "quesadilla", "example": "¿La quesadilla lleva queso?" },
+      { "word": "agua de horchata", "translation": "sweet rice-and-cinnamon drink", "example": "Me da un agua de horchata grande." },
+      { "word": "refresco", "translation": "soda", "example": "¿Qué refrescos tiene?" },
+      { "word": "para aquí", "translation": "for here", "example": "Son para aquí, gracias." },
+      { "word": "para llevar", "translation": "to go", "example": "La torta es para llevar." },
+      { "word": "¿algo más?", "translation": "anything else?", "example": "¿Algo más? — No, es todo." },
+      { "word": "la cuenta", "translation": "the bill", "example": "¿Me trae la cuenta, por favor?" },
+      { "word": "propina", "translation": "tip", "example": "La propina es aparte." }
+    ],
+    "modelSentences": [
+      { "es": "Buenas noches. ¿Me da cuatro tacos al pastor con todo, por favor?", "en": "Good evening. Can I have four al pastor tacos with everything, please?" },
+      { "es": "Quiero también una torta de milanesa, pero sin cebolla.", "en": "I also want a milanesa torta, but without onion." },
+      { "es": "Para tomar, un agua de horchata grande, por favor.", "en": "To drink, a large horchata, please." },
+      { "es": "¿Algo más? — No, es todo. Es para llevar.", "en": "Anything else? — No, that's all. It's to go." },
+      { "es": "¿Me trae la cuenta, por favor? ¿La propina va aparte?", "en": "Can you bring me the bill, please? Is the tip separate?" }
+    ],
+    "scenarioHint": "It's late at a busy street taquería in CDMX: order tacos and a drink, say how you want them, choose for here or to go, and ask for the bill."
+  },
+  {
+    "id": "es-MX-A1-04",
+    "order": 4,
+    "title": "My daily routine",
+    "canDo": "I can describe what I do on a typical day.",
+    "pattern": {
+      "name": "Present tense of regular verbs (with a few reflexives)",
+      "explanationEn": "To talk about what you usually do, use the present tense. Drop -ar, -er or -ir from the verb and add an ending for each person: trabajar gives trabajo, trabajas, trabaja, trabajamos, trabajan; comer gives como, comes, come, comemos, comen; vivir gives vivo, vives, vive, vivimos, viven. Some verbs are reflexive, meaning you do them to yourself, and they take me, te or se before the verb: me levanto (I get up), te bañas (you shower), se acuesta (he goes to bed). In Mexico la comida is the big afternoon meal, so comer often means 'to have lunch' around two or three o'clock.",
+      "examples": [
+        { "es": "Trabajo en una oficina y como a las tres.", "en": "I work in an office and I have lunch at three." },
+        { "es": "¿A qué hora te levantas? — Me levanto a las seis.", "en": "What time do you get up? — I get up at six." },
+        { "es": "Mi hermano vive en Puebla y trabaja en casa.", "en": "My brother lives in Puebla and works from home." }
+      ]
+    },
+    "targetWords": [
+      { "word": "me levanto", "translation": "I get up", "example": "Me levanto a las seis y media." },
+      { "word": "me baño", "translation": "I shower / I take a bath", "example": "Me baño en la mañana, no en la noche." },
+      { "word": "desayunar", "translation": "to have breakfast", "example": "Desayuno chilaquiles los domingos." },
+      { "word": "trabajar", "translation": "to work", "example": "Trabajo de lunes a viernes." },
+      { "word": "comer", "translation": "to eat; to have lunch", "example": "Comemos a las tres con mi familia." },
+      { "word": "cenar", "translation": "to have dinner", "example": "En la noche ceno un pan dulce con café." },
+      { "word": "llegar", "translation": "to arrive", "example": "Llego a la oficina a las nueve." },
+      { "word": "regresar", "translation": "to come back, go back", "example": "Regreso a casa en Metro." },
+      { "word": "me acuesto", "translation": "I go to bed", "example": "Me acuesto a las once." },
+      { "word": "temprano", "translation": "early", "example": "Mi papá se levanta muy temprano." },
+      { "word": "tarde", "translation": "late; afternoon", "example": "Los viernes llego tarde a casa." },
+      { "word": "en la mañana", "translation": "in the morning", "example": "En la mañana tomo café." },
+      { "word": "en la noche", "translation": "at night, in the evening", "example": "En la noche veo una serie." },
+      { "word": "todos los días", "translation": "every day", "example": "Camino al trabajo todos los días." }
+    ],
+    "modelSentences": [
+      { "es": "Todos los días me levanto a las seis y media.", "en": "Every day I get up at six thirty." },
+      { "es": "Me baño, desayuno café con pan dulce y camino al Metro.", "en": "I shower, have coffee and sweet bread for breakfast, and walk to the Metro." },
+      { "es": "Trabajo en una oficina en Polanco y llego a las nueve.", "en": "I work in an office in Polanco and I get there at nine." },
+      { "es": "Como con mis compañeros a las tres; en México comemos tarde.", "en": "I have lunch with my coworkers at three; in Mexico we eat lunch late." },
+      { "es": "En la noche regreso a casa, ceno algo ligero y me acuesto temprano.", "en": "In the evening I go back home, have a light dinner, and go to bed early." }
+    ],
+    "scenarioHint": "A new friend in Puebla asks what your typical weekday looks like; describe your morning, work and evening, then ask about their routine."
+  },
+  {
+    "id": "es-MX-A1-05",
+    "order": 5,
+    "title": "Family and friends",
+    "canDo": "I can talk about my family and friends and say how old people are.",
+    "pattern": {
+      "name": "tener, ages and possessives (mi, tu, su, nuestro)",
+      "explanationEn": "Tener means 'to have': tengo, tienes, tiene, tenemos, tienen. In Spanish you 'have' years, so to give an age you say tener + number + años: Tengo treinta años (I'm thirty). Possessives go before the noun: mi (my), tu (your), su (his, her, their, or formal your), nuestro/nuestra (our). Add -s when the noun is plural: mis hermanos, tus primas. In Mexico mis papás means 'my parents', not just 'my dads'.",
+      "examples": [
+        { "es": "Tengo dos hermanos y una hermana.", "en": "I have two brothers and a sister." },
+        { "es": "¿Cuántos años tiene tu hijo? — Tiene siete años.", "en": "How old is your son? — He's seven." },
+        { "es": "Nuestra abuela vive con mis papás.", "en": "Our grandmother lives with my parents." }
+      ]
+    },
+    "targetWords": [
+      { "word": "familia", "translation": "family", "example": "Mi familia es de Monterrey." },
+      { "word": "mamá", "translation": "mom", "example": "Mi mamá trabaja en un hospital." },
+      { "word": "papá", "translation": "dad", "example": "Mi papá tiene sesenta años." },
+      { "word": "mis papás", "translation": "my parents", "example": "Mis papás viven en Guadalajara." },
+      { "word": "hermano / hermana", "translation": "brother / sister", "example": "Tengo un hermano y una hermana." },
+      { "word": "hijo / hija", "translation": "son / daughter", "example": "Su hija estudia en la UNAM." },
+      { "word": "abuelo / abuela", "translation": "grandfather / grandmother", "example": "Mi abuela hace tamales en Navidad." },
+      { "word": "primo / prima", "translation": "cousin", "example": "Tengo muchos primos en Oaxaca." },
+      { "word": "esposo / esposa", "translation": "husband / wife", "example": "Su esposa es maestra." },
+      { "word": "novio / novia", "translation": "boyfriend / girlfriend", "example": "¿Tienes novio?" },
+      { "word": "amigo / amiga", "translation": "friend", "example": "Carlos es mi mejor amigo." },
+      { "word": "años", "translation": "years (for age)", "example": "Mi sobrina tiene cuatro años." },
+      { "word": "mayor", "translation": "older", "example": "Mi hermana mayor vive en Tijuana." },
+      { "word": "menor", "translation": "younger", "example": "Soy el hermano menor." }
+    ],
+    "modelSentences": [
+      { "es": "Tengo una familia grande: mis papás, dos hermanos y muchos primos.", "en": "I have a big family: my parents, two siblings and lots of cousins." },
+      { "es": "Mi hermana mayor tiene treinta y dos años y vive en Monterrey.", "en": "My older sister is thirty-two and lives in Monterrey." },
+      { "es": "¿Tienes hijos? — Sí, tengo una hija de cinco años.", "en": "Do you have kids? — Yes, I have a five-year-old daughter." },
+      { "es": "Mi abuela es de Oaxaca y su mole es el mejor.", "en": "My grandmother is from Oaxaca and her mole is the best." },
+      { "es": "Carlos es mi mejor amigo, y su novia se llama Ana.", "en": "Carlos is my best friend, and his girlfriend's name is Ana." }
+    ],
+    "scenarioHint": "At a Sunday carne asada in Monterrey, a friend's aunt asks about your family; show her photos and explain who everyone is and how old they are."
+  },
+  {
+    "id": "es-MX-A1-06",
+    "order": 6,
+    "title": "Getting around the city",
+    "canDo": "I can ask where places are and say where I'm going by Metro or bus.",
+    "pattern": {
+      "name": "estar for location and ir a + place",
+      "explanationEn": "To say where something is, use estar, not ser: ¿Dónde está la estación? — Está cerca. The forms are estoy, estás, está, estamos, están. To say where you're going, use ir (to go) + a + place: voy, vas, va, vamos, van. When a joins el, they become al: Voy al Centro, but Voy a la estación. In Mexico City a city bus is called un camión, and you get off with bajarse: Me bajo aquí.",
+      "examples": [
+        { "es": "¿Dónde está el Zócalo? — Está en el Centro Histórico.", "en": "Where is the Zócalo? — It's in the historic center." },
+        { "es": "Vamos al mercado en camión.", "en": "We're going to the market by bus." },
+        { "es": "Estoy en la estación Hidalgo. ¿Dónde estás tú?", "en": "I'm at Hidalgo station. Where are you?" }
+      ]
+    },
+    "targetWords": [
+      { "word": "¿dónde está…?", "translation": "where is…?", "example": "¿Dónde está el baño?" },
+      { "word": "el Metro", "translation": "the subway", "example": "El Metro es muy rápido." },
+      { "word": "la estación", "translation": "the station", "example": "La estación Insurgentes está muy cerca." },
+      { "word": "el camión", "translation": "the bus (in Mexico)", "example": "Tomo el camión en la esquina." },
+      { "word": "la parada", "translation": "the bus stop", "example": "La parada está enfrente del Oxxo." },
+      { "word": "la línea", "translation": "the (Metro) line", "example": "Toma la línea rosa hasta Pino Suárez." },
+      { "word": "la tarjeta", "translation": "the transit card", "example": "Necesito recargar mi tarjeta del Metro." },
+      { "word": "el boleto", "translation": "the ticket", "example": "¿Dónde compro el boleto?" },
+      { "word": "bajarse", "translation": "to get off", "example": "Me bajo en la próxima estación." },
+      { "word": "cerca", "translation": "near, close", "example": "El museo está cerca de aquí." },
+      { "word": "lejos", "translation": "far", "example": "Coyoacán está un poco lejos." },
+      { "word": "aquí", "translation": "here", "example": "Estoy aquí, en la salida." },
+      { "word": "allá", "translation": "over there", "example": "La taquería está allá." },
+      { "word": "el Centro", "translation": "downtown, the city center", "example": "Voy al Centro el sábado." }
+    ],
+    "modelSentences": [
+      { "es": "Disculpa, ¿dónde está la estación del Metro Insurgentes?", "en": "Excuse me, where is Insurgentes Metro station?" },
+      { "es": "Está muy cerca, a dos calles de aquí.", "en": "It's very close, two streets from here." },
+      { "es": "Voy al Centro. ¿Es mejor el Metro o el camión?", "en": "I'm going downtown. Is the Metro or the bus better?" },
+      { "es": "Tomas la línea uno y te bajas en Pino Suárez.", "en": "You take line one and get off at Pino Suárez." },
+      { "es": "La parada del camión está allá, enfrente del Oxxo.", "en": "The bus stop is over there, across from the Oxxo." }
+    ],
+    "scenarioHint": "You're outside Metro Chapultepec in CDMX and need to get to the Centro Histórico; ask a passerby where things are and how to get there."
+  },
+  {
+    "id": "es-MX-A1-07",
+    "order": 7,
+    "title": "Shopping at the tianguis",
+    "canDo": "I can say what I like, point to things, and buy them at a market.",
+    "pattern": {
+      "name": "gustar + this/that (este, ese) + colors",
+      "explanationEn": "To say you like something, Spanish says 'it pleases me': me gusta + one thing, me gustan + several things. Use te gusta to ask a friend: ¿Te gusta? For 'this' use este (masculine) or esta (feminine), and estos/estas in the plural; for 'that' use ese, esa, esos, esas. Colors come after the noun and match it: una camisa roja, unos zapatos negros. Colors ending in -e, like verde, only add -s in the plural.",
+      "examples": [
+        { "es": "Me gusta esta bolsa, pero no me gustan esos colores.", "en": "I like this bag, but I don't like those colors." },
+        { "es": "¿Te gustan estos zapatos negros?", "en": "Do you like these black shoes?" },
+        { "es": "Quiero esa camisa verde, por favor.", "en": "I want that green shirt, please." }
+      ]
+    },
+    "targetWords": [
+      { "word": "el tianguis", "translation": "open-air street market", "example": "Los domingos hay tianguis en mi colonia." },
+      { "word": "el puesto", "translation": "the stall, stand", "example": "Ese puesto vende fruta muy fresca." },
+      { "word": "me gusta", "translation": "I like (one thing)", "example": "Me gusta mucho este mercado." },
+      { "word": "me gustan", "translation": "I like (several things)", "example": "Me gustan los mangos de aquí." },
+      { "word": "la camisa", "translation": "the shirt", "example": "Esta camisa cuesta ciento cincuenta pesos." },
+      { "word": "los zapatos", "translation": "the shoes", "example": "Busco unos zapatos cómodos." },
+      { "word": "la bolsa", "translation": "the bag", "example": "¿Me da una bolsa, por favor?" },
+      { "word": "rojo", "translation": "red", "example": "Me gustan esos jitomates rojos." },
+      { "word": "azul", "translation": "blue", "example": "Quiero la gorra azul." },
+      { "word": "verde", "translation": "green", "example": "Las manzanas verdes están muy ricas." },
+      { "word": "negro", "translation": "black", "example": "¿Tiene esta playera en negro?" },
+      { "word": "blanco", "translation": "white", "example": "Me gusta esa blusa blanca." },
+      { "word": "el aguacate", "translation": "the avocado", "example": "Estos aguacates están perfectos para hoy." },
+      { "word": "el kilo", "translation": "the kilo", "example": "El kilo de limones está a treinta pesos." }
+    ],
+    "modelSentences": [
+      { "es": "Me gusta mucho esta camisa azul. ¿Cuánto cuesta?", "en": "I really like this blue shirt. How much is it?" },
+      { "es": "No me gustan esos zapatos negros; ¿tiene unos blancos?", "en": "I don't like those black shoes; do you have white ones?" },
+      { "es": "¿Te gusta esta bolsa roja o esa verde? A mí me gusta más la verde.", "en": "Do you like this red bag or that green one? I like the green one better." },
+      { "es": "¿Me da un kilo de aguacates, por favor? Estos se ven muy buenos.", "en": "Can I have a kilo of avocados, please? These look really good." },
+      { "es": "Los domingos hay tianguis en mi colonia y me gustan mucho los puestos de fruta.", "en": "On Sundays there's a street market in my neighborhood and I love the fruit stalls." }
+    ],
+    "scenarioHint": "It's Sunday at the tianguis in your colonia in Guadalajara: browse the stalls, say what you like and don't like, and buy avocados and a shirt."
+  },
+  {
+    "id": "es-MX-A1-08",
+    "order": 8,
+    "title": "Weather and weekend plans",
+    "canDo": "I can talk about the weather and say what I'm going to do.",
+    "pattern": {
+      "name": "ir a + infinitive for plans; weather with hace and está",
+      "explanationEn": "To talk about plans, use ir a + an infinitive (the basic verb form): voy a comer (I'm going to eat), vas a ir, va a llover, vamos a salir, van a viajar. For most weather, use hace: hace calor (it's hot), hace frío (it's cold), hace sol (it's sunny). Use está for how the sky looks, like está nublado (it's cloudy), and llueve for 'it rains'. Days of the week are not capitalized in Spanish: el sábado, el domingo.",
+      "examples": [
+        { "es": "El sábado voy a ir a la playa.", "en": "On Saturday I'm going to go to the beach." },
+        { "es": "Hoy hace mucho calor en Mérida.", "en": "It's very hot in Mérida today." },
+        { "es": "Mañana va a llover, y vamos a ver una película.", "en": "Tomorrow it's going to rain, and we're going to watch a movie." }
+      ]
+    },
+    "targetWords": [
+      { "word": "hace calor", "translation": "it's hot", "example": "En Monterrey hace mucho calor en mayo." },
+      { "word": "hace frío", "translation": "it's cold", "example": "En la noche hace frío en Toluca." },
+      { "word": "hace sol", "translation": "it's sunny", "example": "Hoy hace sol en la playa." },
+      { "word": "está nublado", "translation": "it's cloudy", "example": "Está nublado, pero no llueve." },
+      { "word": "llover", "translation": "to rain", "example": "Va a llover en la tarde." },
+      { "word": "la temporada de lluvias", "translation": "the rainy season", "example": "En la temporada de lluvias llueve casi todas las tardes." },
+      { "word": "el fin de semana", "translation": "the weekend", "example": "¿Qué vas a hacer el fin de semana?" },
+      { "word": "el lunes", "translation": "Monday", "example": "El lunes voy a empezar mi curso." },
+      { "word": "el viernes", "translation": "Friday", "example": "El viernes vamos a cenar fuera." },
+      { "word": "el sábado", "translation": "Saturday", "example": "El sábado voy al tianguis." },
+      { "word": "el domingo", "translation": "Sunday", "example": "El domingo vamos a descansar." },
+      { "word": "mañana", "translation": "tomorrow", "example": "Mañana voy a trabajar en casa." },
+      { "word": "la playa", "translation": "the beach", "example": "Vamos a ir a la playa en Puerto Escondido." }
+    ],
+    "modelSentences": [
+      { "es": "Mañana va a hacer mucho calor en Oaxaca.", "en": "Tomorrow it's going to be very hot in Oaxaca." },
+      { "es": "Este fin de semana voy a ir a la playa con mis amigos.", "en": "This weekend I'm going to go to the beach with my friends." },
+      { "es": "¿Qué vas a hacer el sábado si llueve?", "en": "What are you going to do on Saturday if it rains?" },
+      { "es": "En la temporada de lluvias llueve casi todas las tardes en la Ciudad de México.", "en": "In the rainy season it rains almost every afternoon in Mexico City." },
+      { "es": "Hoy está nublado, pero el domingo va a hacer sol.", "en": "Today it's cloudy, but on Sunday it's going to be sunny." }
+    ],
+    "scenarioHint": "You're on the phone with a friend in Oaxaca planning the weekend: check what the weather will be like and decide what you're each going to do on Saturday and Sunday."
+  }
+]
