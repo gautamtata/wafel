@@ -8,8 +8,14 @@ export function suggestionHref({ type, topic }: Suggestion): string {
   return `/practice?${params}`;
 }
 
+const RECAP_STATUSES: readonly SessionStatus[] = ["ENDED", "RECAP_READY", "FAILED"];
+
+export function hasRecapPage(status: SessionStatus): boolean {
+  return RECAP_STATUSES.includes(status);
+}
+
 export function sessionHref(id: string, status: SessionStatus): string {
-  return status === "RECAP_READY" ? `/session/${id}/recap` : `/session/${id}`;
+  return hasRecapPage(status) ? `/session/${id}/recap` : `/session/${id}`;
 }
 
 export const MISTAKE_PRACTICE_HREF = "/practice?type=MISTAKE_REVIEW";

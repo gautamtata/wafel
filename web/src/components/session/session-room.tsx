@@ -1,7 +1,7 @@
 "use client";
 
 import { LiveKitRoom } from "@livekit/components-react";
-import { House, RotateCcw } from "lucide-react";
+import { House, NotebookPen, RotateCcw } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -22,7 +22,7 @@ type Phase =
   | { kind: "wrapping" }
   | { kind: "tutor-missing" }
   | { kind: "stale" }
-  | { kind: "error"; title: string; description: string };
+  | { kind: "error"; title: string; description: string; action: "home" | "recap" };
 
 export type SessionRoomProps = {
   id: string;
@@ -34,11 +34,11 @@ export type SessionRoomProps = {
 };
 
 const ERRORS = {
-  failed: { title: "This session didn't connect", description: "Nothing was charged. Start a fresh one whenever you're ready." },
-  recapFailed: { title: "We couldn't finish the recap", description: "Your session is saved. Check back from home in a minute." },
-  slow: { title: "Still wrapping up", description: "The recap is taking longer than usual. It will show up on your home screen." },
-  connect: { title: "Couldn't join the room", description: "Check your connection and try again from Practice." },
-} satisfies Record<string, { title: string; description: string }>;
+  failed: { title: "This session didn't connect", description: "Nothing was charged. Start a fresh one whenever you're ready.", action: "home" },
+  recapFailed: { title: "We couldn't finish the recap", description: "Your session is saved. Check back from home in a minute.", action: "home" },
+  slow: { title: "Still wrapping up", description: "The recap is taking longer than usual. Open it to retry.", action: "recap" },
+  connect: { title: "Couldn't join the room", description: "Check your connection and try again from Practice.", action: "home" },
+} satisfies Record<string, { title: string; description: string; action: "home" | "recap" }>;
 
 const error = (key: keyof typeof ERRORS): Phase => ({ kind: "error", ...ERRORS[key] });
 
@@ -75,6 +75,13 @@ const homeLink = (
   <Link href="/" className={buttonVariants({ variant: "outline" })}>
     <House data-icon="inline-start" />
     Back home
+  </Link>
+);
+
+const recapLink = (id: string) => (
+  <Link href={`/session/${id}/recap`} className={buttonVariants()}>
+    <NotebookPen data-icon="inline-start" />
+    Check recap
   </Link>
 );
 
@@ -190,7 +197,13 @@ export function SessionRoom({ id, type, status, label, title, capMinutes }: Sess
     case "error":
       return (
         <Centered>
-          <StatusBanner tone="warn" icon="alert" title={phase.title} description={phase.description} action={homeLink} />
+          <StatusBanner
+            tone="warn"
+            icon="alert"
+            title={phase.title}
+            description={phase.description}
+            action={phase.action === "recap" ? recapLink(id) : homeLink}
+          />
         </Centered>
       );
   }

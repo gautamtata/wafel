@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { SessionRoom } from "@/components/session/session-room";
 import { ApiError } from "@/lib/api";
 import { getLearner } from "@/lib/learner";
+import { hasRecapPage } from "@/lib/links";
 import { SESSION_TYPE_LABELS, sessionTitle } from "@/lib/session-labels";
 import { getSessionView, type SessionView } from "@/lib/sessions";
 
@@ -22,7 +23,7 @@ export default async function SessionPage({ params }: PageProps<"/session/[id]">
   const { id } = await params;
   const [learner, session] = await Promise.all([getLearner(), loadSession(id)]);
   if (!learner?.onboardedAt) redirect("/onboarding");
-  if (session.status === "RECAP_READY") redirect(`/session/${id}/recap`);
+  if (hasRecapPage(session.status)) redirect(`/session/${id}/recap`);
 
   return (
     <SessionRoom
