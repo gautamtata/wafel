@@ -78,15 +78,15 @@
   {
     "id": "es-MX-A2-03",
     "order": 3,
-    "title": "At the pharmacy",
+    "title": "Health and the pharmacy",
     "canDo": "I can say what hurts, describe simple symptoms, and understand basic advice.",
     "pattern": {
-      "name": "doler (me duele) and informal commands",
-      "explanationEn": "Doler (to hurt) works like gustar: the body part is the subject. Say me duele + one thing and me duelen + several things: Me duele la cabeza (my head hurts), Me duelen los pies (my feet hurt). Use te duele to ask a friend: ¿Te duele mucho? Use el or la with body parts, not 'my'. To give a friend advice, use the informal command, which for most verbs looks like the él/ella form of the present: toma (take), descansa (rest), come (eat); with a reflexive verb, the pronoun goes on the end: tómate, cuídate.",
+      "name": "doler (me duele) and tener + symptoms",
+      "explanationEn": "Doler (to hurt) works like gustar: the body part is the subject. Say me duele + one thing and me duelen + several things: Me duele la cabeza (my head hurts), Me duelen los pies (my feet hurt). Use te duele to ask a friend: ¿Te duele mucho? Use el or la with body parts, not 'my'. For illnesses and symptoms use tener: tengo fiebre (I have a fever), tengo tos, tengo gripa (I have a cold). Friends give advice with fixed phrases like tómate… (take…) and cuídate (take care).",
       "examples": [
         { "es": "Me duele el estómago desde anoche.", "en": "My stomach has hurt since last night." },
-        { "es": "¿Te duelen los ojos? Descansa un rato.", "en": "Do your eyes hurt? Rest for a while." },
-        { "es": "Tómate esta pastilla y toma mucha agua.", "en": "Take this pill and drink lots of water." }
+        { "es": "¿Te duelen los ojos? — Sí, y tengo fiebre.", "en": "Do your eyes hurt? — Yes, and I have a fever." },
+        { "es": "Tómate esta pastilla y cuídate.", "en": "Take this pill and take care." }
       ]
     },
     "targetWords": [
@@ -106,13 +106,13 @@
       { "word": "cuídate", "translation": "take care (of yourself)", "example": "Cuídate mucho y descansa." }
     ],
     "modelSentences": [
-      { "es": "Buenas tardes. Me duele mucho la garganta y tengo un poco de fiebre.", "en": "Good afternoon. My throat really hurts and I have a bit of a fever." },
+      { "es": "Me duele mucho la garganta y tengo un poco de fiebre.", "en": "My throat really hurts and I have a bit of a fever." },
       { "es": "Me siento mal desde ayer; creo que tengo gripa.", "en": "I've felt bad since yesterday; I think I have a cold." },
-      { "es": "Tómate una pastilla cada ocho horas y toma mucha agua.", "en": "Take one pill every eight hours and drink lots of water." },
-      { "es": "Para la tos, este jarabe es muy bueno, y no necesitas receta.", "en": "For the cough, this syrup is very good, and you don't need a prescription." },
-      { "es": "Descansa hoy y cuídate. Si mañana te duele la espalda, ve al doctor.", "en": "Rest today and take care. If your back hurts tomorrow, go to the doctor." }
+      { "es": "¿Te duele la cabeza también? — Sí, y tengo mucha tos en la noche.", "en": "Does your head hurt too? — Yes, and I cough a lot at night." },
+      { "es": "En la farmacia de la esquina venden un jarabe para la tos sin receta.", "en": "The pharmacy on the corner sells a cough syrup without a prescription." },
+      { "es": "Tómate una pastilla cada ocho horas y cuídate mucho.", "en": "Take one pill every eight hours and take good care of yourself." }
     ],
-    "scenarioHint": "You wake up sick in Oaxaca and go to a neighborhood farmacia with a consultorio; explain your symptoms and follow the young pharmacist's friendly advice."
+    "scenarioHint": "You wake up sick in Oaxaca; tell your Mexican roommate what hurts and how you feel, and they suggest what to buy at the farmacia on the corner and how to take care of yourself."
   },
   {
     "id": "es-MX-A2-04",
@@ -198,7 +198,7 @@
     "canDo": "I can compare places and things and give my opinion.",
     "pattern": {
       "name": "Comparatives (más/menos … que, tan … como) + creo que",
-      "explanationEn": "To compare two things, use más + adjective + que (more … than) or menos + adjective + que (less … than): Oaxaca es más tranquila que la Ciudad de México. To say two things are equal, use tan + adjective + como: Es tan caro como aquí. A few comparatives are special: mejor (better) and peor (worse), never 'más bueno'. To give an opinion, start with creo que (I think that), me parece que (it seems to me that) or para mí (for me). To agree, say Estoy de acuerdo.",
+      "explanationEn": "To compare two things, use más + adjective + que (more … than) or menos + adjective + que (less … than): Oaxaca es más tranquila que la Ciudad de México. To say two things are equal, use tan + adjective + como: Es tan caro como aquí. A few comparatives are special: mejor (better) and peor (worse) are usually used instead of más bueno and más malo. To give an opinion, start with creo que (I think that), me parece que (it seems to me that) or para mí (for me). To agree, say Estoy de acuerdo.",
       "examples": [
         { "es": "El Metro es más rápido que el carro.", "en": "The Metro is faster than the car." },
         { "es": "Creo que Mérida es tan bonita como Oaxaca.", "en": "I think Mérida is as pretty as Oaxaca." },
@@ -224,9 +224,9 @@
     "modelSentences": [
       { "es": "Para mí, Guadalajara es más tranquila que la Ciudad de México.", "en": "For me, Guadalajara is calmer than Mexico City." },
       { "es": "Creo que los tacos de aquí son mejores que los de la otra esquina.", "en": "I think the tacos here are better than the ones on the other corner." },
-      { "es": "La renta en la Condesa es más cara que en Coyoacán, pero la zona es menos ruidosa.", "en": "Rent in Condesa is more expensive than in Coyoacán, but the area is less noisy." },
+      { "es": "Coyoacán es menos ruidoso que la Condesa, y la renta es más barata.", "en": "Coyoacán is less noisy than Condesa, and the rent is cheaper." },
       { "es": "Mérida no es tan grande como Monterrey, pero me parece más segura.", "en": "Mérida isn't as big as Monterrey, but it seems safer to me." },
-      { "es": "¡Qué padre! Estoy de acuerdo: el Metro es más rápido que el carro.", "en": "How cool! I agree: the Metro is faster than the car." }
+      { "es": "¡Órale! Estoy de acuerdo: el Metro es más rápido que el carro.", "en": "Right on! I agree: the Metro is faster than the car." }
     ],
     "scenarioHint": "A Mexican friend is helping you decide whether to move to Guadalajara, Monterrey or Mérida; compare the cities and trade opinions on cost, safety and lifestyle."
   },
@@ -279,7 +279,7 @@
       "explanationEn": "Many very common verbs are irregular in the preterite and have no written accent: ir and ser share fui, fuiste, fue, fuimos, fueron; tener becomes tuve, estar becomes estuve, hacer becomes hice (hizo), poder becomes pude, and decir becomes dije. Use them for the main events of a story, and use the imperfect from earlier for background, like Era tarde or Hacía frío. Connect the events with primero (first), luego and después (then, afterwards), de repente (suddenly), entonces (so, then) and al final (in the end). Mexicans often react to a story with ¿Y qué pasó? (And what happened?).",
       "examples": [
         { "es": "Primero fui al banco y luego tuve una reunión.", "en": "First I went to the bank and then I had a meeting." },
-        { "es": "De repente, mi amigo me dijo: «¡Mira, es Luis Miguel!»", "en": "Suddenly, my friend said to me: 'Look, it's Luis Miguel!'" },
+        { "es": "De repente, mi amigo me dijo: “¡Mira, es Luis Miguel!”", "en": "Suddenly, my friend said to me: 'Look, it's Luis Miguel!'" },
         { "es": "Al final no pude dormir en toda la noche.", "en": "In the end I couldn't sleep all night." }
       ]
     },
@@ -301,8 +301,8 @@
     ],
     "modelSentences": [
       { "es": "El viernes fui a Guadalajara en camión y tuve un problema.", "en": "On Friday I went to Guadalajara by bus and I had a problem." },
-      { "es": "Primero estuve una hora en la central; luego me di cuenta de que no tenía mi cartera.", "en": "First I spent an hour at the bus station; then I realized I didn't have my wallet." },
-      { "es": "De repente, un señor me dijo: «Oiga, ¿esta cartera es suya?»", "en": "Suddenly, a man said to me: 'Excuse me, is this wallet yours?'" },
+      { "es": "Primero estuve una hora en la central de autobuses; luego me di cuenta de que no tenía mi cartera.", "en": "First I spent an hour at the bus station; then I realized I didn't have my wallet." },
+      { "es": "De repente, un señor me dijo: “Oiga, ¿esta cartera es suya?”", "en": "Suddenly, a man said to me: 'Excuse me, is this wallet yours?'" },
       { "es": "¡Qué susto! Pero por suerte no perdí nada y pude tomar mi camión.", "en": "What a scare! But luckily I didn't lose anything and I was able to catch my bus." },
       { "es": "Al final hice nuevos amigos en el viaje, y la neta fue muy padre.", "en": "In the end I made new friends on the trip, and honestly it was really cool." }
     ],

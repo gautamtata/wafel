@@ -44,37 +44,37 @@
     "canDo": "I can ask what there is, how much things cost, and what time it is.",
     "pattern": {
       "name": "hay, ¿cuánto cuesta? and telling time",
-      "explanationEn": "Hay means both 'there is' and 'there are', and it never changes: Hay agua. Hay tres tortas. To ask a price, say ¿Cuánto cuesta? for one thing and ¿Cuánto cuestan? for several things; the answer is cuesta or cuestan + number + pesos. To ask the time, say ¿Qué hora es? The answer is Es la una for one o'clock and Son las + number for every other hour, adding y media (half past) or y cuarto (quarter past).",
+      "explanationEn": "Hay means both 'there is' and 'there are', and it never changes: Hay agua. Hay cinco tortas. To ask a price, say ¿Cuánto cuesta? for one thing and ¿Cuánto cuestan? for several things; the answer is cuesta or cuestan + number + pesos. To ask the time, say ¿Qué hora es? The answer is Es la una for one o'clock and Son las + number for every other hour, adding y media (half past) or y cuarto (quarter past).",
       "examples": [
         { "es": "¿Hay tortas? — Sí, hay de jamón y de pollo.", "en": "Are there tortas? — Yes, there are ham and chicken ones." },
         { "es": "¿Cuánto cuestan los chicles? — Cuestan diez pesos.", "en": "How much is the gum? — It's ten pesos." },
-        { "es": "¿Qué hora es? — Son las cuatro y media.", "en": "What time is it? — It's four thirty." }
+        { "es": "¿Qué hora es? — Son las cinco y media.", "en": "What time is it? — It's five thirty." }
       ]
     },
     "targetWords": [
       { "word": "hay", "translation": "there is / there are", "example": "¿Hay café aquí?" },
       { "word": "¿cuánto cuesta?", "translation": "how much does it cost?", "example": "¿Cuánto cuesta esta agua?" },
-      { "word": "peso", "translation": "peso (Mexican currency)", "example": "El chicle cuesta cinco pesos." },
+      { "word": "peso", "translation": "peso (Mexican currency)", "example": "¿Aceptan dólares o solo pesos?" },
+      { "word": "cinco", "translation": "five", "example": "El chicle cuesta cinco pesos." },
       { "word": "diez", "translation": "ten", "example": "Son diez pesos, por favor." },
-      { "word": "veinte", "translation": "twenty", "example": "Las papitas cuestan veinte pesos." },
+      { "word": "quince", "translation": "fifteen", "example": "El agua cuesta quince pesos." },
+      { "word": "treinta", "translation": "thirty", "example": "Los cacahuates cuestan treinta pesos." },
       { "word": "cincuenta", "translation": "fifty", "example": "La torta cuesta cincuenta pesos." },
-      { "word": "cien", "translation": "one hundred", "example": "Aquí tienes cien pesos." },
+      { "word": "cien", "translation": "one hundred", "example": "Aquí tiene cien pesos." },
+      { "word": "setenta", "translation": "seventy", "example": "Son setenta pesos en total." },
       { "word": "¿qué hora es?", "translation": "what time is it?", "example": "Disculpa, ¿qué hora es?" },
-      { "word": "son las…", "translation": "it's … o'clock", "example": "Son las ocho de la noche." },
-      { "word": "y media", "translation": "half past", "example": "Son las dos y media." },
-      { "word": "y cuarto", "translation": "quarter past", "example": "Es la una y cuarto." },
-      { "word": "abierto", "translation": "open", "example": "El Oxxo está abierto las veinticuatro horas." },
-      { "word": "cerrado", "translation": "closed", "example": "El banco está cerrado los domingos." },
-      { "word": "cambio", "translation": "change (money back)", "example": "Aquí está tu cambio." }
+      { "word": "son las…", "translation": "it's … o'clock", "example": "Son las cinco de la tarde." },
+      { "word": "y media", "translation": "half past", "example": "Son las diez y media." },
+      { "word": "cambio", "translation": "change (money back)", "example": "Aquí está su cambio." }
     ],
     "modelSentences": [
-      { "es": "Disculpa, ¿hay agua fría?", "en": "Excuse me, is there any cold water?" },
+      { "es": "Disculpe, ¿hay agua fría?", "en": "Excuse me, is there any cold water?" },
       { "es": "¿Cuánto cuesta el agua? — Cuesta quince pesos.", "en": "How much is the water? — It's fifteen pesos." },
       { "es": "Las tortas cuestan cincuenta pesos cada una.", "en": "The tortas are fifty pesos each." },
-      { "es": "Son setenta pesos. Aquí tienes cien, y tu cambio son treinta.", "en": "That's seventy pesos. Here's a hundred, and your change is thirty." },
-      { "es": "¿Qué hora es? — Son las once y media, y el Oxxo está abierto.", "en": "What time is it? — It's eleven thirty, and the Oxxo is open." }
+      { "es": "Aquí tiene cien pesos. — Gracias, aquí está su cambio: treinta pesos.", "en": "Here's a hundred pesos. — Thanks, here's your change: thirty pesos." },
+      { "es": "Oye, ¿qué hora es? — Son las diez y media, ya es tarde.", "en": "Hey, what time is it? — It's ten thirty, it's already late." }
     ],
-    "scenarioHint": "You're at an Oxxo in Guadalajara buying snacks and a drink: ask what they have, how much things cost, pay in pesos, and ask the time."
+    "scenarioHint": "You're at an Oxxo in Guadalajara buying snacks and a drink: ask the cashier what they have and how much things cost, pay in pesos, then ask your friend outside what time it is."
   },
   {
     "id": "es-MX-A1-03",
@@ -83,7 +83,7 @@
     "canDo": "I can order food and drinks at a taquería and ask for the bill.",
     "pattern": {
       "name": "Ordering with me da, quiero and por favor",
-      "explanationEn": "In Mexico the most natural way to order is ¿Me da…? (Can you give me…?), followed by what you want and por favor. You can also say Quiero… (I want…) or the softer Quisiera… (I'd like…). Add con (with) or sin (without) to say how you want it, and con todo means with onion and cilantro. When the server asks ¿Para aquí o para llevar?, answer para aquí (to eat here) or para llevar (to go).",
+      "explanationEn": "In Mexico the most natural way to order is ¿Me da…? (Can you give me…?) plus what you want and por favor, or Quiero… (I want…) and the softer Quisiera… (I'd like…). ¿Me da…?, ¿Me trae…? (Can you bring me…?) and ¿Tiene…? (Do you have…?) are usted forms, the polite 'you' Mexicans use with servers and vendors; with a friend you would say ¿Me das…? Add con (with) or sin (without) to say how you want it; con todo means with onion and cilantro. When the server asks ¿Para aquí o para llevar?, answer para aquí (to eat here) or para llevar (to go), and ask for the total with ¿Cuánto le debo? (What do I owe you?).",
       "examples": [
         { "es": "¿Me da tres tacos de suadero, por favor?", "en": "Can I have three suadero tacos, please?" },
         { "es": "Quiero dos tacos de bistec sin salsa.", "en": "I want two steak tacos without salsa." },
@@ -111,7 +111,7 @@
       { "es": "Quiero también una torta de milanesa, pero sin cebolla.", "en": "I also want a milanesa torta, but without onion." },
       { "es": "Para tomar, un agua de horchata grande, por favor.", "en": "To drink, a large horchata, please." },
       { "es": "¿Algo más? — No, es todo. Es para llevar.", "en": "Anything else? — No, that's all. It's to go." },
-      { "es": "¿Me trae la cuenta, por favor? ¿La propina va aparte?", "en": "Can you bring me the bill, please? Is the tip separate?" }
+      { "es": "¿Me trae la cuenta, por favor? ¿Cuánto le debo?", "en": "Can you bring me the bill, please? How much do I owe you?" }
     ],
     "scenarioHint": "It's late at a busy street taquería in CDMX: order tacos and a drink, say how you want them, choose for here or to go, and ask for the bill."
   },
@@ -122,11 +122,11 @@
     "canDo": "I can describe what I do on a typical day.",
     "pattern": {
       "name": "Present tense of regular verbs (with a few reflexives)",
-      "explanationEn": "To talk about what you usually do, use the present tense. Drop -ar, -er or -ir from the verb and add an ending for each person: trabajar gives trabajo, trabajas, trabaja, trabajamos, trabajan; comer gives como, comes, come, comemos, comen; vivir gives vivo, vives, vive, vivimos, viven. Some verbs are reflexive, meaning you do them to yourself, and they take me, te or se before the verb: me levanto (I get up), te bañas (you shower), se acuesta (he goes to bed). In Mexico la comida is the big afternoon meal, so comer often means 'to have lunch' around two or three o'clock.",
+      "explanationEn": "To talk about what you usually do, use the present tense. Drop -ar, -er or -ir from the verb and add an ending for each person: trabajar gives trabajo, trabajas, trabaja, trabajamos, trabajan; comer gives como, comes, come, comemos, comen; vivir gives vivo, vives, vive, vivimos, viven. Some verbs are reflexive, meaning you do them to yourself, and they take me, te or se before the verb: me levanto (I get up), te bañas (you shower), se acuesta (he goes to bed); note that acostarse changes o to ue (me acuesto). In Mexico la comida is the big afternoon meal, so comer often means 'to have lunch' around two or three o'clock.",
       "examples": [
         { "es": "Trabajo en una oficina y como a las tres.", "en": "I work in an office and I have lunch at three." },
         { "es": "¿A qué hora te levantas? — Me levanto a las seis.", "en": "What time do you get up? — I get up at six." },
-        { "es": "Mi hermano vive en Puebla y trabaja en casa.", "en": "My brother lives in Puebla and works from home." }
+        { "es": "Mi hermano vive en Puebla y trabaja desde casa.", "en": "My brother lives in Puebla and works from home." }
       ]
     },
     "targetWords": [
@@ -161,7 +161,7 @@
     "canDo": "I can talk about my family and friends and say how old people are.",
     "pattern": {
       "name": "tener, ages and possessives (mi, tu, su, nuestro)",
-      "explanationEn": "Tener means 'to have': tengo, tienes, tiene, tenemos, tienen. In Spanish you 'have' years, so to give an age you say tener + number + años: Tengo treinta años (I'm thirty). Possessives go before the noun: mi (my), tu (your), su (his, her, their, or formal your), nuestro/nuestra (our). Add -s when the noun is plural: mis hermanos, tus primas. In Mexico mis papás means 'my parents', not just 'my dads'.",
+      "explanationEn": "Tener means 'to have': tengo, tienes, tiene, tenemos, tienen. In Spanish you 'have' years, so to give an age you say tener + number + años: Tengo treinta años (I'm thirty). Possessives go before the noun: mi (my), tu (your), su (his, her, their, or formal your), nuestro/nuestra (our), which also matches the noun's gender: nuestra abuela. Add -s when the noun is plural: mis hermanos, tus primas. In Mexico mis papás means 'my parents', not just 'my dads'.",
       "examples": [
         { "es": "Tengo dos hermanos y una hermana.", "en": "I have two brothers and a sister." },
         { "es": "¿Cuántos años tiene tu hijo? — Tiene siete años.", "en": "How old is your son? — He's seven." },
@@ -225,7 +225,7 @@
     ],
     "modelSentences": [
       { "es": "Disculpa, ¿dónde está la estación del Metro Insurgentes?", "en": "Excuse me, where is Insurgentes Metro station?" },
-      { "es": "Está muy cerca, a dos calles de aquí.", "en": "It's very close, two streets from here." },
+      { "es": "Está muy cerca, a dos cuadras de aquí.", "en": "It's very close, two blocks from here." },
       { "es": "Voy al Centro. ¿Es mejor el Metro o el camión?", "en": "I'm going downtown. Is the Metro or the bus better?" },
       { "es": "Tomas la línea uno y te bajas en Pino Suárez.", "en": "You take line one and get off at Pino Suárez." },
       { "es": "La parada del camión está allá, enfrente del Oxxo.", "en": "The bus stop is over there, across from the Oxxo." }
@@ -239,7 +239,7 @@
     "canDo": "I can say what I like, point to things, and buy them at a market.",
     "pattern": {
       "name": "gustar + this/that (este, ese) + colors",
-      "explanationEn": "To say you like something, Spanish says 'it pleases me': me gusta + one thing, me gustan + several things. Use te gusta to ask a friend: ¿Te gusta? For 'this' use este (masculine) or esta (feminine), and estos/estas in the plural; for 'that' use ese, esa, esos, esas. Colors come after the noun and match it: una camisa roja, unos zapatos negros. Colors ending in -e, like verde, only add -s in the plural.",
+      "explanationEn": "To say you like something, Spanish says 'it pleases me': me gusta + one thing, me gustan + several things. Use te gusta to ask a friend: ¿Te gusta? For 'this' use este (masculine) or esta (feminine), and estos/estas in the plural; for 'that' use ese, esa, esos, esas. Colors come after the noun and match it: una camisa roja, unos zapatos negros. Colors ending in -e, like verde, only add -s in the plural, and colors ending in a consonant, like azul, are the same for masculine and feminine and add -es in the plural: azules.",
       "examples": [
         { "es": "Me gusta esta bolsa, pero no me gustan esos colores.", "en": "I like this bag, but I don't like those colors." },
         { "es": "¿Te gustan estos zapatos negros?", "en": "Do you like these black shoes?" },
