@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+import { after } from "next/server";
 import type OpenAI from "openai";
 import { z } from "zod";
 import type { Learner, Prisma, Session } from "@/generated/prisma/client";
@@ -10,9 +11,10 @@ import { nextTopic } from "@/lib/curriculum";
 import { db } from "@/lib/db";
 import { createSessionRoom, roomNameFor } from "@/lib/livekit";
 import { logMistake, mistakesForSession } from "@/lib/mistakes";
-import { generateRecap } from "@/lib/recap";
+import { log } from "@/lib/log";
 import { OWNER_ID } from "@/lib/owner";
-import { normalize } from "@/lib/recap-validate";
+import { generateRecap } from "@/lib/recap";
+import { MAX_NEW_VOCAB, normalize } from "@/lib/recap-validate";
 import type { Brief, Recap, TranscriptEntry } from "@/lib/types";
 import { addVocab } from "@/lib/vocab";
 
@@ -65,6 +67,10 @@ export type SessionView = {
 };
 
 const ENDED_BEFORE_START = "agent ended before start";
+const OPEN: SessionStatus[] = [SessionStatus.CREATED, SessionStatus.ACTIVE];
+const FINISHED: SessionStatus[] = [SessionStatus.ENDED, SessionStatus.RECAP_READY];
+
+export type Transition = { status: SessionStatus; changed: boolean };
 
 const viewSelect = {
   id: true,
@@ -110,7 +116,7 @@ async function requireSession(id: string): Promise<Session> {
 
 export async function coveredTopics(): Promise<string[]> {
   const rows = await db.session.findMany({
-    where: { type: SessionType.LESSON, topic: { not: null }, status: { not: SessionStatus.FAILED } },
+    where: { type: SessionType.LESSON, topic: { not: null }, status: { in: FINISHED } },
     select: { topic: true },
     distinct: ["topic"],
   });
@@ -166,7 +172,9 @@ export async function createSession(
     const room = await createSessionRoom(id);
     return { sessionId: id, token: room.token, url: room.url };
   } catch (error) {
-    await markFailed(id, "could not create LiveKit room");
+    await markFailed(id, "could not create LiveKit room").catch((failError: unknown) => {
+      log.error(`could not mark session ${id} failed`, failError);
+    });
     throw error;
   }
 }
@@ -191,47 +199,48 @@ export async function getBrief(id: string): Promise<Brief> {
   return session.brief as Brief;
 }
 
-export async function markStarted(id: string): Promise<void> {
-  await requireSession(id);
-  await db.session.updateMany({
-    where: { id, status: SessionStatus.CREATED },
-    data: { status: SessionStatus.ACTIVE, startedAt: new Date() },
-  });
+async function transition(
+  id: string,
+  from: SessionStatus[],
+  data: Prisma.SessionUpdateManyMutationInput & { status: SessionStatus },
+): Promise<Transition> {
+  const { count } = await db.session.updateMany({ where: { id, status: { in: from } }, data });
+  if (count > 0) return { status: data.status, changed: true };
+  return { status: (await requireSession(id)).status, changed: false };
 }
 
-export async function markFailed(id: string, reason: string): Promise<void> {
-  await requireSession(id);
-  console.warn(`session ${id} failed: ${reason}`);
-  await db.session.updateMany({
-    where: { id, status: { in: [SessionStatus.CREATED, SessionStatus.ACTIVE] } },
-    data: { status: SessionStatus.FAILED, endedAt: new Date() },
-  });
+export async function markStarted(id: string): Promise<Transition> {
+  return transition(id, [SessionStatus.CREATED], { status: SessionStatus.ACTIVE, startedAt: new Date() });
+}
+
+export async function markFailed(id: string, reason: string): Promise<Transition> {
+  const result = await transition(id, OPEN, { status: SessionStatus.FAILED, endedAt: new Date() });
+  if (result.changed) log.warn(`session ${id} failed: ${reason}`);
+  return result;
 }
 
 export async function markEnded(
   id: string,
   transcript: TranscriptEntry[],
   durationSec: number,
-): Promise<SessionStatus> {
-  const session = await requireSession(id);
-  if (session.status === SessionStatus.CREATED && durationSec === 0) {
-    await markFailed(id, ENDED_BEFORE_START);
-    return SessionStatus.FAILED;
-  }
-  if (session.status !== SessionStatus.CREATED && session.status !== SessionStatus.ACTIVE) {
-    return session.status;
-  }
-  await db.session.update({
-    where: { id },
-    data: {
-      status: SessionStatus.ENDED,
-      transcript,
-      durationSec,
+): Promise<Transition> {
+  if (durationSec === 0) {
+    const failed = await transition(id, [SessionStatus.CREATED], {
+      status: SessionStatus.FAILED,
       endedAt: new Date(),
-      estimatedCostCents: estimateCostCents(durationSec),
-    },
+    });
+    if (failed.changed) {
+      log.warn(`session ${id} failed: ${ENDED_BEFORE_START}`);
+      return failed;
+    }
+  }
+  return transition(id, OPEN, {
+    status: SessionStatus.ENDED,
+    transcript,
+    durationSec,
+    endedAt: new Date(),
+    estimatedCostCents: estimateCostCents(durationSec),
   });
-  return SessionStatus.ENDED;
 }
 
 export async function logSessionVocab(
@@ -281,7 +290,7 @@ export async function generateAndStoreRecap(id: string, openai?: OpenAI): Promis
     newVocab: dedupeBy(
       [...generated.newVocab, ...sessionVocab.map(({ word, translation, example }) => ({ word, translation, example: example ?? "" }))],
       (v) => normalize(v.word),
-    ),
+    ).slice(0, MAX_NEW_VOCAB),
   };
 
   await db.$transaction([
@@ -294,17 +303,14 @@ export async function generateAndStoreRecap(id: string, openai?: OpenAI): Promis
   ]);
 }
 
-export async function endSessionAndRecap(
-  id: string,
-  transcript: TranscriptEntry[],
-  durationSec: number,
-  openai?: OpenAI,
-): Promise<void> {
-  const status = await markEnded(id, transcript, durationSec);
-  if (status !== SessionStatus.ENDED) return;
+export async function runRecap(id: string, openai?: OpenAI): Promise<void> {
   try {
     await generateAndStoreRecap(id, openai);
   } catch (error) {
-    console.error(`recapError for session ${id}`, error);
+    log.error(`recapError for session ${id}`, error);
   }
+}
+
+export function scheduleRecap(id: string): void {
+  after(() => runRecap(id));
 }

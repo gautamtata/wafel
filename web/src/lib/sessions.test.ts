@@ -1,11 +1,12 @@
 import type OpenAI from "openai";
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "vitest";
+import { CURRICULUM } from "@/lib/curriculum";
 import { db } from "@/lib/db";
+import { log } from "@/lib/log";
 import { OWNER_ID } from "@/lib/owner";
 import {
   coveredTopics,
   createSession,
-  endSessionAndRecap,
   generateAndStoreRecap,
   getBrief,
   getSessionView,
@@ -15,6 +16,7 @@ import {
   markEnded,
   markFailed,
   markStarted,
+  runRecap,
 } from "@/lib/sessions";
 import type { Recap, TranscriptEntry } from "@/lib/types";
 import { cleanupTestRows, ensureOwner, teardownOwner, TEST_PREFIX } from "@/test/db-fixture";
@@ -65,7 +67,12 @@ const endedSession = async () => {
   return sessionId;
 };
 
-beforeAll(ensureOwner);
+let topics: readonly string[] = [];
+beforeAll(async () => {
+  await ensureOwner();
+  const learner = await db.learner.findUniqueOrThrow({ where: { id: OWNER_ID } });
+  topics = CURRICULUM[learner.level];
+});
 afterEach(async () => {
   await cleanupTestRows();
   vi.clearAllMocks();
@@ -86,19 +93,25 @@ describe("createSession", () => {
     const row = await db.session.findUniqueOrThrow({ where: { id: result.sessionId } });
     expect(row.status).toBe("CREATED");
     expect(row.roomName).toBe(`wafel-${result.sessionId}`);
-    expect(row.topic).toBe("Greetings and introductions");
+    expect(row.topic).toBe(topics[0]);
     const brief = await getBrief(result.sessionId);
     expect(brief).toMatchObject({ sessionId: result.sessionId, type: "LESSON", topic: row.topic });
     expect(brief.dueVocab).toContainEqual({ word: `${TEST_PREFIX}hola`, translation: "hello" });
   });
 
-  it("picks the next uncovered curriculum topic for a LESSON", async () => {
+  it("picks the next topic not covered by a finished LESSON", async () => {
     const first = await createSession({ type: "LESSON" });
+    const unfinished = await createSession({ type: "LESSON" });
+    expect((await getSessionView(unfinished.sessionId)).topic).toBe(topics[0]);
+    await markStarted(first.sessionId);
+    await markEnded(first.sessionId, transcript, 60);
     const second = await createSession({ type: "LESSON" });
     const [a, b] = await Promise.all([getSessionView(first.sessionId), getSessionView(second.sessionId)]);
-    expect(a.topic).toBe("Greetings and introductions");
-    expect(b.topic).toBe("Numbers, prices and time");
-    expect(await coveredTopics()).toEqual(expect.arrayContaining([a.topic, b.topic]));
+    expect(a.topic).toBe(topics[0]);
+    expect(b.topic).toBe(topics[1]);
+    const covered = await coveredTopics();
+    expect(covered).toContain(a.topic);
+    expect(covered).not.toContain(b.topic);
   });
 
   it("requires a scenario for ROLEPLAY and snapshots it into the brief", async () => {
@@ -121,7 +134,8 @@ describe("createSession", () => {
 describe("lifecycle", () => {
   it("markStarted moves CREATED to ACTIVE once", async () => {
     const { sessionId } = await createSession({ type: "FREE_TALK" });
-    await markStarted(sessionId);
+    expect(await markStarted(sessionId)).toEqual({ status: "ACTIVE", changed: true });
+    expect(await markStarted(sessionId)).toEqual({ status: "ACTIVE", changed: false });
     const view = await getSessionView(sessionId);
     expect(view.status).toBe("ACTIVE");
     expect(view.startedAt).toBeInstanceOf(Date);
@@ -136,13 +150,44 @@ describe("lifecycle", () => {
 
   it("markEnded on a never-started session with zero duration fails it", async () => {
     const { sessionId } = await createSession({ type: "FREE_TALK" });
-    expect(await markEnded(sessionId, [], 0)).toBe("FAILED");
+    expect(await markEnded(sessionId, [], 0)).toEqual({ status: "FAILED", changed: true });
     expect((await getSessionView(sessionId)).status).toBe("FAILED");
+  });
+
+  it("markEnded with zero duration on an ACTIVE session still ends it", async () => {
+    const { sessionId } = await createSession({ type: "FREE_TALK" });
+    await markStarted(sessionId);
+    expect(await markEnded(sessionId, [], 0)).toEqual({ status: "ENDED", changed: true });
+  });
+
+  it("concurrent markEnded calls transition exactly once", async () => {
+    const { sessionId } = await createSession({ type: "FREE_TALK" });
+    await markStarted(sessionId);
+    const results = await Promise.all([
+      markEnded(sessionId, transcript, 30),
+      markEnded(sessionId, transcript, 40),
+      markEnded(sessionId, transcript, 50),
+    ]);
+    expect(results.filter((r) => r.changed)).toHaveLength(1);
+    expect(results.every((r) => r.status === "ENDED")).toBe(true);
+    const { durationSec } = await getSessionView(sessionId);
+    expect(results.find((r) => r.changed)).toBeDefined();
+    expect([30, 40, 50]).toContain(durationSec);
+  });
+
+  it("markEnded after markFailed leaves the session FAILED", async () => {
+    const { sessionId } = await createSession({ type: "FREE_TALK" });
+    await markStarted(sessionId);
+    expect(await markFailed(sessionId, "tutor gone")).toEqual({ status: "FAILED", changed: true });
+    expect(await markEnded(sessionId, transcript, 30)).toEqual({ status: "FAILED", changed: false });
+    const view = await getSessionView(sessionId);
+    expect(view.status).toBe("FAILED");
+    expect(view.transcript).toBeNull();
   });
 
   it("markEnded is a no-op for finished sessions", async () => {
     const id = await endedSession();
-    expect(await markEnded(id, [], 5)).toBe("ENDED");
+    expect(await markEnded(id, [], 5)).toEqual({ status: "ENDED", changed: false });
     expect((await getSessionView(id)).durationSec).toBe(90);
   });
 
@@ -152,7 +197,7 @@ describe("lifecycle", () => {
     expect((await getSessionView(sessionId)).status).toBe("FAILED");
 
     const ended = await endedSession();
-    await markFailed(ended, "late");
+    expect(await markFailed(ended, "late")).toEqual({ status: "ENDED", changed: false });
     expect((await getSessionView(ended)).status).toBe("ENDED");
   });
 
@@ -222,14 +267,19 @@ describe("generateAndStoreRecap", () => {
     await expect(generateAndStoreRecap(sessionId, fakeOpenAI())).rejects.toMatchObject({ status: 409 });
   });
 
-  it("endSessionAndRecap leaves the session ENDED when the model fails", async () => {
-    const { sessionId } = await createSession({ type: "FREE_TALK" });
-    await markStarted(sessionId);
-    const spy = vi.spyOn(console, "error").mockImplementation(() => {});
+  it("runRecap leaves the session ENDED and logs when the model fails", async () => {
+    const id = await endedSession();
     const failing = { responses: { parse: vi.fn(async () => { throw new Error("model down"); }) } } as unknown as OpenAI;
-    await endSessionAndRecap(sessionId, transcript, 30, failing);
-    expect((await getSessionView(sessionId)).status).toBe("ENDED");
-    expect(spy).toHaveBeenCalledWith(expect.stringContaining("recapError"), expect.anything());
-    spy.mockRestore();
+    await runRecap(id, failing);
+    expect((await getSessionView(id)).status).toBe("ENDED");
+    expect(log.error).toHaveBeenCalledWith(expect.stringContaining(`recapError for session ${id}`), expect.any(Error));
+  });
+
+  it("caps merged newVocab at 8", async () => {
+    const id = await endedSession();
+    const many = Array.from({ length: 6 }, (_, i) => ({ word: `${TEST_PREFIX}w${i}`, translation: `t${i}`, example: "" }));
+    for (let i = 0; i < 4; i++) await logSessionVocab(id, { word: `${TEST_PREFIX}live${i}`, translation: "x" });
+    await generateAndStoreRecap(id, fakeOpenAI({ ...canned, newVocab: many }));
+    expect((await getSessionView(id)).recap?.newVocab).toHaveLength(8);
   });
 });

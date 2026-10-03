@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const createRoom = vi.fn();
+const deleteRoom = vi.fn(async () => {});
 const createDispatch = vi.fn();
 const addGrant = vi.fn();
 const toJwt = vi.fn(async () => "jwt-token");
@@ -14,6 +15,7 @@ vi.mock("livekit-server-sdk", () => ({
       roomClientArgs(...args);
     }
     createRoom = createRoom;
+    deleteRoom = deleteRoom;
   },
   AgentDispatchClient: class {
     constructor(...args: unknown[]) {
@@ -57,6 +59,13 @@ describe("createSessionRoom", () => {
       canSubscribe: true,
       canPublishData: true,
     });
+  });
+
+  it("deletes the room and rethrows when dispatch creation fails", async () => {
+    createDispatch.mockRejectedValueOnce(new Error("dispatch down"));
+    const { createSessionRoom } = await import("@/lib/livekit");
+    await expect(createSessionRoom("abc")).rejects.toThrow("dispatch down");
+    expect(deleteRoom).toHaveBeenCalledWith("wafel-abc");
   });
 
   it("throws when LiveKit env is missing", async () => {

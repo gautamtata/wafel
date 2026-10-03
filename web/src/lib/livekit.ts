@@ -1,4 +1,5 @@
 import { AccessToken, AgentDispatchClient, RoomServiceClient } from "livekit-server-sdk";
+import { log } from "@/lib/log";
 
 export const AGENT_NAME = "wafel-tutor";
 export const LEARNER_IDENTITY = "learner";
@@ -37,19 +38,26 @@ export async function createSessionRoom(sessionId: string): Promise<SessionRoom>
     maxParticipants: MAX_PARTICIPANTS,
   });
 
-  const dispatches = new AgentDispatchClient(url, apiKey, apiSecret);
-  await dispatches.createDispatch(roomName, AGENT_NAME, {
-    metadata: JSON.stringify({ sessionId }),
-  });
+  try {
+    const dispatches = new AgentDispatchClient(url, apiKey, apiSecret);
+    await dispatches.createDispatch(roomName, AGENT_NAME, {
+      metadata: JSON.stringify({ sessionId }),
+    });
 
-  const token = new AccessToken(apiKey, apiSecret, { identity: LEARNER_IDENTITY, ttl: TOKEN_TTL });
-  token.addGrant({
-    room: roomName,
-    roomJoin: true,
-    canPublish: true,
-    canSubscribe: true,
-    canPublishData: true,
-  });
+    const token = new AccessToken(apiKey, apiSecret, { identity: LEARNER_IDENTITY, ttl: TOKEN_TTL });
+    token.addGrant({
+      room: roomName,
+      roomJoin: true,
+      canPublish: true,
+      canSubscribe: true,
+      canPublishData: true,
+    });
 
-  return { roomName, token: await token.toJwt(), url };
+    return { roomName, token: await token.toJwt(), url };
+  } catch (error) {
+    await rooms.deleteRoom(roomName).catch((cleanupError: unknown) => {
+      log.warn(`could not delete room ${roomName} after setup failure`, cleanupError);
+    });
+    throw error;
+  }
 }

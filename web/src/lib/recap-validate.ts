@@ -1,6 +1,6 @@
 import type { Recap, TranscriptEntry } from "@/lib/types";
 
-const MAX_NEW_VOCAB = 8;
+export const MAX_NEW_VOCAB = 8;
 const MAX_MEMORY_WORDS = 60;
 
 const PUNCTUATION = /[^\p{L}\p{N}\s]/gu;

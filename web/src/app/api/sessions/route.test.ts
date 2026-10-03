@@ -18,6 +18,14 @@ import { POST as agentFailed } from "../agent/sessions/[id]/failed/route";
 
 vi.mock("next/headers", () => import("@/test/next-headers-mock"));
 
+const { after } = vi.hoisted(() => ({ after: vi.fn<(task: () => Promise<void>) => void>() }));
+vi.mock("next/server", () => ({ after }));
+
+const runScheduled = async () => {
+  expect(after).toHaveBeenCalledTimes(1);
+  await after.mock.calls[0][0]();
+};
+
 let nextId = 0;
 vi.mock("node:crypto", async (importOriginal) => ({
   ...(await importOriginal<typeof import("node:crypto")>()),
@@ -67,6 +75,7 @@ afterEach(async () => {
   logout();
   vi.unstubAllEnvs();
   parse.mockClear();
+  after.mockClear();
   await cleanupTestRows();
 });
 afterAll(teardownOwner);
@@ -114,9 +123,8 @@ describe("owner session routes", () => {
     const id = await newSession();
     await markStarted(id);
     parse.mockRejectedValueOnce(new Error("model down"));
-    const errors = vi.spyOn(console, "error").mockImplementation(() => {});
     expect((await agentEnded(request("", { method: "POST", body: { transcript, durationSec: 60 }, ...agent() }), ctx(id))).status).toBe(204);
-    errors.mockRestore();
+    await runScheduled();
     expect((await getSessionView(id)).status).toBe("ENDED");
 
     const res = await retryRecap(request(`/api/sessions/${id}/recap`, { method: "POST" }), ctx(id));
@@ -176,11 +184,15 @@ describe("agent routes", () => {
     expect((await agentMistakes(request("", { method: "POST", body: { original: "x", corrected: "y", explanation: "", category: "BOGUS" }, ...agent() }), ctx(id))).status).toBe(400);
   });
 
-  it("ended on a started session stores the transcript and produces a recap", async () => {
+  it("ended returns 204 before the recap, which runs after the response", async () => {
     const id = await newSession();
     await markStarted(id);
     const res = await agentEnded(request("", { method: "POST", body: { transcript, durationSec: 125 }, ...agent() }), ctx(id));
     expect(res.status).toBe(204);
+    expect(parse).not.toHaveBeenCalled();
+    expect((await getSessionView(id)).status).toBe("ENDED");
+
+    await runScheduled();
     const view = await getSessionView(id);
     expect(view).toMatchObject({ status: "RECAP_READY", durationSec: 125, estimatedCostCents: 11 });
     expect(view.recap?.mistakes).toEqual(canned.mistakes);
@@ -192,7 +204,25 @@ describe("agent routes", () => {
     const res = await agentEnded(request("", { method: "POST", body: { transcript: [], durationSec: 0 }, ...agent() }), ctx(id));
     expect(res.status).toBe(204);
     expect((await getSessionView(id)).status).toBe("FAILED");
-    expect(parse).not.toHaveBeenCalled();
+    expect(after).not.toHaveBeenCalled();
+  });
+
+  it("a second ended after the first does not schedule another recap", async () => {
+    const id = await newSession();
+    await markStarted(id);
+    const body = { transcript, durationSec: 20 };
+    expect((await agentEnded(request("", { method: "POST", body, ...agent() }), ctx(id))).status).toBe(204);
+    expect((await agentEnded(request("", { method: "POST", body, ...agent() }), ctx(id))).status).toBe(204);
+    expect(after).toHaveBeenCalledTimes(1);
+  });
+
+  it("ended after the owner failed the session keeps it FAILED and schedules nothing", async () => {
+    const id = await newSession();
+    await markStarted(id);
+    expect((await failSession(request("", { method: "POST", body: { reason: "tutor did not arrive" } }), ctx(id))).status).toBe(204);
+    expect((await agentEnded(request("", { method: "POST", body: { transcript, durationSec: 15 }, ...agent() }), ctx(id))).status).toBe(204);
+    expect((await getSessionView(id)).status).toBe("FAILED");
+    expect(after).not.toHaveBeenCalled();
   });
 
   it("failed marks the session FAILED and validates the body", async () => {

@@ -1,11 +1,19 @@
+import { vi } from "vitest";
 import { db } from "@/lib/db";
+import { log } from "@/lib/log";
 import { OWNER_ID } from "@/lib/owner";
 
 export const TEST_PREFIX = "test-";
 
 let createdLearner = false;
 
+export function silenceLogs(): void {
+  vi.spyOn(log, "warn").mockImplementation(() => {});
+  vi.spyOn(log, "error").mockImplementation(() => {});
+}
+
 export async function ensureOwner(): Promise<void> {
+  silenceLogs();
   const existing = await db.learner.findUnique({ where: { id: OWNER_ID } });
   if (existing) return;
   createdLearner = true;
