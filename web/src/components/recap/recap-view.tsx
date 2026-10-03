@@ -10,6 +10,7 @@ import { CostLine } from "./cost-line";
 import { LevelNote } from "./level-note";
 import { MistakeList } from "./mistake-list";
 import { RecapSection } from "./recap-section";
+import { UnitRecap } from "./unit-recap";
 import { type PickWord, VocabPicks } from "./vocab-picks";
 
 type RecapViewProps = { session: SessionView; recap: Recap; words: PickWord[]; now: Date };
@@ -38,7 +39,19 @@ export function RecapView({ session, recap, words, now }: RecapViewProps) {
         <p className="font-display text-[1.375rem] leading-[1.4] text-pretty text-foreground/85 sm:text-2xl">
           {recap.summary}
         </p>
+        {recap.nextStep && (
+          <p className="flex gap-3 rounded-2xl bg-accent/50 px-4 py-3.5 text-pretty">
+            <span className="eyebrow shrink-0 pt-0.5">Next time</span>
+            <span>{recap.nextStep}</span>
+          </p>
+        )}
       </header>
+
+      {recap.unit && (
+        <RecapSection id="this-unit" title="This unit">
+          <UnitRecap unit={recap.unit} />
+        </RecapSection>
+      )}
 
       <RecapSection id="corrections" title="Corrections" count={recap.mistakes.length}>
         <MistakeList mistakes={recap.mistakes} />
