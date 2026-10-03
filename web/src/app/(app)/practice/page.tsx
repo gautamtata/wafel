@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { PracticePicker } from "@/components/practice/practice-picker";
-import { nextTopic } from "@/lib/curriculum";
+import { CURRICULUM, nextTopic } from "@/lib/curriculum";
 import { getLearner } from "@/lib/learner";
 import { countUnresolvedMistakes } from "@/lib/mistakes";
 import { listScenarios } from "@/lib/scenarios";
@@ -21,6 +21,11 @@ export default async function PracticePage({ searchParams }: PageProps<"/practic
     listScenarios(learner.targetLanguage, learner.level),
   ]);
 
+  const levelTopics = CURRICULUM[learner.level];
+  const requested = first(params.topic);
+  const suggestedTopic =
+    requested && levelTopics.includes(requested) ? requested : nextTopic(learner.level, covered);
+
   return (
     <div className="flex flex-col gap-8">
       <header>
@@ -31,7 +36,8 @@ export default async function PracticePage({ searchParams }: PageProps<"/practic
       </header>
       <PracticePicker
         context={{ level: learner.level, unresolvedMistakes }}
-        nextTopic={nextTopic(learner.level, covered)}
+        topics={levelTopics.map((topic) => ({ topic, covered: covered.includes(topic) }))}
+        suggestedTopic={suggestedTopic}
         scenarios={scenarios}
         initialType={first(params.type) ?? null}
       />

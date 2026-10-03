@@ -11,6 +11,7 @@ import type { ScenarioOption } from "@/lib/scenarios";
 import { storeCredentials } from "@/lib/session-credentials";
 import { ScenarioList } from "./scenario-list";
 import { SessionTypeCard } from "./session-type-card";
+import { type TopicOption, TopicPicker } from "./topic-picker";
 
 const DESCRIPTIONS: Record<SessionType, string> = {
   SHADOWING: "Repeat after your tutor. Short phrases, rhythm and sounds. A gentle warm-up.",
@@ -27,18 +28,32 @@ const isSessionType = (value: string | null): value is SessionType =>
 
 export type PracticePickerProps = {
   context: PracticeContext;
-  nextTopic: string;
+  topics: TopicOption[];
+  suggestedTopic: string;
   scenarios: ScenarioOption[];
   initialType: string | null;
 };
 
 type CreatedSession = { sessionId: string; token: string; url: string };
 
-export function PracticePicker({ context, nextTopic, scenarios, initialType }: PracticePickerProps) {
+const body = (type: SessionType, scenarioId: string | null, topic: string) => {
+  if (type === "ROLEPLAY") return { type, scenarioId };
+  if (type === "LESSON") return { type, topic };
+  return { type };
+};
+
+export function PracticePicker({
+  context,
+  topics,
+  suggestedTopic,
+  scenarios,
+  initialType,
+}: PracticePickerProps) {
   const router = useRouter();
   const preselected = isSessionType(initialType) && !availability(initialType, context).disabled;
   const [type, setType] = useState<SessionType | null>(preselected ? initialType : null);
   const [scenarioId, setScenarioId] = useState<string | null>(scenarios[0]?.id ?? null);
+  const [topic, setTopic] = useState(suggestedTopic);
   const [pending, setPending] = useState(false);
 
   const ready = type !== null && (type !== "ROLEPLAY" || scenarioId !== null);
@@ -50,7 +65,7 @@ export function PracticePicker({ context, nextTopic, scenarios, initialType }: P
       const res = await fetch("/api/sessions", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify(type === "ROLEPLAY" ? { type, scenarioId } : { type }),
+        body: JSON.stringify(body(type, scenarioId, topic)),
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const { sessionId, token, url } = (await res.json()) as CreatedSession;
@@ -77,10 +92,7 @@ export function PracticePicker({ context, nextTopic, scenarios, initialType }: P
               onSelect={setType}
             >
               {candidate === "LESSON" && (
-                <p className="text-sm">
-                  <span className="text-muted-foreground">Next topic · </span>
-                  <span className="font-medium">{nextTopic}</span>
-                </p>
+                <TopicPicker topics={topics} suggested={suggestedTopic} value={topic} onChange={setTopic} />
               )}
               {candidate === "ROLEPLAY" && (
                 <ScenarioList scenarios={scenarios} value={scenarioId} onChange={setScenarioId} />
