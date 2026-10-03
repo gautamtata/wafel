@@ -35,6 +35,21 @@ uv run pytest
 uv run ruff check
 ```
 
+## Voice audition (dev only)
+
+```sh
+uv run python scripts/audition.py                 # all candidate voices
+uv run python scripts/audition.py --voices marin cedar --out /tmp/aud --parallel 1
+```
+
+Drives `GPTLiveModel` directly over its websocket (no LiveKit room or worker; only
+`OPENAI_API_KEY` is needed) and has each voice say one fixed sentence under the Mexican
+Spanish tutor prompt. Writes `~/Documents/wafel-audition/<voice>.wav` (24 kHz mono) and a
+`README.txt` with the sentence, each transcript and any voice id the API rejected
+(`--parallel`, default 3, caps concurrent sessions). Listen,
+then set the winner as `Learner.voice` in Settings. `agent/scripts/` is not in the Docker
+image.
+
 ## Deploy (LiveKit Cloud Agents)
 
 ```sh
