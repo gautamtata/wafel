@@ -54,7 +54,7 @@ describe("generateRecap", () => {
     expect(params.model).toBe(RECAP_MODEL);
     expect(params.text).toMatchObject({ format: { type: "json_schema", name: "recap", strict: true } });
     expect(String(params.instructions)).toMatch(/two sentences/);
-    expect(String(params.input)).toContain("native language code: en");
+    expect(String(params.input)).toContain("native language (ISO 639-1 code): en");
     expect(String(params.input)).toContain("[learner] Yo soy muy bien, gracias.");
   });
 

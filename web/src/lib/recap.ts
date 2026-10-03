@@ -29,17 +29,17 @@ You receive the lesson brief and the full transcript (tutor and learner turns, i
 Produce a recap as JSON:
 - summary: exactly two sentences about what the learner practised and how it went.
 - mistakes: real errors the learner made in the target language. "original" must be copied verbatim from a learner line (a contiguous fragment, same spelling); "corrected" is the fixed form; "explanation" is one short sentence; "category" is one of the given values. Skip tutor lines, hesitations and disfluencies.
-- newVocab: up to 8 target-language words or short phrases the learner met or needed, each with a translation and a short example sentence in the target language.
+- newVocab: up to 8 target-language words or short phrases the learner met or needed. "word" is in the target language; "translation" is its meaning written in the learner's native language (never a copy of the word); "example" is a short sentence in the target language.
 - levelNote: one line on how the learner's performance compares with their CEFR level.
 - memory: at most 60 words, third person, facts worth remembering for the next lesson (interests, struggles, what was covered).
-Write "explanation", "levelNote" and "memory" in English. Translations are into the learner's native language.`;
+Write "explanation", "levelNote" and "memory" in English.`;
 
 function prompt(brief: Brief, transcript: TranscriptEntry[]): string {
   const lines = transcript.map((entry) => `[${entry.role}] ${entry.text}`).join("\n");
   const context = { ...brief, sessionId: undefined };
   return [
     `Target language: ${brief.language.name} (${brief.language.code}).`,
-    `Learner's native language code: ${brief.nativeLanguage}. Write "summary" in that language.`,
+    `Learner's native language (ISO 639-1 code): ${brief.nativeLanguage}. Write "summary" and every "translation" in that language.`,
     `Learner level: ${brief.level}.`,
     "",
     "Lesson brief:",
