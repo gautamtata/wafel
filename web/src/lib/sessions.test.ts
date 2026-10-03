@@ -72,7 +72,8 @@ let topics: readonly string[] = [];
 beforeAll(async () => {
   await ensureOwner();
   const learner = await db.learner.findUniqueOrThrow({ where: { id: OWNER_ID } });
-  topics = CURRICULUM[learner.level];
+  const alreadyCovered = new Set(await coveredTopics());
+  topics = CURRICULUM[learner.level].filter((topic) => !alreadyCovered.has(topic));
 });
 afterEach(async () => {
   await cleanupTestRows();

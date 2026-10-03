@@ -43,6 +43,23 @@ enum SessionStatus {
   FAILED
 }
 
+enum Dialect {
+  MX
+  ES
+  NEUTRAL
+}
+
+enum UnitStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  MASTERED
+}
+
+enum TargetKind {
+  WORD
+  PATTERN
+}
+
 enum MistakeCategory {
   GRAMMAR
   VOCABULARY
@@ -66,6 +83,7 @@ model Learner {
   targetLanguage    String
   nativeLanguage    String         @default("en")
   level             Cefr
+  dialect           Dialect        @default(MX)
   goals             String?
   correctionMode    CorrectionMode @default(SUBTLE)
   pace              Pace           @default(SLOW)
@@ -76,6 +94,41 @@ model Learner {
   updatedAt         DateTime       @updatedAt
   vocabItems        VocabItem[]
   mistakes          Mistake[]
+  unitProgress      UnitProgress[]
+}
+
+model Unit {
+  id             String         @id
+  language       String
+  dialect        Dialect
+  level          Cefr
+  order          Int
+  title          String
+  canDo          String
+  pattern        Json
+  targetWords    Json
+  modelSentences Json
+  scenarioHint   String?
+  sessions       Session[]
+  progress       UnitProgress[]
+
+  @@unique([language, dialect, level, order])
+}
+
+model UnitProgress {
+  id            String     @id @default(cuid())
+  learnerId     String
+  unitId        String
+  status        UnitStatus @default(NOT_STARTED)
+  wordScores    Json
+  patternScore  Int        @default(0)
+  sessionsCount Int        @default(0)
+  masteredAt    DateTime?
+  updatedAt     DateTime   @updatedAt
+  learner       Learner    @relation(fields: [learnerId], references: [id], onDelete: Cascade)
+  unit          Unit       @relation(fields: [unitId], references: [id], onDelete: Cascade)
+
+  @@unique([learnerId, unitId])
 }
 
 model Scenario {
@@ -96,6 +149,7 @@ model Session {
   type               SessionType
   status             SessionStatus
   scenarioId         String?
+  unitId             String?
   topic              String?
   roomName           String         @unique
   brief              Json
@@ -107,6 +161,7 @@ model Session {
   estimatedCostCents Int?
   createdAt          DateTime       @default(now())
   scenario           Scenario?      @relation(fields: [scenarioId], references: [id])
+  unit               Unit?          @relation(fields: [unitId], references: [id])
   mistakes           Mistake[]
   memory             SessionMemory?
 }
@@ -124,6 +179,7 @@ model VocabItem {
   dueAt           DateTime
   lastReviewedAt  DateTime?
   sourceSessionId String?
+  unitId          String?
   learner         Learner   @relation(fields: [learnerId], references: [id], onDelete: Cascade)
 
   @@unique([learnerId, word])

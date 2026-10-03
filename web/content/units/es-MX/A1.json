@@ -1,0 +1,39 @@
+[
+  {
+    "id": "es-MX-A1-01",
+    "order": 1,
+    "title": "Greetings and introductions",
+    "canDo": "I can greet someone, say my name and where I am from, and ask the same in return.",
+    "pattern": {
+      "name": "ser + presentations",
+      "explanationEn": "Use 'ser' to say who you are and where you are from: 'soy' (I am), 'eres' (you are, informal), 'es' (he/she/it is). In Mexico, 'tú' is the default with people your age; 'usted' is for elders and formal settings.",
+      "examples": [
+        { "es": "Soy Ana y soy de Guadalajara.", "en": "I'm Ana and I'm from Guadalajara." },
+        { "es": "¿Eres de aquí?", "en": "Are you from here?" },
+        { "es": "Él es mi amigo Luis.", "en": "He is my friend Luis." }
+      ]
+    },
+    "targetWords": [
+      { "word": "hola", "translation": "hello", "example": "¡Hola! ¿Cómo estás?" },
+      { "word": "buenos días", "translation": "good morning", "example": "Buenos días, ¿cómo amaneció?" },
+      { "word": "buenas tardes", "translation": "good afternoon", "example": "Buenas tardes, bienvenidos." },
+      { "word": "mucho gusto", "translation": "nice to meet you", "example": "Mucho gusto, yo soy Diego." },
+      { "word": "me llamo", "translation": "my name is", "example": "Me llamo Sofía, ¿y tú?" },
+      { "word": "soy de", "translation": "I am from", "example": "Soy de Monterrey." },
+      { "word": "¿cómo estás?", "translation": "how are you?", "example": "Hola, ¿cómo estás?" },
+      { "word": "bien", "translation": "well, fine", "example": "Estoy bien, gracias." },
+      { "word": "gracias", "translation": "thank you", "example": "Gracias, muy amable." },
+      { "word": "¿mande?", "translation": "pardon? (Mexican)", "example": "¿Mande? No te escuché bien." },
+      { "word": "igualmente", "translation": "likewise", "example": "Mucho gusto. —Igualmente." },
+      { "word": "hasta luego", "translation": "see you later", "example": "Hasta luego, que te vaya bien." }
+    ],
+    "modelSentences": [
+      { "es": "Hola, me llamo Gautam. Mucho gusto.", "en": "Hi, my name is Gautam. Nice to meet you." },
+      { "es": "Soy de Estados Unidos, ¿y tú de dónde eres?", "en": "I'm from the United States, and where are you from?" },
+      { "es": "Buenos días, ¿cómo estás?", "en": "Good morning, how are you?" },
+      { "es": "Estoy bien, gracias. ¿Y tú?", "en": "I'm fine, thanks. And you?" },
+      { "es": "Hasta luego, que te vaya bien.", "en": "See you later, take care." }
+    ],
+    "scenarioHint": "You arrive at a friend's house party in Colonia Roma, Mexico City, and meet someone new at the door."
+  }
+]

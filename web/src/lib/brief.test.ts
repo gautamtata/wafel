@@ -5,10 +5,12 @@ import type {
   Mistake,
   Scenario,
   SessionMemory,
+  Unit,
+  UnitProgress,
   VocabItem,
 } from "@/generated/prisma/client";
-import type { SessionType } from "@/generated/prisma/enums";
-import { buildBrief } from "@/lib/brief";
+import type { Cefr, SessionType } from "@/generated/prisma/enums";
+import { buildBrief, languagePolicyFor } from "@/lib/brief";
 
 const day = (n: number) => new Date(Date.UTC(2026, 9, n));
 
@@ -17,6 +19,7 @@ const learner: Learner = {
   targetLanguage: "es",
   nativeLanguage: "en",
   level: "A2",
+  dialect: "MX",
   goals: "Travel to Mexico",
   correctionMode: "SUBTLE",
   pace: "SLOW",
@@ -41,6 +44,35 @@ const scenario: Scenario = {
   goals: ["Order a coffee", "Ask for the bill"],
 };
 
+const unit: Unit = {
+  id: "es-MX-A2-03",
+  language: "es",
+  dialect: "MX",
+  level: "A2",
+  order: 3,
+  title: "Last weekend",
+  canDo: "I can say what I did last weekend.",
+  pattern: { name: "pretérito", explanationEn: "Past tense", examples: [{ es: "Fui", en: "I went" }] },
+  targetWords: [
+    { word: "fui", translation: "I went", example: "Fui al cine." },
+    { word: "comí", translation: "I ate", example: "Comí tacos." },
+  ],
+  modelSentences: [{ es: "Fui al mercado.", en: "I went to the market." }],
+  scenarioHint: "Tell a friend about your weekend.",
+};
+
+const progress: UnitProgress = {
+  id: "p1",
+  learnerId: "owner",
+  unitId: unit.id,
+  status: "IN_PROGRESS",
+  wordScores: { fui: { best: 2, sessions: ["s0"] } },
+  patternScore: 1,
+  sessionsCount: 1,
+  masteredAt: null,
+  updatedAt: day(1),
+};
+
 const vocab = (i: number): VocabItem => ({
   id: `v${i}`,
   learnerId: "owner",
@@ -54,6 +86,7 @@ const vocab = (i: number): VocabItem => ({
   dueAt: day(1),
   lastReviewedAt: null,
   sourceSessionId: null,
+  unitId: null,
 });
 
 const mistake = (i: number): Mistake => ({
@@ -98,6 +131,8 @@ describe("buildBrief", () => {
       language: { code: "es", name: "Spanish", nativeName: "Español" },
       nativeLanguage: "en",
       level: "A2",
+      dialect: "MX",
+      languagePolicy: "BILINGUAL",
       correctionMode: "SUBTLE",
       pace: "SLOW",
       voice: "marin",
@@ -153,5 +188,55 @@ describe("buildBrief", () => {
     expect(build("ROLEPLAY")).not.toHaveProperty("topic");
     expect(build("FREE_TALK")).not.toHaveProperty("topic");
     expect(build("LESSON", { session: { id: "s1", type: "LESSON", topic: null } })).not.toHaveProperty("topic");
+  });
+
+  it("derives the language policy from the level", () => {
+    const expected: Record<Cefr, string> = {
+      A1: "BILINGUAL",
+      A2: "BILINGUAL",
+      B1: "MOSTLY_TARGET",
+      B2: "TARGET_ONLY",
+      C1: "TARGET_ONLY",
+      C2: "TARGET_ONLY",
+    };
+    for (const [level, policy] of Object.entries(expected)) {
+      expect(languagePolicyFor(level as Cefr)).toBe(policy);
+      expect(build("FREE_TALK", { learner: { ...learner, level: level as Cefr } }).languagePolicy).toBe(policy);
+    }
+  });
+
+  it("passes the learner dialect through", () => {
+    expect(build("FREE_TALK", { learner: { ...learner, dialect: "ES" } }).dialect).toBe("ES");
+  });
+
+  it("includes the unit with learner word scores and sets topic to the unit title", () => {
+    const brief = build("LESSON", { unit, progress });
+    expect(brief.unit).toEqual({
+      id: "es-MX-A2-03",
+      title: "Last weekend",
+      canDo: "I can say what I did last weekend.",
+      pattern: unit.pattern,
+      targetWords: unit.targetWords,
+      modelSentences: unit.modelSentences,
+      scenarioHint: "Tell a friend about your weekend.",
+      wordScores: { fui: { best: 2, sessions: ["s0"] } },
+    });
+    expect(brief.topic).toBe("Last weekend");
+  });
+
+  it("gives an empty wordScores map and no scenarioHint when absent", () => {
+    const brief = build("SHADOWING", { unit: { ...unit, scenarioHint: null }, progress: null });
+    expect(brief.unit?.wordScores).toEqual({});
+    expect(brief.unit).not.toHaveProperty("scenarioHint");
+  });
+
+  it("attaches the unit for LESSON, SHADOWING and MISTAKE_REVIEW only", () => {
+    expect(build("LESSON", { unit }).unit).toBeDefined();
+    expect(build("SHADOWING", { unit }).unit).toBeDefined();
+    expect(build("MISTAKE_REVIEW", { unit }).unit).toBeDefined();
+    expect(build("MISTAKE_REVIEW", { unit })).not.toHaveProperty("topic");
+    expect(build("ROLEPLAY", { unit })).not.toHaveProperty("unit");
+    expect(build("FREE_TALK", { unit })).not.toHaveProperty("unit");
+    expect(build("LESSON")).not.toHaveProperty("unit");
   });
 });

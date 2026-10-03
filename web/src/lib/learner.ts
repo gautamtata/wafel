@@ -1,6 +1,6 @@
 import { cache } from "react";
 import type { Learner } from "@/generated/prisma/client";
-import { Cefr, CorrectionMode, Pace } from "@/generated/prisma/enums";
+import { Cefr, CorrectionMode, Dialect, Pace } from "@/generated/prisma/enums";
 import { db } from "@/lib/db";
 import { GOALS_MAX_LENGTH, SESSION_CAP_RANGE } from "@/lib/learner-limits";
 import { VOICES } from "@/lib/prompts-meta";
@@ -50,6 +50,7 @@ const PARSERS: { [K in keyof Editable]: Parse<Editable[K]> } = {
   targetLanguage: languageCode,
   nativeLanguage: languageCode,
   level: oneOf(Object.values(Cefr)),
+  dialect: oneOf(Object.values(Dialect)),
   goals,
   correctionMode: oneOf(Object.values(CorrectionMode)),
   pace: oneOf(Object.values(Pace)),
