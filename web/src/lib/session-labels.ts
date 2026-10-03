@@ -13,3 +13,9 @@ export const SESSION_STATUS_NOTES: Partial<Record<SessionStatus, string>> = {
   ENDED: "Recap pending",
   FAILED: "Didn't connect",
 };
+
+type Titled = { type: SessionType; topic: string | null; scenarioTitle: string | null };
+
+export function sessionTitle({ type, topic, scenarioTitle }: Titled): string {
+  return topic ?? scenarioTitle ?? SESSION_TYPE_LABELS[type];
+}
