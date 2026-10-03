@@ -129,13 +129,13 @@ export function LiveSession({ label, title, capMinutes, micError, onTutorMissing
         {micError && <StatusBanner tone="warn" icon="alert" title="Microphone unavailable" description={micError} />}
       </div>
 
-      <div className="flex flex-1 flex-col items-center">
+      <div className="flex min-h-0 flex-1 flex-col items-center">
         <div className="flex h-[min(42dvh,22rem)] shrink-0 items-center justify-center">
           <TutorOrb state={tutorState(state)} level={level} className="size-44 sm:size-56" />
         </div>
         <TranscriptFeed
           turns={turns}
-          className="w-full max-w-xl flex-1 basis-0 pt-5 pb-4 [mask-image:linear-gradient(to_bottom,transparent,black_1.25rem)]"
+          className="min-h-0 w-full max-w-xl flex-1 basis-0 pt-5 pb-4 [mask-image:linear-gradient(to_bottom,transparent,black_1.25rem)]"
         />
       </div>
 

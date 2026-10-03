@@ -42,6 +42,13 @@ const ERRORS = {
 
 const error = (key: keyof typeof ERRORS): Phase => ({ kind: "error", ...ERRORS[key] });
 
+const markFailed = (id: string, reason: string) =>
+  fetch(`/api/sessions/${id}/fail`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ reason }),
+  }).catch(() => undefined);
+
 function initialPhase(id: string, status: SessionStatus, hydrated: boolean): Phase {
   if (!hydrated) return { kind: "loading" };
   if (status === "FAILED") return error("failed");
@@ -88,19 +95,17 @@ export function SessionRoom({ id, type, status, label, title, capMinutes }: Sess
     if (poll === "ready") router.replace(`/session/${id}/recap`);
   }, [poll, id, router]);
 
-  const onTutorMissing = useCallback(() => setPhase({ kind: "tutor-missing" }), []);
+  const onTutorMissing = useCallback(() => {
+    setPhase({ kind: "tutor-missing" });
+    void markFailed(id, "tutor did not arrive");
+  }, [id]);
   const onDisconnected = useCallback(
     () => setPhase((previous) => (previous?.kind === "live" ? { kind: "wrapping" } : previous)),
     [],
   );
 
-  async function retry() {
+  function retry() {
     setRetrying(true);
-    await fetch(`/api/sessions/${id}/fail`, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ reason: "tutor did not arrive" }),
-    }).catch(() => undefined);
     router.push(`/practice?type=${type}`);
   }
 
@@ -152,7 +157,7 @@ export function SessionRoom({ id, type, status, label, title, capMinutes }: Sess
             tone="warn"
             icon="alert"
             title="Your tutor didn't arrive"
-            description="Something went wrong on our side. Nothing was charged."
+            description="Something went wrong on our side. Nothing was charged; this session is closed."
             action={
               <Button type="button" onClick={retry} disabled={retrying}>
                 <RotateCcw data-icon="inline-start" />
