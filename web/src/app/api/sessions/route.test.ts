@@ -1,9 +1,9 @@
-import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterAll, afterEach, beforeAll, beforeEach, expect, it, vi } from "vitest";
 import { db } from "@/lib/db";
 import { OWNER_ID } from "@/lib/owner";
 import { getSessionView, markStarted } from "@/lib/sessions";
 import type { Recap } from "@/lib/types";
-import { cleanupTestRows, ensureOwner, teardownOwner, TEST_PREFIX } from "@/test/db-fixture";
+import { cleanupTestRows, ensureOwner, describeDb, teardownOwner, TEST_PREFIX } from "@/test/db-fixture";
 import { ctx, loginAsOwner, logout, request, TEST_AGENT_SECRET, TEST_APP_SECRET } from "@/test/http";
 import { POST as createSession } from "./route";
 import { GET as getSession } from "./[id]/route";
@@ -80,7 +80,7 @@ afterEach(async () => {
 });
 afterAll(teardownOwner);
 
-describe("owner session routes", () => {
+describeDb("owner session routes", () => {
   it("401s without a session cookie", async () => {
     logout();
     expect((await createSession(request("/api/sessions", { method: "POST", body: { type: "LESSON" } }))).status).toBe(401);
@@ -133,7 +133,7 @@ describe("owner session routes", () => {
   });
 });
 
-describe("agent routes", () => {
+describeDb("agent routes", () => {
   it("401s with a missing or wrong secret, even with an owner cookie", async () => {
     const id = await newSession();
     const bad = [undefined, "wrong"];

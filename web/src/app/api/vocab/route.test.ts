@@ -1,7 +1,7 @@
-import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterAll, afterEach, beforeAll, beforeEach, expect, it, vi } from "vitest";
 import { db } from "@/lib/db";
 import { addVocab, reviewVocab } from "@/lib/vocab";
-import { cleanupTestRows, ensureOwner, teardownOwner, TEST_PREFIX } from "@/test/db-fixture";
+import { cleanupTestRows, ensureOwner, describeDb, teardownOwner, TEST_PREFIX } from "@/test/db-fixture";
 import { ctx, loginAsOwner, logout, request, TEST_APP_SECRET } from "@/test/http";
 import { GET as listVocab, POST as addVocabRoute } from "./route";
 import { DELETE as deleteVocab } from "./[id]/route";
@@ -21,7 +21,7 @@ afterEach(async () => {
 });
 afterAll(teardownOwner);
 
-describe("vocab routes", () => {
+describeDb("vocab routes", () => {
   it("401s without a cookie", async () => {
     logout();
     expect((await listVocab(request("/api/vocab"))).status).toBe(401);

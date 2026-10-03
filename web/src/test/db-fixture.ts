@@ -1,9 +1,12 @@
-import { vi } from "vitest";
+import { describe, vi } from "vitest";
 import { db } from "@/lib/db";
 import { log } from "@/lib/log";
 import { OWNER_ID } from "@/lib/owner";
 
 export const TEST_PREFIX = "test-";
+
+/** `describe` for suites that write to the database; skipped unless env.ts allowed one. */
+export const describeDb = describe.skipIf(!process.env.DATABASE_URL);
 
 let createdLearner = false;
 
