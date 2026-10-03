@@ -20,6 +20,10 @@ logger = logging.getLogger("wafel.tutor")
 
 END_DELAY_SEC = 3.0
 CAP_REASON = "cap"
+CAP_FAREWELL_TIMEOUT_SEC = 12.0
+CAP_FAREWELL_INSTRUCTION = (
+    "Se acabó el tiempo de hoy. Despídete del alumno en una sola frase, en español."
+)
 LEARNER_IDENTITY = "learner"
 LEARNER_GRACE_SEC = 20.0
 LEARNER_LEFT_REASON = "learner left"
@@ -124,9 +128,24 @@ class LessonLifecycle:
         await asyncio.sleep(self._end_delay)
         self._shutdown(reason)
 
+    async def _say_farewell(self) -> None:
+        """The model cannot see the clock, so tell it time is up and let it close the lesson."""
+        if self._session is None:
+            return
+        try:
+            await asyncio.wait_for(
+                self._session.generate_reply(instructions=CAP_FAREWELL_INSTRUCTION),
+                timeout=CAP_FAREWELL_TIMEOUT_SEC,
+            )
+        except TimeoutError:
+            logger.warning("cap farewell did not finish within %.0fs", CAP_FAREWELL_TIMEOUT_SEC)
+        except Exception as exc:
+            logger.warning("cap farewell failed: %s", exc)
+
     def _start_cap_timer(self) -> asyncio.Task[None]:
         async def wait_for_cap() -> None:
             await asyncio.sleep(self._cap_seconds)
+            await self._say_farewell()
             await self.request_end(CAP_REASON)
 
         self._cap_task = asyncio.create_task(wait_for_cap(), name="wafel-cap-timer")

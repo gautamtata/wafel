@@ -211,8 +211,8 @@ def build_backend_prompt(brief: Brief) -> str:
             "- show_note(title, body): a short on-screen card (a conjugation table, a rule, a "
             "list of phrases) when voice alone would be unclear. Keep body under 400 "
             "characters, plain text.",
-            "- end_lesson(reason): the learner says goodbye or asks to stop, or the session "
-            f"cap of {brief.cap_minutes} minutes is reached. Let the voice model say a short "
-            "goodbye first, then call it once.",
+            "- end_lesson(reason): the learner says goodbye or asks to stop. Let the voice "
+            "model say a short goodbye first, then call it once. Do not call it for the time "
+            "cap; the tutor system ends the session itself when time is up.",
         ]
     )
