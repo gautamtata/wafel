@@ -5,7 +5,7 @@ from typing import Any
 
 import httpx
 
-from wafel_agent.brief import Brief, MistakeCategory
+from wafel_agent.brief import Brief, MistakeCategory, TargetKind
 
 logger = logging.getLogger("wafel.api")
 
@@ -92,6 +92,19 @@ class WafelApi:
             "category": MistakeCategory(category).value,
         }
         return await self._post_quietly(session_id, "mistakes", body)
+
+    async def rate_attempt(
+        self,
+        session_id: str,
+        target: str,
+        kind: TargetKind,
+        score: int,
+        note: str | None = None,
+    ) -> bool:
+        body: dict[str, Any] = {"target": target, "kind": TargetKind(kind).value, "score": score}
+        if note:
+            body["note"] = note
+        return await self._post_quietly(session_id, "ratings", body)
 
     async def ended(
         self, session_id: str, transcript: list[dict[str, Any]], duration_sec: int

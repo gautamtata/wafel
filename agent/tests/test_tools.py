@@ -5,7 +5,7 @@ from typing import Any
 import pytest
 from livekit.agents.llm.tool_context import FunctionTool
 
-from wafel_agent.brief import MistakeCategory
+from wafel_agent.brief import MistakeCategory, TargetKind
 from wafel_agent.prompts import TOOL_NAMES
 from wafel_agent.tools import build_tools
 
@@ -14,8 +14,16 @@ from wafel_agent.tools import build_tools
 class FakeApi:
     vocab_ok: bool = True
     mistake_ok: bool = True
+    rating_ok: bool = True
     vocab_calls: list[tuple[Any, ...]] = field(default_factory=list)
     mistake_calls: list[tuple[Any, ...]] = field(default_factory=list)
+    rating_calls: list[tuple[Any, ...]] = field(default_factory=list)
+
+    async def rate_attempt(
+        self, session_id: str, target: str, kind: TargetKind, score: int, note: str | None = None
+    ) -> bool:
+        self.rating_calls.append((session_id, target, kind, score, note))
+        return self.rating_ok
 
     async def save_vocab(
         self, session_id: str, word: str, translation: str, example: str | None = None
@@ -135,3 +143,63 @@ async def test_end_lesson_requests_end(harness: tuple) -> None:
     result = await tools["end_lesson"](reason="learner said goodbye")
     assert result == {"ok": True}
     assert ends == ["learner said goodbye"]
+
+
+async def test_show_phrase_publishes_phrase_card(harness: tuple) -> None:
+    tools, _, room, _ = harness
+    result = await tools["show_phrase"](spanish="Me llamo Lupita.", english="My name is Lupita.")
+    assert result == {"ok": True}
+    [msg] = room.local_participant.published
+    assert msg["reliable"] is True
+    assert msg["topic"] == "wafel.phrase"
+    assert json.loads(msg["payload"]) == {
+        "type": "phrase",
+        "spanish": "Me llamo Lupita.",
+        "english": "My name is Lupita.",
+    }
+
+
+async def test_show_phrase_reports_publish_failure(harness: tuple) -> None:
+    tools, _, room, _ = harness
+
+    async def boom(payload: bytes | str, *, reliable: bool = True, topic: str = "") -> None:
+        raise RuntimeError("disconnected")
+
+    room.local_participant.publish_data = boom  # type: ignore[method-assign]
+    assert await tools["show_phrase"](spanish="a", english="b") == {"ok": False}
+
+
+async def test_rate_attempt_word_calls_api(harness: tuple) -> None:
+    tools, api, *_ = harness
+    result = await tools["rate_attempt"](target="me llamo", kind="WORD", score=2, note="slip")
+    assert result == {"ok": True}
+    assert api.rating_calls == [("sess-1", "me llamo", TargetKind.WORD, 2, "slip")]
+
+
+async def test_rate_attempt_pattern_without_note(harness: tuple) -> None:
+    tools, api, *_ = harness
+    result = await tools["rate_attempt"](target="ser for name", kind="pattern", score=3)
+    assert result == {"ok": True}
+    assert api.rating_calls == [("sess-1", "ser for name", TargetKind.PATTERN, 3, None)]
+
+
+@pytest.mark.parametrize("score", [-1, 4, 10])
+async def test_rate_attempt_rejects_out_of_range_score(harness: tuple, score: int) -> None:
+    tools, api, *_ = harness
+    result = await tools["rate_attempt"](target="hola", kind="WORD", score=score)
+    assert result["ok"] is False
+    assert "0 to 3" in result["error"]
+    assert api.rating_calls == []
+
+
+async def test_rate_attempt_rejects_unknown_kind(harness: tuple) -> None:
+    tools, api, *_ = harness
+    result = await tools["rate_attempt"](target="hola", kind="PHRASE", score=2)
+    assert result == {"ok": False, "error": "kind must be WORD or PATTERN, got 'PHRASE'"}
+    assert api.rating_calls == []
+
+
+async def test_rate_attempt_reports_api_failure(harness: tuple) -> None:
+    tools, api, *_ = harness
+    api.rating_ok = False
+    assert await tools["rate_attempt"](target="hola", kind="WORD", score=1) == {"ok": False}

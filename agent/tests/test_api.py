@@ -5,7 +5,7 @@ import pytest
 import respx
 
 from wafel_agent.api import DEFAULT_TIMEOUT_SEC, ENDED_TIMEOUT_SEC, WafelApi
-from wafel_agent.brief import Brief, MistakeCategory
+from wafel_agent.brief import Brief, MistakeCategory, TargetKind
 
 BASE = "http://wafel.test"
 SECRET = "s3cret"
@@ -91,6 +91,40 @@ async def test_log_mistake_never_raises(api: WafelApi) -> None:
         side_effect=httpx.ConnectError("down")
     )
     assert await api.log_mistake("abc", "a", "b", "c", MistakeCategory.OTHER) is False
+
+
+@respx.mock
+async def test_rate_attempt_posts_body(api: WafelApi) -> None:
+    route = respx.post(f"{BASE}/api/agent/sessions/abc/ratings").respond(200, json={"ok": True})
+    ok = await api.rate_attempt("abc", "me llamo", TargetKind.WORD, 2, "small slip")
+    assert ok is True
+    assert route.calls.last.request.headers["X-Agent-Secret"] == SECRET
+    assert json.loads(route.calls.last.request.content) == {
+        "target": "me llamo",
+        "kind": "WORD",
+        "score": 2,
+        "note": "small slip",
+    }
+
+
+@respx.mock
+async def test_rate_attempt_omits_empty_note(api: WafelApi) -> None:
+    route = respx.post(f"{BASE}/api/agent/sessions/abc/ratings").respond(200, json={"ok": True})
+    await api.rate_attempt("abc", "ser", TargetKind.PATTERN, 3)
+    assert json.loads(route.calls.last.request.content) == {
+        "target": "ser",
+        "kind": "PATTERN",
+        "score": 3,
+    }
+    assert route.calls.last.request.extensions["timeout"]["read"] == DEFAULT_TIMEOUT_SEC
+
+
+@respx.mock
+async def test_rate_attempt_never_raises(api: WafelApi) -> None:
+    respx.post(f"{BASE}/api/agent/sessions/abc/ratings").respond(404)
+    assert await api.rate_attempt("abc", "hola", TargetKind.WORD, 1) is False
+    respx.post(f"{BASE}/api/agent/sessions/abc/ratings").mock(side_effect=httpx.ReadTimeout("slow"))
+    assert await api.rate_attempt("abc", "hola", TargetKind.WORD, 1) is False
 
 
 @respx.mock
