@@ -41,30 +41,59 @@ def test_settings_from_env(monkeypatch) -> None:  # noqa: ANN001
 @respx.mock
 async def test_resolve_brief_from_api(sample_json: dict) -> None:
     respx.get(f"{BASE}/api/agent/sessions/abc/brief").respond(200, json=sample_json)
-    brief = await resolve_brief(WafelApi(BASE, "s"), "abc", Settings(BASE, "s", None))
+    reasons: list[str] = []
+    brief = await resolve_brief(
+        WafelApi(BASE, "s"), "abc", Settings(BASE, "s", None), reasons.append
+    )
     assert brief is not None and brief.session_id == "sample-session"
+    assert reasons == []
 
 
 @respx.mock
-async def test_resolve_brief_posts_failed_without_sample() -> None:
+async def test_resolve_brief_failure_posts_failed_and_shuts_down(tmp_path: Path) -> None:
     respx.get(f"{BASE}/api/agent/sessions/abc/brief").respond(500)
     failed = respx.post(f"{BASE}/api/agent/sessions/abc/failed").respond(204)
-    brief = await resolve_brief(WafelApi(BASE, "s"), "abc", Settings(BASE, "s", None))
+    reasons: list[str] = []
+    settings = Settings(BASE, "s", str(tmp_path / "unused.json"))
+    brief = await resolve_brief(WafelApi(BASE, "s"), "abc", settings, reasons.append)
     assert brief is None
     assert "brief fetch failed" in json.loads(failed.calls.last.request.content)["reason"]
+    assert reasons == ["brief fetch failed"]
 
 
 @respx.mock
-async def test_resolve_brief_falls_back_to_sample(tmp_path: Path, sample_json: dict) -> None:
+async def test_resolve_brief_connect_error_posts_failed_and_shuts_down() -> None:
     respx.get(f"{BASE}/api/agent/sessions/abc/brief").mock(side_effect=httpx.ConnectError("x"))
+    failed = respx.post(f"{BASE}/api/agent/sessions/abc/failed").respond(204)
+    reasons: list[str] = []
+    brief = await resolve_brief(
+        WafelApi(BASE, "s"), "abc", Settings(BASE, "s", None), reasons.append
+    )
+    assert brief is None
+    assert failed.called
+    assert reasons == ["brief fetch failed"]
+
+
+async def test_resolve_brief_uses_sample_only_without_session_id(
+    tmp_path: Path, sample_json: dict
+) -> None:
     path = tmp_path / "b.json"
     path.write_text(json.dumps(sample_json))
-    brief = await resolve_brief(WafelApi(BASE, "s"), "abc", Settings(BASE, "s", str(path)))
+    reasons: list[str] = []
+    brief = await resolve_brief(
+        WafelApi(BASE, "s"), None, Settings(BASE, "s", str(path)), reasons.append
+    )
     assert brief is not None and brief.session_id == "sample-session"
+    assert reasons == []
 
 
-async def test_resolve_brief_none_without_session_or_sample() -> None:
-    assert await resolve_brief(WafelApi(BASE, "s"), None, Settings(BASE, "s", None)) is None
+async def test_resolve_brief_shuts_down_without_session_or_sample() -> None:
+    reasons: list[str] = []
+    brief = await resolve_brief(
+        WafelApi(BASE, "s"), None, Settings(BASE, "s", None), reasons.append
+    )
+    assert brief is None
+    assert reasons == ["no session"]
 
 
 def test_build_llm_configuration(brief: Brief, monkeypatch) -> None:  # noqa: ANN001

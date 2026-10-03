@@ -4,7 +4,7 @@ import asyncio
 import logging
 import time
 from collections.abc import Callable
-from typing import Any
+from typing import Any, Literal
 
 from livekit.agents import Agent
 from livekit.agents.llm import ChatMessage
@@ -23,27 +23,36 @@ GREETING_INSTRUCTION = (
     "Saluda al alumno en español, preséntate brevemente y haz la primera pregunta."
 )
 
-TranscriptRole = str
+TranscriptRole = Literal["tutor", "learner"]
 Shutdown = Callable[[str], None]
+Elapsed = Callable[[], float]
+
+_CHAT_ROLE_TO_TRANSCRIPT: dict[str, TranscriptRole] = {"assistant": "tutor", "user": "learner"}
+
+
+def _zero() -> float:
+    return 0.0
 
 
 class TranscriptLog:
-    def __init__(self) -> None:
+    def __init__(self, elapsed: Elapsed = _zero) -> None:
+        self._elapsed = elapsed
         self._entries: list[dict[str, Any]] = []
 
     def append(self, role: TranscriptRole, text: str) -> None:
-        self._entries.append({"role": role, "text": text})
+        self._entries.append({"role": role, "text": text, "t": round(self._elapsed(), 1)})
 
     def entries(self) -> list[dict[str, Any]]:
         return [dict(entry) for entry in self._entries]
 
     def on_item(self, event: ConversationItemAddedEvent) -> None:
         item = event.item
-        if not isinstance(item, ChatMessage) or item.role not in ("user", "assistant"):
+        if not isinstance(item, ChatMessage):
             return
+        role = _CHAT_ROLE_TO_TRANSCRIPT.get(item.role)
         text = (item.text_content or "").strip()
-        if text:
-            self.append(item.role, text)
+        if role is not None and text:
+            self.append(role, text)
 
 
 class WafelTutor(Agent):
@@ -71,14 +80,23 @@ class LessonLifecycle:
         self._end_delay = end_delay
         self._cap_seconds = brief.cap_minutes * 60 if cap_seconds is None else cap_seconds
         self._clock = clock
-        self._started_at = clock()
+        self._started_at: float | None = None
         self._ending = False
         self._cap_task: asyncio.Task[None] | None = None
-        self.transcript = TranscriptLog()
+        self.transcript = TranscriptLog(self.elapsed)
+
+    def elapsed(self) -> float:
+        if self._started_at is None:
+            return 0.0
+        return self._clock() - self._started_at
 
     @property
     def duration_sec(self) -> int:
-        return int(self._clock() - self._started_at)
+        return int(self.elapsed())
+
+    def mark_started(self) -> asyncio.Task[None]:
+        self._started_at = self._clock()
+        return self._start_cap_timer()
 
     async def request_end(self, reason: str) -> None:
         if self._ending:
@@ -88,7 +106,7 @@ class LessonLifecycle:
         await asyncio.sleep(self._end_delay)
         self._shutdown(reason)
 
-    def start_cap_timer(self) -> asyncio.Task[None]:
+    def _start_cap_timer(self) -> asyncio.Task[None]:
         async def wait_for_cap() -> None:
             await asyncio.sleep(self._cap_seconds)
             await self.request_end(CAP_REASON)

@@ -13,7 +13,7 @@ from wafel_agent.api import WafelApi
 from wafel_agent.brief import Brief, load_brief_file
 from wafel_agent.prompts import build_backend_prompt
 from wafel_agent.tools import build_tools
-from wafel_agent.tutor import LessonLifecycle, WafelTutor
+from wafel_agent.tutor import LessonLifecycle, Shutdown, WafelTutor
 
 logger = logging.getLogger("wafel.main")
 
@@ -48,20 +48,23 @@ def session_id_from_metadata(metadata: str) -> str | None:
     return str(value) if value else None
 
 
-async def resolve_brief(api: WafelApi, session_id: str | None, settings: Settings) -> Brief | None:
-    if session_id is not None:
-        try:
-            return await api.get_brief(session_id)
-        except Exception as exc:
-            logger.warning("brief fetch failed for session %s: %s", session_id, exc)
-            if settings.sample_brief is None:
-                await api.failed(session_id, f"brief fetch failed: {exc}")
-                return None
-    if settings.sample_brief is None:
-        logger.error("no sessionId in job metadata and WAFEL_SAMPLE_BRIEF is unset")
+async def resolve_brief(
+    api: WafelApi, session_id: str | None, settings: Settings, shutdown: Shutdown
+) -> Brief | None:
+    if session_id is None:
+        if settings.sample_brief is None:
+            logger.error("no sessionId in job metadata and WAFEL_SAMPLE_BRIEF is unset")
+            shutdown("no session")
+            return None
+        logger.info("no sessionId in job metadata; using sample brief %s", settings.sample_brief)
+        return load_brief_file(settings.sample_brief)
+    try:
+        return await api.get_brief(session_id)
+    except Exception as exc:
+        logger.warning("brief fetch failed for session %s: %s", session_id, exc)
+        await api.failed(session_id, f"brief fetch failed: {exc}")
+        shutdown("brief fetch failed")
         return None
-    logger.info("using sample brief %s", settings.sample_brief)
-    return load_brief_file(settings.sample_brief)
 
 
 def build_llm(brief: Brief) -> GPTLiveModel:
@@ -80,7 +83,7 @@ async def entrypoint(ctx: JobContext) -> None:
     ctx.log_context_fields = {"session_id": session_id or "sample"}
 
     await ctx.connect()
-    brief = await resolve_brief(api, session_id, settings)
+    brief = await resolve_brief(api, session_id, settings, ctx.shutdown)
     if brief is None:
         await api.aclose()
         return
@@ -97,7 +100,7 @@ async def entrypoint(ctx: JobContext) -> None:
     ctx.add_shutdown_callback(on_shutdown)
 
     await session.start(WafelTutor(brief, tools), room=ctx.room)
-    lifecycle.start_cap_timer()
+    lifecycle.mark_started()
     await api.started(brief.session_id)
 
 

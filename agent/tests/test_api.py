@@ -1,3 +1,5 @@
+import json
+
 import httpx
 import pytest
 import respx
@@ -42,16 +44,17 @@ async def test_started_posts_empty_body(api: WafelApi) -> None:
 async def test_save_vocab_success(api: WafelApi) -> None:
     route = respx.post(f"{BASE}/api/agent/sessions/abc/vocab").respond(200, json={"ok": True})
     assert await api.save_vocab("abc", "la cuenta", "the bill", "¿Me trae la cuenta?") is True
-    body = route.calls.last.request.read()
-    assert b'"example":"\\u00bfMe trae la cuenta?"' in body or b"la cuenta" in body
+    assert json.loads(route.calls.last.request.content) == {
+        "word": "la cuenta",
+        "translation": "the bill",
+        "example": "¿Me trae la cuenta?",
+    }
 
 
 @respx.mock
 async def test_save_vocab_omits_example_when_none(api: WafelApi) -> None:
     route = respx.post(f"{BASE}/api/agent/sessions/abc/vocab").respond(200, json={"ok": True})
     await api.save_vocab("abc", "hola", "hello")
-    import json
-
     assert json.loads(route.calls.last.request.content) == {"word": "hola", "translation": "hello"}
 
 
@@ -69,8 +72,6 @@ async def test_save_vocab_returns_false_on_timeout(api: WafelApi) -> None:
 
 @respx.mock
 async def test_log_mistake_posts_body(api: WafelApi) -> None:
-    import json
-
     route = respx.post(f"{BASE}/api/agent/sessions/abc/mistakes").respond(200, json={"ok": True})
     ok = await api.log_mistake(
         "abc", "yo come", "yo como", "first person", MistakeCategory.CONJUGATION
@@ -94,10 +95,11 @@ async def test_log_mistake_never_raises(api: WafelApi) -> None:
 
 @respx.mock
 async def test_ended_posts_transcript_and_duration(api: WafelApi) -> None:
-    import json
-
     route = respx.post(f"{BASE}/api/agent/sessions/abc/ended").respond(204)
-    transcript = [{"role": "assistant", "text": "Hola"}, {"role": "user", "text": "Hola"}]
+    transcript = [
+        {"role": "tutor", "text": "Hola", "t": 0.4},
+        {"role": "learner", "text": "Hola", "t": 3.1},
+    ]
     await api.ended("abc", transcript, 42)
     assert json.loads(route.calls.last.request.content) == {
         "transcript": transcript,
@@ -113,8 +115,6 @@ async def test_ended_swallows_errors(api: WafelApi) -> None:
 
 @respx.mock
 async def test_failed_posts_reason(api: WafelApi) -> None:
-    import json
-
     route = respx.post(f"{BASE}/api/agent/sessions/abc/failed").respond(204)
     await api.failed("abc", "brief fetch failed")
     assert json.loads(route.calls.last.request.content) == {"reason": "brief fetch failed"}

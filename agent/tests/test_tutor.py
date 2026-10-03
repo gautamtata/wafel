@@ -34,17 +34,24 @@ def _event(role: str, text: str) -> ConversationItemAddedEvent:
 
 
 def test_transcript_log_append_and_entries() -> None:
-    log = TranscriptLog()
-    log.append("assistant", "Hola")
-    log.append("user", "Buenas")
+    elapsed = iter([1.26, 4.0])
+    log = TranscriptLog(elapsed=lambda: next(elapsed))
+    log.append("tutor", "Hola")
+    log.append("learner", "Buenas")
     assert log.entries() == [
-        {"role": "assistant", "text": "Hola"},
-        {"role": "user", "text": "Buenas"},
+        {"role": "tutor", "text": "Hola", "t": 1.3},
+        {"role": "learner", "text": "Buenas", "t": 4.0},
     ]
     assert log.entries() is not log.entries()
 
 
-def test_transcript_log_on_item_records_chat_messages() -> None:
+def test_transcript_log_defaults_t_to_zero() -> None:
+    log = TranscriptLog()
+    log.append("tutor", "Hola")
+    assert log.entries() == [{"role": "tutor", "text": "Hola", "t": 0.0}]
+
+
+def test_transcript_log_on_item_maps_chat_roles_to_contract() -> None:
     log = TranscriptLog()
     log.on_item(_event("assistant", "¿Qué tal?"))
     log.on_item(_event("user", "Bien"))
@@ -52,8 +59,8 @@ def test_transcript_log_on_item_records_chat_messages() -> None:
     log.on_item(_event("assistant", "   "))
     log.on_item(ConversationItemAddedEvent(item=AgentHandoff(old_agent_id="a", new_agent_id="b")))
     assert log.entries() == [
-        {"role": "assistant", "text": "¿Qué tal?"},
-        {"role": "user", "text": "Bien"},
+        {"role": "tutor", "text": "¿Qué tal?", "t": 0.0},
+        {"role": "learner", "text": "Bien", "t": 0.0},
     ]
 
 
@@ -80,11 +87,34 @@ def lifecycle(brief: Brief) -> tuple[LessonLifecycle, FakeApi, list[str], FakeCl
 
 async def test_post_ended_without_end_lesson(lifecycle: tuple) -> None:
     lc, api, reasons, clock = lifecycle
-    lc.transcript.append("assistant", "Hola")
-    clock.now += 95.4
+    clock.now += 30.0
+    task = lc.mark_started()
+    clock.now += 2.5
+    lc.transcript.on_item(_event("assistant", "Hola"))
+    clock.now += 92.9
     await lc.post_ended()
+    with pytest.raises(asyncio.CancelledError):
+        await task
     assert reasons == []
-    assert api.ended_calls == [("sample-session", [{"role": "assistant", "text": "Hola"}], 95)]
+    assert api.ended_calls == [
+        ("sample-session", [{"role": "tutor", "text": "Hola", "t": 2.5}], 95)
+    ]
+
+
+def test_duration_is_zero_before_mark_started(lifecycle: tuple) -> None:
+    lc, _, _, clock = lifecycle
+    clock.now += 500.0
+    assert lc.duration_sec == 0
+    assert lc.elapsed() == 0.0
+
+
+async def test_duration_counts_from_mark_started(lifecycle: tuple) -> None:
+    lc, _, _, clock = lifecycle
+    clock.now += 500.0
+    lc.mark_started()
+    clock.now += 61.9
+    assert lc.duration_sec == 61
+    lc.cancel()
 
 
 async def test_request_end_shuts_down_once(lifecycle: tuple) -> None:
@@ -98,14 +128,14 @@ async def test_cap_timer_requests_end(brief: Brief) -> None:
     api = FakeApi()
     reasons: list[str] = []
     lc = LessonLifecycle(brief, api, shutdown=reasons.append, end_delay=0.0, cap_seconds=0.01)  # type: ignore[arg-type]
-    task = lc.start_cap_timer()
+    task = lc.mark_started()
     await asyncio.wait_for(task, timeout=1)
     assert reasons == ["cap"]
 
 
 async def test_cancel_stops_cap_timer(brief: Brief) -> None:
     lc = LessonLifecycle(brief, FakeApi(), shutdown=lambda _: None, cap_seconds=60)  # type: ignore[arg-type]
-    task = lc.start_cap_timer()
+    task = lc.mark_started()
     lc.cancel()
     with pytest.raises(asyncio.CancelledError):
         await task
