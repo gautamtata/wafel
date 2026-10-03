@@ -8,32 +8,108 @@
       "name": "Imperfect subjunctive (quería que vinieras, me pidió que llegara)",
       "explanationEn": "When the main verb is in the past or the conditional and triggers the subjunctive, the second verb goes in the imperfect subjunctive: Quiero que vengas → Quería que vinieras. Form it from the ellos form of the preterite: drop -ron and add -ra, -ras, -ra, -ramos, -ran (hablaron → hablara, tuvieron → tuviera, fueron → fuera). The nosotros form always carries an accent: habláramos, fuéramos. The -se forms (hablase) exist, but in Mexico they sound bookish, so use -ra. Quisiera is an extra-polite way to say 'I would like': Quisiera hacer una cita.",
       "examples": [
-        { "es": "Mi jefe me pidió que entregara el reporte antes del viernes.", "en": "My boss asked me to hand in the report before Friday." },
-        { "es": "Me sorprendió que el trámite fuera tan rápido.", "en": "I was surprised that the procedure was so quick." },
-        { "es": "Quisiera hablar con el gerente, por favor.", "en": "I would like to speak with the manager, please." }
+        {
+          "es": "Mi jefe me pidió que entregara el reporte antes del viernes.",
+          "en": "My boss asked me to hand in the report before Friday."
+        },
+        {
+          "es": "Me sorprendió que el trámite fuera tan rápido.",
+          "en": "I was surprised that the procedure was so quick."
+        },
+        {
+          "es": "Quisiera hablar con el gerente, por favor.",
+          "en": "I would like to speak with the manager, please."
+        }
       ]
     },
     "targetWords": [
-      { "word": "quisiera", "translation": "I would like (very polite)", "example": "Quisiera cambiar la fecha de mi vuelo." },
-      { "word": "entregar", "translation": "to hand in, to deliver", "example": "Nos pidieron que entregáramos los documentos en original y copia." },
-      { "word": "sorprender", "translation": "to surprise", "example": "Me sorprendió que nadie llegara tarde." },
-      { "word": "exigir", "translation": "to demand", "example": "El cliente exigió que le devolvieran su dinero." },
-      { "word": "insistir en que", "translation": "to insist that", "example": "Mi abuela insistió en que nos quedáramos a cenar." },
-      { "word": "permitir", "translation": "to allow", "example": "El guardia no permitió que entráramos con mochila." },
-      { "word": "rogar", "translation": "to beg, to plead", "example": "Le rogué que me diera otra oportunidad." },
-      { "word": "convencer", "translation": "to convince", "example": "Mi hermana me convenció de que fuera a la fiesta." },
-      { "word": "como si", "translation": "as if (+ imperfect subjunctive)", "example": "Me habló como si yo fuera su empleado." },
-      { "word": "el gerente / la gerente", "translation": "manager", "example": "La gerente nos pidió que habláramos con ella." },
-      { "word": "la cita", "translation": "appointment", "example": "Quisiera una cita con la doctora para el lunes." },
-      { "word": "el plazo", "translation": "deadline, time period", "example": "Nos dieron un plazo de una semana." },
-      { "word": "el puente", "translation": "long weekend (Mexico)", "example": "Nos vamos a Valle de Bravo en el puente." }
+      {
+        "word": "quisiera",
+        "translation": "I would like (very polite)",
+        "example": "Quisiera cambiar la fecha de mi vuelo."
+      },
+      {
+        "word": "entregar",
+        "translation": "to hand in, to deliver",
+        "example": "Nos pidieron que entregáramos los documentos en original y copia."
+      },
+      {
+        "word": "sorprender",
+        "translation": "to surprise",
+        "example": "Me sorprendió que nadie llegara tarde."
+      },
+      {
+        "word": "exigir",
+        "translation": "to demand",
+        "example": "El cliente exigió que le devolvieran su dinero."
+      },
+      {
+        "word": "insistir en que",
+        "translation": "to insist that",
+        "example": "Mi abuela insistió en que nos quedáramos a cenar."
+      },
+      {
+        "word": "permitir",
+        "translation": "to allow",
+        "example": "El guardia no permitió que entráramos con mochila."
+      },
+      {
+        "word": "rogar",
+        "translation": "to beg, to plead",
+        "example": "Le rogué que me diera otra oportunidad."
+      },
+      {
+        "word": "convencer",
+        "translation": "to convince",
+        "example": "Mi hermana me convenció de que fuera a la fiesta."
+      },
+      {
+        "word": "como si",
+        "translation": "as if (+ imperfect subjunctive)",
+        "example": "Me habló como si yo fuera su empleado."
+      },
+      {
+        "word": "el gerente / la gerente",
+        "translation": "manager",
+        "example": "La gerente nos pidió que habláramos con ella."
+      },
+      {
+        "word": "la cita",
+        "translation": "appointment",
+        "example": "Quisiera una cita con la doctora para el lunes."
+      },
+      {
+        "word": "el plazo",
+        "translation": "deadline, time period",
+        "example": "Nos dieron un plazo de una semana."
+      },
+      {
+        "word": "el puente",
+        "translation": "long weekend (Mexico)",
+        "example": "Nos vamos a Valle de Bravo en el puente."
+      }
     ],
     "modelSentences": [
-      { "es": "La maestra nos pidió que entregáramos el proyecto antes del puente.", "en": "The teacher asked us to hand in the project before the long weekend." },
-      { "es": "Me sorprendió que el gerente fuera tan amable.", "en": "I was surprised the manager was so kind." },
-      { "es": "Mi abuela insistió en que nos quedáramos a cenar, como si no hubiera comida en nuestra casa.", "en": "My grandmother insisted that we stay for dinner, as if there were no food at our house." },
-      { "es": "El cliente exigió que le devolvieran su dinero en ese momento.", "en": "The customer demanded that they return his money right then." },
-      { "es": "Quisiera una cita para el jueves, si fuera posible.", "en": "I would like an appointment for Thursday, if that were possible." }
+      {
+        "es": "La maestra nos pidió que entregáramos el proyecto antes del puente.",
+        "en": "The teacher asked us to hand in the project before the long weekend."
+      },
+      {
+        "es": "Me sorprendió que el gerente fuera tan amable.",
+        "en": "I was surprised the manager was so kind."
+      },
+      {
+        "es": "Mi abuela insistió en que nos quedáramos a cenar, como si no hubiera comida en nuestra casa.",
+        "en": "My grandmother insisted that we stay for dinner, as if there were no food at our house."
+      },
+      {
+        "es": "El cliente exigió que le devolvieran su dinero en ese momento.",
+        "en": "The customer demanded that they return his money right then."
+      },
+      {
+        "es": "Quisiera una cita para el jueves, si fuera posible.",
+        "en": "I would like an appointment for Thursday, if that were possible."
+      }
     ],
     "scenarioHint": "Tell a friend about a frustrating day at your office in Santa Fe, reporting everything your boss and clients asked of you."
   },
@@ -46,32 +122,103 @@
       "name": "Si-clauses: real (si + presente) and unreal (si + imperfecto de subjuntivo + condicional)",
       "explanationEn": "For real or likely conditions, use si + present, followed by the present, the future or a command: Si llueve, nos quedamos en casa; Si tienes tiempo, márcame. For unlikely or imaginary situations, use si + imperfect subjunctive and the conditional: Si tuviera dinero, compraría una casa en Valle de Bravo. The two halves can go in either order: Viajaría más si tuviera vacaciones. Never put the present subjunctive or the conditional right after si: say si pudiera, not si podría. Si yo fuera tú... is the classic way to give advice.",
       "examples": [
-        { "es": "Si sales temprano, pasa por mí.", "en": "If you leave early, come pick me up." },
-        { "es": "Si viviera en la playa, trabajaría desde una hamaca.", "en": "If I lived at the beach, I'd work from a hammock." },
-        { "es": "Si yo fuera tú, hablaría con el casero.", "en": "If I were you, I'd talk to the landlord." }
+        {
+          "es": "Si sales temprano, pasa por mí.",
+          "en": "If you leave early, come pick me up."
+        },
+        {
+          "es": "Si viviera en la playa, trabajaría desde una hamaca.",
+          "en": "If I lived at the beach, I'd work from a hammock."
+        },
+        {
+          "es": "Si no hubiera tanto tráfico, llegaría en veinte minutos.",
+          "en": "If there weren't so much traffic, I'd get there in twenty minutes."
+        }
       ]
     },
     "targetWords": [
-      { "word": "fuera", "translation": "were (imperfect subjunctive of ser / ir)", "example": "Si fuera más barato, lo compraría." },
-      { "word": "tuviera", "translation": "had (imperfect subjunctive of tener)", "example": "Si tuviera tiempo, aprendería a bailar danzón." },
-      { "word": "la lana", "translation": "money (Mexico, informal)", "example": "Si tuviera lana, me iría a Bacalar." },
-      { "word": "ahorrar", "translation": "to save (money)", "example": "Si ahorras un poco cada quincena, en un año te alcanza." },
-      { "word": "la quincena", "translation": "biweekly paycheck (Mexico)", "example": "Me pagan la quincena el día quince y el último del mes." },
-      { "word": "deber", "translation": "to owe", "example": "Todavía te debo lo de la cena." },
-      { "word": "pasar por", "translation": "to pick (someone) up", "example": "Si quieres, paso por ti a las ocho." },
-      { "word": "el sueldo", "translation": "salary", "example": "Si me subieran el sueldo, no buscaría otra chamba." },
-      { "word": "renunciar", "translation": "to quit, to resign", "example": "Si renuncio, ¿quién va a pagar la renta?" },
-      { "word": "correr el riesgo", "translation": "to run the risk", "example": "No quiero correr el riesgo de perder el vuelo." },
-      { "word": "la hamaca", "translation": "hammock", "example": "En Yucatán mucha gente duerme en hamaca." },
-      { "word": "el Melate", "translation": "Mexico's national lottery game", "example": "Si me sacara el Melate, dejaría de trabajar." },
-      { "word": "el casero", "translation": "landlord", "example": "Si el casero no arregla la regadera, me cambio de depa." }
+      {
+        "word": "fuera",
+        "translation": "fuera (ser/ir): were, went (imperfect subjunctive)",
+        "example": "Si fuera más barato, lo compraría."
+      },
+      {
+        "word": "tuviera",
+        "translation": "had (imperfect subjunctive of tener)",
+        "example": "Si tuviera tiempo, aprendería a bailar danzón."
+      },
+      {
+        "word": "la lana",
+        "translation": "money (Mexico, informal)",
+        "example": "Si tuviera lana, me iría a Bacalar."
+      },
+      {
+        "word": "ahorrar",
+        "translation": "to save (money)",
+        "example": "Si ahorras un poco cada quincena, en un año te alcanza."
+      },
+      {
+        "word": "la quincena",
+        "translation": "biweekly paycheck (Mexico)",
+        "example": "Me pagan la quincena el día quince y el último del mes."
+      },
+      {
+        "word": "renunciar",
+        "translation": "to quit, to resign",
+        "example": "Si renuncio, ¿quién va a pagar la renta?"
+      },
+      {
+        "word": "correr el riesgo",
+        "translation": "to run the risk",
+        "example": "No quiero correr el riesgo de perder el vuelo."
+      },
+      {
+        "word": "la hamaca",
+        "translation": "hammock",
+        "example": "En Yucatán mucha gente duerme en hamaca."
+      },
+      {
+        "word": "el Melate",
+        "translation": "popular Mexican lottery game (run by Pronósticos)",
+        "example": "Si me sacara el Melate, dejaría de trabajar."
+      },
+      {
+        "word": "el casero",
+        "translation": "landlord",
+        "example": "Si el casero no arregla la regadera, me cambio de depa."
+      },
+      {
+        "word": "la tanda",
+        "translation": "informal rotating savings pool among friends or coworkers (Mexico)",
+        "example": "Si entraras a la tanda, cobrarías en marzo."
+      },
+      {
+        "word": "el préstamo",
+        "translation": "loan",
+        "example": "Si pidiera un préstamo, tardaría años en pagarlo."
+      }
     ],
     "modelSentences": [
-      { "es": "Si me pagan la quincena el viernes, te pago lo que te debo.", "en": "If they pay me my paycheck on Friday, I'll pay you what I owe you." },
-      { "es": "Si tuviera más lana, me iría una semana a Bacalar.", "en": "If I had more money, I'd go to Bacalar for a week." },
-      { "es": "Si yo fuera tú, hablaría con el casero antes de firmar.", "en": "If I were you, I'd talk to the landlord before signing." },
-      { "es": "Si ganara un mejor sueldo, podría ahorrar para un depa.", "en": "If I earned a better salary, I could save for an apartment." },
-      { "es": "Si renunciara ahorita, correría el riesgo de quedarme sin chamba.", "en": "If I quit right now, I'd run the risk of ending up without a job." }
+      {
+        "es": "Si me pagan la quincena el viernes, te pago lo que te debo.",
+        "en": "If they pay me my paycheck on Friday, I'll pay you what I owe you."
+      },
+      {
+        "es": "Si tuviera más lana, me iría una semana a Bacalar.",
+        "en": "If I had more money, I'd go to Bacalar for a week."
+      },
+      {
+        "es": "Si yo fuera tú, hablaría con el casero antes de firmar.",
+        "en": "If I were you, I'd talk to the landlord before signing."
+      },
+      {
+        "es": "Si me tocara la tanda este mes, podría dar el enganche de un depa.",
+        "en": "If it were my turn to collect the tanda this month, I could make the down payment on an apartment."
+      },
+      {
+        "es": "Si renunciara ahorita, correría el riesgo de quedarme sin chamba.",
+        "en": "If I quit right now, I'd run the risk of ending up without a job."
+      }
     ],
     "scenarioHint": "Daydream with a coworker over lunch in Guadalajara about what you would do if you won the Melate."
   },
@@ -82,33 +229,105 @@
     "canDo": "I can sequence past events clearly and report what other people said.",
     "pattern": {
       "name": "Pluperfect (había + participio) for sequencing and reported speech",
-      "explanationEn": "The pluperfect describes an action that happened before another past action: Cuando llegué a la estación, el tren ya había salido. Form it with the imperfect of haber (había, habías, había, habíamos, habían) plus the past participle in -ado or -ido; watch the irregulars hecho, dicho, visto, puesto, vuelto and escrito. Words like ya, todavía no, antes de and para entonces help you sequence events. When you report past speech, the tenses shift back: 'Perdí las llaves' → Me dijo que había perdido las llaves; 'Estoy cansada' → Dijo que estaba cansada; 'Iré' → Dijo que iría.",
+      "explanationEn": "The pluperfect describes an action that happened before another past action: Cuando llegué a la estación, el tren ya había salido. Form it with the imperfect of haber (había, habías, había, habíamos, habían) plus the past participle in -ado or -ido; watch the irregulars hecho, dicho, visto, puesto, vuelto and escrito. Words like ya, todavía no, antes de and para entonces help you sequence events. When you report past speech, the tenses shift back: 'Perdí las llaves' → Me dijo que había perdido las llaves; 'Estoy cansada' → Dijo que estaba cansada; 'Iré' → Dijo que iría. Commands and requests become imperfect subjunctive: 'Ven mañana' → Me dijo que viniera al día siguiente.",
       "examples": [
-        { "es": "Cuando llegamos al cine, la película ya había empezado.", "en": "When we got to the movie theater, the film had already started." },
-        { "es": "Mi hermano me contó que nunca había probado los chapulines.", "en": "My brother told me he had never tried grasshoppers." }
+        {
+          "es": "Cuando llegamos al cine, la película ya había empezado.",
+          "en": "When we got to the movie theater, the film had already started."
+        },
+        {
+          "es": "Mi hermano me contó que nunca había probado los chapulines.",
+          "en": "My brother told me he had never tried grasshoppers."
+        },
+        {
+          "es": "La agente me dijo que esperara en la sala y que no me preocupara.",
+          "en": "The agent told me to wait in the lounge and not to worry."
+        }
       ]
     },
     "targetWords": [
-      { "word": "ya", "translation": "already", "example": "Cuando llamé, ya habían cerrado." },
-      { "word": "todavía no", "translation": "not yet", "example": "A las diez todavía no había llegado nadie." },
-      { "word": "para entonces", "translation": "by then", "example": "Para entonces, ya nos habíamos ido." },
-      { "word": "antes de", "translation": "before", "example": "Antes de mudarme a Querétaro, nunca había vivido solo." },
-      { "word": "contar", "translation": "to tell (a story)", "example": "Me contó que había conocido a su novia en el Metro." },
-      { "word": "comentar", "translation": "to mention", "example": "Ana me comentó que no iría a la fiesta." },
-      { "word": "enterarse (de)", "translation": "to find out", "example": "Me enteré de la noticia por Facebook." },
-      { "word": "confesar", "translation": "to confess, to admit", "example": "Me confesó que nunca había leído el libro." },
-      { "word": "mudarse", "translation": "to move (house)", "example": "Mis vecinos se mudaron a Querétaro." },
-      { "word": "el vuelo", "translation": "flight", "example": "El vuelo a Cancún salió con retraso." },
-      { "word": "perder", "translation": "to miss (a flight, bus); to lose", "example": "Perdí la conexión en Monterrey." },
-      { "word": "la conexión", "translation": "connecting flight", "example": "Me dijeron que la conexión ya había salido." },
-      { "word": "los chapulines", "translation": "toasted grasshoppers (Oaxacan snack)", "example": "En Oaxaca venden chapulines con limón y chile." }
+      {
+        "word": "todavía no",
+        "translation": "not yet",
+        "example": "A las diez todavía no había llegado nadie."
+      },
+      {
+        "word": "para entonces",
+        "translation": "by then",
+        "example": "Para entonces, ya nos habíamos ido."
+      },
+      {
+        "word": "contar",
+        "translation": "to tell (a story)",
+        "example": "Me contó que había conocido a su novia en el Metro."
+      },
+      {
+        "word": "comentar",
+        "translation": "to mention",
+        "example": "Ana me comentó que no iría a la fiesta."
+      },
+      {
+        "word": "enterarse (de)",
+        "translation": "to find out",
+        "example": "Me enteré de la noticia por Facebook."
+      },
+      {
+        "word": "confesar",
+        "translation": "to confess, to admit",
+        "example": "Me confesó que nunca había leído el libro."
+      },
+      {
+        "word": "mudarse",
+        "translation": "to move (house)",
+        "example": "Mis vecinos se mudaron a Querétaro."
+      },
+      {
+        "word": "el vuelo",
+        "translation": "flight",
+        "example": "El vuelo a Cancún salió con retraso."
+      },
+      {
+        "word": "la conexión",
+        "translation": "connecting flight",
+        "example": "Me dijeron que la conexión ya había salido."
+      },
+      {
+        "word": "los chapulines",
+        "translation": "toasted grasshoppers (Oaxacan snack)",
+        "example": "En Oaxaca venden chapulines con limón y chile."
+      },
+      {
+        "word": "la escala",
+        "translation": "layover, stopover",
+        "example": "Hicimos escala en Guadalajara antes de llegar a Tijuana."
+      },
+      {
+        "word": "reprogramar",
+        "translation": "to reschedule",
+        "example": "Me dijeron que habían reprogramado el vuelo para el día siguiente."
+      }
     ],
     "modelSentences": [
-      { "es": "Cuando llegamos al aeropuerto, el vuelo ya había salido.", "en": "When we got to the airport, the flight had already left." },
-      { "es": "Me enteré de que mis vecinos se habían mudado a Querétaro.", "en": "I found out that my neighbors had moved to Querétaro." },
-      { "es": "Mi primo me contó que nunca había probado los chapulines antes de ir a Oaxaca.", "en": "My cousin told me he had never tried grasshoppers before going to Oaxaca." },
-      { "es": "Para entonces, todavía no había encontrado chamba.", "en": "By then, I still hadn't found a job." },
-      { "es": "Ana me comentó que estaba cansada y que no iría a la fiesta.", "en": "Ana mentioned to me that she was tired and wouldn't go to the party." }
+      {
+        "es": "Cuando aterrizamos en Monterrey para hacer escala, la conexión ya había salido.",
+        "en": "When we landed in Monterrey for our layover, the connecting flight had already left."
+      },
+      {
+        "es": "Me enteré de que mis vecinos se habían mudado a Querétaro.",
+        "en": "I found out that my neighbors had moved to Querétaro."
+      },
+      {
+        "es": "Mi primo me contó que nunca había probado los chapulines antes de ir a Oaxaca.",
+        "en": "My cousin told me he had never tried grasshoppers before going to Oaxaca."
+      },
+      {
+        "es": "Para entonces, todavía no había encontrado chamba.",
+        "en": "By then, I still hadn't found a job."
+      },
+      {
+        "es": "Ana me comentó que estaba cansada y que no iría a la fiesta.",
+        "en": "Ana mentioned to me that she was tired and wouldn't go to the party."
+      }
     ],
     "scenarioHint": "Explain to an airline agent at Mexico City's airport everything that had gone wrong before you missed your connection."
   },
@@ -121,31 +340,104 @@
       "name": "Passive voice (ser + participio) vs. se pasiva",
       "explanationEn": "The ser passive (fue inaugurado, serán entregadas) puts the focus on what is affected and can name the agent with por: El puente fue inaugurado por la gobernadora. The participle agrees with the subject: Las obras fueron terminadas. This form is typical of news, reports and formal writing; in everyday speech Mexicans much prefer se pasiva: Se inauguró el puente, Se cancelaron los vuelos. Se pasiva normally leaves the agent out. Choose ser + participle when who did it matters, and se when it doesn't.",
       "examples": [
-        { "es": "La nueva línea del Tren Ligero fue inaugurada ayer por el gobernador.", "en": "The new light rail line was opened yesterday by the governor." },
-        { "es": "Se suspendieron las clases por la lluvia.", "en": "Classes were canceled because of the rain." }
+        {
+          "es": "La nueva línea del Tren Ligero fue inaugurada ayer por el gobernador.",
+          "en": "The new light rail line was opened yesterday by the governor."
+        },
+        {
+          "es": "Se suspendieron las clases por la lluvia.",
+          "en": "Classes were canceled because of the rain."
+        }
       ]
     },
     "targetWords": [
-      { "word": "inaugurar", "translation": "to open officially, to inaugurate", "example": "El hospital será inaugurado en marzo." },
-      { "word": "las obras", "translation": "construction work, roadworks", "example": "Por las obras, se cerraron dos carriles." },
-      { "word": "el retraso", "translation": "delay", "example": "El proyecto se terminó con meses de retraso." },
-      { "word": "el gobernador / la gobernadora", "translation": "state governor", "example": "La gobernadora anunció nuevas medidas." },
-      { "word": "suspender", "translation": "to suspend, to call off", "example": "Se suspendió el partido por la tormenta." },
-      { "word": "anunciar", "translation": "to announce", "example": "Se anunció un aumento al salario mínimo." },
-      { "word": "detener", "translation": "to arrest, to detain", "example": "Dos sospechosos fueron detenidos por la policía." },
-      { "word": "el municipio", "translation": "municipality", "example": "El municipio fue declarado zona de desastre." },
-      { "word": "el presupuesto", "translation": "budget", "example": "El presupuesto para escuelas fue recortado." },
-      { "word": "aprobar", "translation": "to approve, to pass (a law)", "example": "La reforma fue aprobada por mayoría." },
-      { "word": "la encuesta", "translation": "poll, survey", "example": "Según la encuesta, la mayoría usa el transporte público." },
-      { "word": "los damnificados", "translation": "disaster victims", "example": "Se instalaron albergues para los damnificados." },
-      { "word": "la despensa", "translation": "package of basic groceries", "example": "Se repartieron despensas en las colonias afectadas." }
+      {
+        "word": "inaugurar",
+        "translation": "to open officially, to inaugurate",
+        "example": "El hospital será inaugurado en marzo."
+      },
+      {
+        "word": "las obras",
+        "translation": "construction work, roadworks",
+        "example": "Por las obras, se cerraron dos carriles."
+      },
+      {
+        "word": "el retraso",
+        "translation": "delay",
+        "example": "El proyecto se terminó con meses de retraso."
+      },
+      {
+        "word": "el gobernador / la gobernadora",
+        "translation": "state governor",
+        "example": "La gobernadora anunció nuevas medidas."
+      },
+      {
+        "word": "suspender",
+        "translation": "to suspend, to call off",
+        "example": "Se suspendió el partido por la tormenta."
+      },
+      {
+        "word": "anunciar",
+        "translation": "to announce",
+        "example": "Se anunció un aumento al salario mínimo."
+      },
+      {
+        "word": "detener",
+        "translation": "to arrest, to detain",
+        "example": "Dos sospechosos fueron detenidos por la policía."
+      },
+      {
+        "word": "el municipio",
+        "translation": "municipality",
+        "example": "El municipio fue declarado zona de desastre."
+      },
+      {
+        "word": "el presupuesto",
+        "translation": "budget",
+        "example": "El presupuesto para escuelas fue recortado."
+      },
+      {
+        "word": "aprobar",
+        "translation": "to approve, to pass (a law)",
+        "example": "La reforma fue aprobada por mayoría."
+      },
+      {
+        "word": "la encuesta",
+        "translation": "poll, survey",
+        "example": "Según la encuesta, la mayoría usa el transporte público."
+      },
+      {
+        "word": "los damnificados",
+        "translation": "disaster victims",
+        "example": "Se instalaron albergues para los damnificados."
+      },
+      {
+        "word": "la despensa",
+        "translation": "package of basic groceries",
+        "example": "Se repartieron despensas en las colonias afectadas."
+      }
     ],
     "modelSentences": [
-      { "es": "Las obras del Periférico fueron terminadas con seis meses de retraso.", "en": "The Periférico roadworks were finished six months behind schedule." },
-      { "es": "Se suspendieron las clases en todo el estado por las lluvias.", "en": "Classes were suspended across the whole state because of the rain." },
-      { "es": "El presupuesto fue aprobado por el Congreso la semana pasada.", "en": "The budget was approved by Congress last week." },
-      { "es": "Se entregaron despensas a los damnificados del huracán en Acapulco.", "en": "Grocery packages were handed out to the hurricane victims in Acapulco." },
-      { "es": "Según el municipio, el nuevo mercado será inaugurado en diciembre.", "en": "According to the municipality, the new market will be opened in December." }
+      {
+        "es": "Las obras del Periférico fueron terminadas con seis meses de retraso.",
+        "en": "The Periférico roadworks were finished six months behind schedule."
+      },
+      {
+        "es": "Se suspendieron las clases en todo el estado por las lluvias.",
+        "en": "Classes were suspended across the whole state because of the rain."
+      },
+      {
+        "es": "El presupuesto fue aprobado por la Cámara de Diputados la semana pasada.",
+        "en": "The budget was approved by the Chamber of Deputies last week."
+      },
+      {
+        "es": "Se entregaron despensas a los damnificados del huracán en Acapulco.",
+        "en": "Grocery packages were handed out to the hurricane victims in Acapulco."
+      },
+      {
+        "es": "Según el municipio, el nuevo mercado será inaugurado en diciembre.",
+        "en": "According to the municipality, the new market will be opened in December."
+      }
     ],
     "scenarioHint": "Retell the morning's local news headlines to a neighbor over breakfast at a market stall in Mérida."
   },
@@ -156,33 +448,101 @@
     "canDo": "I can present and defend an opinion in a structured way, conceding points and drawing conclusions.",
     "pattern": {
       "name": "Argument connectors and formal opinion (considero que, sin embargo, por lo tanto, no creo que + subjuntivo)",
-      "explanationEn": "Structure an argument with connectors: to add (además, asimismo), to contrast (sin embargo, no obstante, en cambio), to give reasons (ya que, debido a que, puesto que) and to conclude (por lo tanto, así que, en conclusión). Opinion openers like En mi opinión, Considero que and Me parece que take the indicative, but their negatives take the subjunctive: No considero que sea justo. Concede a point before you counter it: Si bien es cierto que..., Es verdad que..., pero.... Es importante que, Es necesario que and Hace falta que always take the subjunctive.",
+      "explanationEn": "Structure an argument with connectors: to add (además, asimismo), to contrast (sin embargo, no obstante, en cambio), to give reasons (ya que, debido a que, puesto que) and to conclude (por lo tanto, así que, en conclusión). Considero que, Creo que and Me parece que take the indicative; No considero que and No creo que take the subjunctive: Creo que es justo vs. No creo que sea justo. Concede a point before you counter it: Si bien es cierto que..., Es verdad que..., pero.... Es importante que, Es necesario que and Hace falta que always take the subjunctive.",
       "examples": [
-        { "es": "Si bien es cierto que el Metro es barato, no creo que sea suficiente para toda la ciudad.", "en": "While it's true that the Metro is cheap, I don't think it's enough for the whole city." },
-        { "es": "El tráfico aumentó mucho; por lo tanto, hace falta que se invierta en transporte público.", "en": "Traffic has increased a lot; therefore, we need investment in public transport." }
+        {
+          "es": "Si bien es cierto que el Metro es barato, no creo que sea suficiente para toda la ciudad.",
+          "en": "While it's true that the Metro is cheap, I don't think it's enough for the whole city."
+        },
+        {
+          "es": "El tráfico aumentó mucho; por lo tanto, hace falta que se invierta en transporte público.",
+          "en": "Traffic has increased a lot; therefore, we need investment in public transport."
+        }
       ]
     },
     "targetWords": [
-      { "word": "sin embargo", "translation": "however", "example": "La idea es buena; sin embargo, es muy cara." },
-      { "word": "no obstante", "translation": "nevertheless (formal)", "example": "No obstante, hay que considerar otros factores." },
-      { "word": "por lo tanto", "translation": "therefore", "example": "No hay presupuesto; por lo tanto, el proyecto se pospone." },
-      { "word": "además", "translation": "moreover, in addition", "example": "Además, la obra afectaría a los comercios de la zona." },
-      { "word": "ya que", "translation": "since, because", "example": "Votaré en contra, ya que no se consultó a los vecinos." },
-      { "word": "en cambio", "translation": "on the other hand, whereas", "example": "El carro contamina; en cambio, la bici no." },
-      { "word": "si bien", "translation": "although, while (formal)", "example": "Si bien la propuesta tiene ventajas, no resuelve el problema." },
-      { "word": "considerar", "translation": "to consider, to believe", "example": "Considero que la propuesta merece una segunda revisión." },
-      { "word": "hacer falta", "translation": "to be needed, to be lacking", "example": "Hace falta que alguien coordine a los vecinos." },
-      { "word": "estar de acuerdo", "translation": "to agree", "example": "Estoy de acuerdo con usted en parte." },
-      { "word": "la propuesta", "translation": "proposal", "example": "La propuesta del comité no convenció a nadie." },
-      { "word": "la desventaja", "translation": "disadvantage", "example": "La principal desventaja es el costo." },
-      { "word": "la ciclovía", "translation": "bike lane", "example": "Se pidió una ciclovía sobre la avenida principal." }
+      {
+        "word": "sin embargo",
+        "translation": "however",
+        "example": "La idea es buena; sin embargo, es muy cara."
+      },
+      {
+        "word": "no obstante",
+        "translation": "nevertheless (formal)",
+        "example": "No obstante, hay que considerar otros factores."
+      },
+      {
+        "word": "por lo tanto",
+        "translation": "therefore",
+        "example": "No hay presupuesto; por lo tanto, el proyecto se pospone."
+      },
+      {
+        "word": "además",
+        "translation": "moreover, in addition",
+        "example": "Además, la obra afectaría a los comercios de la zona."
+      },
+      {
+        "word": "ya que",
+        "translation": "since, because",
+        "example": "Votaré en contra, ya que no se consultó a los vecinos."
+      },
+      {
+        "word": "en cambio",
+        "translation": "on the other hand, whereas",
+        "example": "El carro contamina; en cambio, la bici no."
+      },
+      {
+        "word": "si bien",
+        "translation": "although, while (formal)",
+        "example": "Si bien la propuesta tiene ventajas, no resuelve el problema."
+      },
+      {
+        "word": "considerar",
+        "translation": "to consider, to believe",
+        "example": "Considero que la propuesta merece una segunda revisión."
+      },
+      {
+        "word": "hacer falta",
+        "translation": "to be needed, to be lacking",
+        "example": "Hace falta que alguien coordine a los vecinos."
+      },
+      {
+        "word": "la propuesta",
+        "translation": "proposal",
+        "example": "La propuesta del comité no convenció a nadie."
+      },
+      {
+        "word": "la desventaja",
+        "translation": "disadvantage",
+        "example": "La principal desventaja es el costo."
+      },
+      {
+        "word": "la ciclovía",
+        "translation": "bike lane",
+        "example": "Se pidió una ciclovía sobre la avenida principal."
+      }
     ],
     "modelSentences": [
-      { "es": "Considero que la propuesta es buena; sin embargo, el presupuesto no alcanza.", "en": "I believe the proposal is good; however, the budget won't cover it." },
-      { "es": "No creo que sea justo subir la tarifa del Metro, ya que mucha gente depende de él.", "en": "I don't think it's fair to raise the Metro fare, since many people depend on it." },
-      { "es": "Si bien es cierto que el carro es cómodo, el transporte público contamina menos.", "en": "While it's true that cars are comfortable, public transport pollutes less." },
-      { "es": "Además, hace falta que el gobierno construya más ciclovías.", "en": "Moreover, the government needs to build more bike lanes." },
-      { "es": "Estoy de acuerdo con usted en parte, pero la principal desventaja es el costo; por lo tanto, propongo esperar.", "en": "I partly agree with you, but the main disadvantage is the cost; therefore, I propose we wait." }
+      {
+        "es": "Considero que la propuesta es buena; sin embargo, el presupuesto no alcanza.",
+        "en": "I believe the proposal is good; however, the budget won't cover it."
+      },
+      {
+        "es": "No creo que sea justo subir la tarifa del Metro, ya que mucha gente depende de él.",
+        "en": "I don't think it's fair to raise the Metro fare, since many people depend on it."
+      },
+      {
+        "es": "Si bien es cierto que el carro es cómodo, el transporte público contamina menos.",
+        "en": "While it's true that cars are comfortable, public transport pollutes less."
+      },
+      {
+        "es": "Además, hace falta que el gobierno construya más ciclovías.",
+        "en": "Moreover, the government needs to build more bike lanes."
+      },
+      {
+        "es": "Estoy de acuerdo con usted en parte, pero la principal desventaja es el costo; por lo tanto, propongo esperar.",
+        "en": "I partly agree with you, but the main disadvantage is the cost; therefore, I propose we wait."
+      }
     ],
     "scenarioHint": "Debate at a neighborhood assembly in Coyoacán whether the colonia should allow a new multi-story parking garage."
   },
@@ -195,31 +555,104 @@
       "name": "Formal register (usted, softened requests, Mexican email formulas)",
       "explanationEn": "With usted, use third-person verbs and pronouns: ¿Usted tiene...?, Le envío..., ¿Me permite su identificación?. Formal requests stack softeners: Le agradecería que + imperfect subjunctive, ¿Sería tan amable de...?, ¿Me podría indicar...?. Mexican work emails usually open with Estimado/a + title (Estimada Lic. Ramírez:) and close with Quedo atento/a a sus comentarios and Saludos cordiales. Professional titles such as licenciado, ingeniero and doctor are used far more than in English. Ustedes is the only plural 'you', formal or informal.",
       "examples": [
-        { "es": "Estimado Ing. Torres: le envío la cotización que me solicitó.", "en": "Dear Mr. Torres: I'm sending you the quote you requested." },
-        { "es": "Le agradecería que me confirmara la cita por este medio.", "en": "I would appreciate it if you could confirm the appointment by this means." }
+        {
+          "es": "Estimado Ing. Torres: Le envío la cotización que me solicitó.",
+          "en": "Dear Mr. Torres: I'm sending you the quote you requested."
+        },
+        {
+          "es": "Le agradecería que me confirmara la cita por este medio.",
+          "en": "I would appreciate it if you could confirm the appointment by this means."
+        }
       ]
     },
     "targetWords": [
-      { "word": "estimado / estimada", "translation": "dear (in formal letters and emails)", "example": "Estimada Dra. López: le escribo para solicitar una cita." },
-      { "word": "el licenciado / la licenciada (Lic.)", "translation": "title for a university graduate, especially lawyers", "example": "El licenciado Pérez lo atiende en un momento." },
-      { "word": "adjuntar", "translation": "to attach", "example": "Le adjunto mi currículum en formato PDF." },
-      { "word": "la cotización", "translation": "price quote, estimate", "example": "¿Me podría enviar una cotización por escrito?" },
-      { "word": "quedar atento / atenta", "translation": "to remain at your disposal (email closing)", "example": "Quedo atenta a sus comentarios." },
-      { "word": "agradecer", "translation": "to thank, to appreciate", "example": "Le agradezco mucho su atención." },
-      { "word": "solicitar", "translation": "to request, to apply for", "example": "Vengo a solicitar una constancia." },
-      { "word": "a la brevedad", "translation": "as soon as possible (formal)", "example": "Le respondo a la brevedad." },
-      { "word": "el SAT", "translation": "Mexico's tax authority", "example": "Tengo cita en el SAT para actualizar mis datos." },
-      { "word": "el IMSS", "translation": "Mexican Social Security Institute", "example": "Mi empresa me dio de alta en el IMSS." },
-      { "word": "la constancia de situación fiscal", "translation": "tax status certificate", "example": "Para facturar me pidieron la constancia de situación fiscal." },
-      { "word": "el formato", "translation": "official form (Mexico)", "example": "Llene el formato con letra de molde, por favor." },
-      { "word": "el contador / la contadora", "translation": "accountant", "example": "Mi contador presenta mi declaración cada año." }
+      {
+        "word": "estimado / estimada",
+        "translation": "dear (in formal letters and emails)",
+        "example": "Estimada Dra. López: Le escribo para solicitar una cita."
+      },
+      {
+        "word": "el licenciado / la licenciada (Lic.)",
+        "translation": "title for a university graduate, especially lawyers",
+        "example": "El licenciado Pérez lo atiende en un momento."
+      },
+      {
+        "word": "adjuntar",
+        "translation": "to attach",
+        "example": "Le adjunto mi currículum en formato PDF."
+      },
+      {
+        "word": "la cotización",
+        "translation": "price quote, estimate",
+        "example": "¿Me podría enviar una cotización por escrito?"
+      },
+      {
+        "word": "quedar atento / atenta",
+        "translation": "to remain at your disposal (email closing)",
+        "example": "Quedo atenta a sus comentarios."
+      },
+      {
+        "word": "agradecer",
+        "translation": "to thank, to appreciate",
+        "example": "Le agradezco mucho su atención."
+      },
+      {
+        "word": "solicitar",
+        "translation": "to request, to apply for",
+        "example": "Vengo a solicitar una constancia."
+      },
+      {
+        "word": "a la brevedad",
+        "translation": "as soon as possible (formal)",
+        "example": "Le respondo a la brevedad."
+      },
+      {
+        "word": "el SAT",
+        "translation": "Mexico's tax authority",
+        "example": "Tengo cita en el SAT para actualizar mis datos."
+      },
+      {
+        "word": "el IMSS",
+        "translation": "Mexican Social Security Institute",
+        "example": "Mi empresa me dio de alta en el IMSS."
+      },
+      {
+        "word": "la constancia de situación fiscal",
+        "translation": "tax status certificate",
+        "example": "Para facturar me pidieron la constancia de situación fiscal."
+      },
+      {
+        "word": "el formato",
+        "translation": "official form (Mexico)",
+        "example": "Llene el formato con letra de molde, por favor."
+      },
+      {
+        "word": "el contador / la contadora",
+        "translation": "accountant",
+        "example": "Mi contador presenta mi declaración cada año."
+      }
     ],
     "modelSentences": [
-      { "es": "Estimada Lic. Ramírez: le adjunto la cotización que me solicitó.", "en": "Dear Ms. Ramírez: I'm attaching the quote you requested." },
-      { "es": "Le agradecería que me enviara su constancia de situación fiscal a la brevedad.", "en": "I would appreciate it if you sent me your tax status certificate as soon as possible." },
-      { "es": "Disculpe, ¿me podría indicar dónde se entrega el formato del IMSS?", "en": "Excuse me, could you tell me where the IMSS form is handed in?" },
-      { "es": "Para inscribirse en el SAT, necesita su CURP y un comprobante de domicilio.", "en": "To register with the SAT, you need your CURP ID number and proof of address." },
-      { "es": "Quedo atento a sus comentarios. Saludos cordiales.", "en": "I look forward to your comments. Kind regards." }
+      {
+        "es": "Estimada Lic. Ramírez: Le adjunto la cotización que me solicitó.",
+        "en": "Dear Ms. Ramírez: I'm attaching the quote you requested."
+      },
+      {
+        "es": "Le agradecería que me enviara su constancia de situación fiscal a la brevedad.",
+        "en": "I would appreciate it if you sent me your tax status certificate as soon as possible."
+      },
+      {
+        "es": "Disculpe, ¿me podría indicar dónde se entrega el formato del IMSS?",
+        "en": "Excuse me, could you tell me where the IMSS form is handed in?"
+      },
+      {
+        "es": "Para inscribirse en el SAT, necesita su CURP y un comprobante de domicilio.",
+        "en": "To register with the SAT, you need your CURP ID number and proof of address."
+      },
+      {
+        "es": "Quedo atento a sus comentarios. Saludos cordiales.",
+        "en": "I look forward to your comments. Kind regards."
+      }
     ],
     "scenarioHint": "Sort out a registration problem with an official at an SAT office, then dictate a follow-up email to your accountant."
   },
@@ -230,34 +663,111 @@
     "canDo": "I can understand and use common Mexican idioms, and shift between casual and formal speech appropriately.",
     "pattern": {
       "name": "Mexican colloquial expressions and register shifting",
-      "explanationEn": "Casual Mexican Spanish is full of expressions like qué padre (how cool), no manches (no way, mild), órale (wow / come on / OK), sale (deal), ¿neta? (really?), está cañón (it's tough) and un chorro de (a ton of). They're perfect with friends but out of place in a job interview or with an official, where you'd say qué bien, ¿en serio?, de acuerdo or es complicado. Fresa (posh, preppy) and naco (tacky) are social labels: fresa is usually playful teasing, but naco is classist and can offend, so learn to recognize it rather than use it. Diminutives like ahorita, un cafecito or un ratito sound warm and polite, not childish; just remember that ahorita can mean 'right now' or 'eventually'.",
+      "explanationEn": "Casual Mexican Spanish is full of expressions like no manches (no way, mild), sale (deal), está cañón (it's tough), un chorro de (a ton of), chafa (shoddy), qué oso (how embarrassing) and estar de pelos (to be awesome). They're perfect with friends but out of place in a job interview or with an official, where you'd say ¿en serio?, de acuerdo, es complicado, de mala calidad or qué pena. Fresa (posh, preppy) and naco (tacky) are social labels: fresa is usually playful teasing, but naco is classist and can offend, so learn to recognize it rather than use it. Diminutives like ahorita, un cafecito or un ratito sound warm and polite, not childish; just remember that ahorita can mean 'right now' or 'eventually'.",
       "examples": [
-        { "es": "—¿Vamos por unos tacos al rato? —¡Sale! Nomás termino esto.", "en": "—Shall we go get some tacos in a bit? —Deal! I just need to finish this." },
-        { "es": "¡No manches, hay un chorro de tráfico en Insurgentes!", "en": "No way, there's a ton of traffic on Insurgentes!" }
+        {
+          "es": "—¿Vamos por unos tacos al rato? —¡Sale! Nomás termino esto.",
+          "en": "—Shall we go get some tacos in a bit? —Deal! I just need to finish this."
+        },
+        {
+          "es": "¡No manches, hay un chorro de tráfico en Insurgentes!",
+          "en": "No way, there's a ton of traffic on Insurgentes!"
+        }
       ]
     },
     "targetWords": [
-      { "word": "¿neta?", "translation": "really? / for real? (casual)", "example": "¿Neta te vas a vivir a Mérida?" },
-      { "word": "órale", "translation": "wow! / come on! / OK (depends on tone)", "example": "¡Órale, qué rápido llegaste!" },
-      { "word": "sale", "translation": "OK, deal (casual)", "example": "—Nos vemos a las seis. —Sale." },
-      { "word": "está cañón", "translation": "it's tough, it's intense (casual)", "example": "Está cañón conseguir boletos para el concierto." },
-      { "word": "un chorro de", "translation": "a ton of, loads of", "example": "Hay un chorro de gente en el Zócalo." },
-      { "word": "qué padre", "translation": "how cool, how great", "example": "¡Qué padre está tu chamarra!" },
-      { "word": "no manches", "translation": "no way! (mild, only with friends)", "example": "¡No manches, se me olvidó la cartera!" },
-      { "word": "¿qué onda?", "translation": "what's up? (casual greeting)", "example": "¿Qué onda, cómo te fue en el viaje?" },
-      { "word": "aguas", "translation": "watch out!", "example": "¡Aguas con el escalón!" },
-      { "word": "nomás", "translation": "just, only (Mexico)", "example": "Nomás vine a saludar." },
-      { "word": "al rato", "translation": "later, in a bit", "example": "Al rato te marco." },
-      { "word": "fresa", "translation": "posh, preppy (playful social label)", "example": "Dicen que mi prima es muy fresa porque solo va a cafés caros." },
-      { "word": "naco", "translation": "tacky (classist slur; recognize, don't use)", "example": "Hay quien dice que algo es naco, pero suena clasista; mejor di que es de mal gusto." },
-      { "word": "los cuates", "translation": "buddies, close friends", "example": "Voy a ver el partido con mis cuates." }
+      {
+        "word": "sale",
+        "translation": "OK, deal (casual)",
+        "example": "—Nos vemos a las seis. —Sale."
+      },
+      {
+        "word": "está cañón",
+        "translation": "it's tough, it's intense (casual)",
+        "example": "Está cañón conseguir boletos para el concierto."
+      },
+      {
+        "word": "un chorro de",
+        "translation": "a ton of, loads of",
+        "example": "Hay un chorro de gente en el Zócalo."
+      },
+      {
+        "word": "no manches",
+        "translation": "no way! (mild, only with friends)",
+        "example": "¡No manches, se me olvidó la cartera!"
+      },
+      {
+        "word": "aguas",
+        "translation": "watch out!",
+        "example": "¡Aguas con el escalón!"
+      },
+      {
+        "word": "nomás",
+        "translation": "just, only (Mexico)",
+        "example": "Nomás vine a saludar."
+      },
+      {
+        "word": "fresa",
+        "translation": "posh, preppy (playful social label)",
+        "example": "Dicen que mi prima es muy fresa porque solo va a cafés caros."
+      },
+      {
+        "word": "naco",
+        "translation": "tacky (classist slur; recognize, don't use)",
+        "example": "Hay quien dice que algo es naco, pero suena clasista; mejor di que es de mal gusto."
+      },
+      {
+        "word": "los cuates",
+        "translation": "buddies, close friends",
+        "example": "Voy a ver el partido con mis cuates."
+      },
+      {
+        "word": "ni modo que",
+        "translation": "it's not like (+ subjunctive; casual)",
+        "example": "Ni modo que me vaya caminando; está lejísimos."
+      },
+      {
+        "word": "estar de pelos",
+        "translation": "to be awesome (casual)",
+        "example": "El concierto estuvo de pelos."
+      },
+      {
+        "word": "chafa",
+        "translation": "cheap, shoddy (casual)",
+        "example": "Este cargador está bien chafa; ya se descompuso."
+      },
+      {
+        "word": "qué oso",
+        "translation": "how embarrassing (casual)",
+        "example": "¡Qué oso! Le dije 'mamá' a la maestra."
+      },
+      {
+        "word": "ponerse las pilas",
+        "translation": "to get one's act together, to get moving",
+        "example": "Ponte las pilas, que el examen es mañana."
+      }
     ],
     "modelSentences": [
-      { "es": "¿Neta renunciaste? ¡No manches, qué padre!", "en": "For real, you quit? No way, that's awesome!" },
-      { "es": "Está cañón encontrar depa en la Condesa; hay un chorro de gente buscando.", "en": "It's tough to find an apartment in La Condesa; there are loads of people looking." },
-      { "es": "—¿Vamos al cine al rato? —Sale, nomás termino esto y nos vamos.", "en": "—Shall we go to the movies in a bit? —OK, I'll just finish this and we'll go." },
-      { "es": "¡Aguas! El piso está mojado.", "en": "Watch out! The floor is wet." },
-      { "es": "Con mis cuates digo '¿qué onda?', pero con mi jefa digo 'buenos días, ¿cómo está?'.", "en": "With my buddies I say 'what's up?', but with my boss I say 'good morning, how are you?'." }
+      {
+        "es": "¡Qué oso! Llegué a la entrevista con la camisa al revés.",
+        "en": "How embarrassing! I showed up to the interview with my shirt inside out."
+      },
+      {
+        "es": "Está cañón encontrar depa en la Condesa; hay un chorro de gente buscando.",
+        "en": "It's tough to find an apartment in La Condesa; there are loads of people looking."
+      },
+      {
+        "es": "—El concierto estuvo de pelos, ¿no? —Sí, aunque el sonido estaba medio chafa.",
+        "en": "—The concert was awesome, right? —Yeah, although the sound was kind of lousy."
+      },
+      {
+        "es": "¡No manches, ya es viernes! Ponte las pilas; ni modo que entreguemos el proyecto tarde.",
+        "en": "No way, it's already Friday! Get moving; it's not like we can hand in the project late."
+      },
+      {
+        "es": "Con mis cuates digo '¿qué onda?', pero con mi jefa digo 'buenos días, ¿cómo está?'.",
+        "en": "With my buddies I say 'what's up?', but with my boss I say 'good morning, how are you?'."
+      }
     ],
     "scenarioHint": "Tell the same piece of news first to your friends at a cantina and then to your boss in a meeting, switching register."
   },
@@ -270,31 +780,104 @@
       "name": "Verbs of change (ponerse, volverse, hacerse, quedarse, convertirse en)",
       "explanationEn": "Spanish has no single verb for 'to become'. Ponerse + adjective is a quick, temporary change in mood or appearance: Se puso nervioso, Me puse rojo. Volverse marks a deeper, often unexpected change of character: Se volvió muy serio. Hacerse suggests effort or a gradual process, and works with nouns too: Se hizo rico, Nos hicimos amigos, Se hizo doctora. Quedarse expresses the result of an event: Se quedó sin palabras, Me quedé dormido. Convertirse en + noun is a full transformation: El pueblo se convirtió en un destino turístico.",
       "examples": [
-        { "es": "Cuando vio la cuenta, se puso pálido.", "en": "When he saw the bill, he went pale." },
-        { "es": "Desde que trabaja en el banco, se volvió muy serio.", "en": "Since he started working at the bank, he's become very serious." }
+        {
+          "es": "Cuando vio la cuenta, se puso pálido.",
+          "en": "When he saw the bill, he went pale."
+        },
+        {
+          "es": "Desde que trabaja en el banco, se volvió muy serio.",
+          "en": "Since he started working at the bank, he's become very serious."
+        }
       ]
     },
     "targetWords": [
-      { "word": "ponerse", "translation": "to become, to get (temporary change)", "example": "Me pongo nervioso cuando hablo en público." },
-      { "word": "volverse", "translation": "to become (change of character)", "example": "Con la fama, se volvió insoportable." },
-      { "word": "hacerse", "translation": "to become (through effort or time)", "example": "Mi tía se hizo abogada a los cuarenta años." },
-      { "word": "quedarse", "translation": "to end up, to be left (result)", "example": "Nos quedamos sin gasolina en la carretera." },
-      { "word": "convertirse en", "translation": "to turn into", "example": "La fábrica se convirtió en un centro cultural." },
-      { "word": "nervioso / nerviosa", "translation": "nervous", "example": "Se puso nerviosa antes del examen." },
-      { "word": "pálido / pálida", "translation": "pale", "example": "Te pusiste pálido; ¿estás bien?" },
-      { "word": "sin palabras", "translation": "speechless", "example": "La vista desde la pirámide me dejó sin palabras." },
-      { "word": "creído / creída", "translation": "stuck-up, full of oneself", "example": "No seas creído; todos te ayudamos." },
-      { "word": "apenarse", "translation": "to feel embarrassed (Mexico)", "example": "Me apené porque no me acordaba de su nombre." },
-      { "word": "enojarse", "translation": "to get angry (Mexico)", "example": "Mi papá se enoja si llegamos tarde." },
-      { "word": "el pueblo mágico", "translation": "officially designated 'magic town'", "example": "Tepoztlán es un pueblo mágico muy visitado." },
-      { "word": "el destino turístico", "translation": "tourist destination", "example": "Tulum se convirtió en un destino turístico internacional." }
+      {
+        "word": "ponerse",
+        "translation": "to become, to get (temporary change)",
+        "example": "Me pongo nervioso cuando hablo en público."
+      },
+      {
+        "word": "volverse",
+        "translation": "to become (change of character)",
+        "example": "Con la fama, se volvió insoportable."
+      },
+      {
+        "word": "hacerse",
+        "translation": "to become (through effort or time)",
+        "example": "Mi tía se hizo abogada a los cuarenta años."
+      },
+      {
+        "word": "quedarse",
+        "translation": "to end up, to be left (result)",
+        "example": "Nos quedamos sin gasolina en la carretera."
+      },
+      {
+        "word": "convertirse en",
+        "translation": "to turn into",
+        "example": "La fábrica se convirtió en un centro cultural."
+      },
+      {
+        "word": "nervioso / nerviosa",
+        "translation": "nervous",
+        "example": "Se puso nerviosa antes del examen."
+      },
+      {
+        "word": "pálido / pálida",
+        "translation": "pale",
+        "example": "Te pusiste pálido; ¿estás bien?"
+      },
+      {
+        "word": "sin palabras",
+        "translation": "speechless",
+        "example": "La vista desde la pirámide me dejó sin palabras."
+      },
+      {
+        "word": "creído / creída",
+        "translation": "stuck-up, full of oneself",
+        "example": "No seas creído; todos te ayudamos."
+      },
+      {
+        "word": "apenarse",
+        "translation": "to feel embarrassed (Mexico)",
+        "example": "Me apené porque no me acordaba de su nombre."
+      },
+      {
+        "word": "enojarse",
+        "translation": "to get angry",
+        "example": "Mi papá se enoja si llegamos tarde."
+      },
+      {
+        "word": "el pueblo mágico",
+        "translation": "officially designated 'magic town'",
+        "example": "Tepoztlán es un pueblo mágico muy visitado."
+      },
+      {
+        "word": "el destino turístico",
+        "translation": "tourist destination",
+        "example": "Tulum se convirtió en un destino turístico internacional."
+      }
     ],
     "modelSentences": [
-      { "es": "Mi hermana se puso muy nerviosa antes de la entrevista.", "en": "My sister got very nervous before the interview." },
-      { "es": "Desde que ganó el premio, mi primo se volvió muy creído.", "en": "Since he won the prize, my cousin has become really full of himself." },
-      { "es": "Con los años, Tepoztlán se convirtió en un destino turístico.", "en": "Over the years, Tepoztlán turned into a tourist destination." },
-      { "es": "Nos hicimos amigos en la prepa y seguimos siendo inseparables.", "en": "We became friends in high school and we're still inseparable." },
-      { "es": "Cuando me dieron la noticia, me quedé sin palabras y luego me apené por llorar.", "en": "When they told me the news, I was left speechless, and then I felt embarrassed for crying." }
+      {
+        "es": "Mi hermana se puso muy nerviosa antes de la entrevista.",
+        "en": "My sister got very nervous before the interview."
+      },
+      {
+        "es": "Desde que ganó el premio, mi primo se volvió muy creído.",
+        "en": "Since he won the prize, my cousin has become really full of himself."
+      },
+      {
+        "es": "Con los años, Tepoztlán se convirtió en un destino turístico.",
+        "en": "Over the years, Tepoztlán turned into a tourist destination."
+      },
+      {
+        "es": "Nos hicimos amigos en la prepa y seguimos siendo inseparables.",
+        "en": "We became friends in high school and we're still inseparable."
+      },
+      {
+        "es": "Cuando me dieron la noticia, me quedé sin palabras y luego me apené por llorar.",
+        "en": "When they told me the news, I was left speechless, and then I felt embarrassed for crying."
+      }
     ],
     "scenarioHint": "Talk with your aunt at a family reunion in Querétaro about how your relatives and your hometown have changed over the years."
   }
