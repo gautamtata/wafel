@@ -40,8 +40,8 @@ SENTENCE = (
     "Hola, soy Wafel. ¿Qué vas a pedir hoy en la taquería? "
     "Yo quiero dos tacos al pastor y un agua de horchata, ¿y tú?"
 )
-# web/src/lib/prompts-meta.ts VOICES, then the plugin's GPTLiveVoices and other names GPT-Live
-# has been seen to accept; the API decides, and rejected ids are reported, not fatal
+# hand copy of web/src/lib/prompts-meta.ts VOICES (keep in sync) plus the plugin's GPTLiveVoices;
+# the API decides, and rejected ids are reported, not fatal
 CANDIDATE_VOICES = [
     "marin", "cedar", "alloy", "ash", "ballad", "coral", "echo", "sage", "shimmer", "verse",
     "aster", "beacon", "cinder", "stone", "vesper",
@@ -125,7 +125,8 @@ def _wire(session: GPTLiveSession, cap: _Capture) -> None:
             cap.started.set()
         elif event.get("type") == "error":
             body = event.get("error") or {}
-            cap.error = cap.error or f"{body.get('code') or body.get('type')}: {body['message']}"
+            code = body.get("code") or body.get("type")
+            cap.error = cap.error or f"{code}: {body.get('message')}"
             cap.started.set()
 
     def on_error(ev: llm.RealtimeModelError) -> None:
