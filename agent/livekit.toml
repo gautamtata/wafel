@@ -1,2 +1,5 @@
+[project]
+  subdomain = "clovai-0g7d69ay"
+
 [agent]
-id = "wafel-tutor"
+  id = "CA_SBKm275VHwpd"
