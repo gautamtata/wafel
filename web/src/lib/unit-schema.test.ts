@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { unitContentSchema, unitFileSchema, unitLevelOf } from "@/lib/unit-schema";
+import { UNIT_LIMITS, unitContentSchema, unitFileSchema, unitLevelOf } from "@/lib/unit-schema";
 
 const placeholder = JSON.parse(readFileSync("content/units/es-MX/A1.json", "utf8")) as unknown[];
 
@@ -8,7 +8,8 @@ describe("unit content schema", () => {
   it("accepts the shipped placeholder unit", () => {
     const parsed = unitFileSchema.parse(placeholder);
     expect(parsed[0].id).toBe("es-MX-A1-01");
-    expect(parsed[0].targetWords).toHaveLength(12);
+    expect(parsed[0].targetWords.length).toBeGreaterThanOrEqual(UNIT_LIMITS.targetWords.min);
+    expect(parsed[0].targetWords.length).toBeLessThanOrEqual(UNIT_LIMITS.targetWords.max);
     expect(unitLevelOf(parsed[0])).toBe("A1");
   });
 

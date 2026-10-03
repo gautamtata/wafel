@@ -2,20 +2,23 @@ import { randomUUID } from "node:crypto";
 import { after } from "next/server";
 import type OpenAI from "openai";
 import { z } from "zod";
-import type { Learner, Prisma, Session } from "@/generated/prisma/client";
+import type { Learner, Prisma, Session, Unit } from "@/generated/prisma/client";
 import { MistakeCategory, SessionStatus, SessionType } from "@/generated/prisma/enums";
 import { ApiError, badRequest, notFound } from "@/lib/api";
 import { buildBrief } from "@/lib/brief";
 import { estimateCostCents } from "@/lib/cost";
 import { nextTopic } from "@/lib/curriculum";
 import { db } from "@/lib/db";
+import { requireLearner } from "@/lib/learner";
 import { createSessionRoom, roomNameFor } from "@/lib/livekit";
 import { logMistake, mistakesForSession } from "@/lib/mistakes";
 import { log } from "@/lib/log";
 import { OWNER_ID } from "@/lib/owner";
 import { generateRecap } from "@/lib/recap";
-import { MAX_NEW_VOCAB, normalize } from "@/lib/recap-validate";
+import { MAX_NEW_VOCAB } from "@/lib/recap-validate";
 import type { Brief, Recap, TranscriptEntry } from "@/lib/types";
+import { recapUnitFor } from "@/lib/unit-progress";
+import { getProgress, getUnit, nextUnitFor } from "@/lib/units";
 import { addVocab, type vocabLogSchema } from "@/lib/vocab";
 
 const sessionTypes = Object.values(SessionType) as [SessionType, ...SessionType[]];
@@ -25,6 +28,7 @@ export const createSessionSchema = z.object({
   type: z.enum(sessionTypes),
   scenarioId: z.string().min(1).optional(),
   topic: z.string().min(1).max(120).optional(),
+  unitId: z.string().min(1).optional(),
 });
 
 export const transcriptSchema = z.array(
@@ -70,6 +74,7 @@ export const EMPTY_RECAP: Recap = {
   newVocab: [],
   levelNote: "",
   memory: "",
+  nextStep: "",
 };
 const OPEN: SessionStatus[] = [SessionStatus.CREATED, SessionStatus.ACTIVE];
 const FINISHED: SessionStatus[] = [SessionStatus.ENDED, SessionStatus.RECAP_READY];
@@ -108,12 +113,6 @@ const toView = (row: SessionRow): SessionView => ({
   transcript: (row.transcript as TranscriptEntry[] | null) ?? null,
 });
 
-async function requireLearner(): Promise<Learner> {
-  const learner = await db.learner.findUnique({ where: { id: OWNER_ID } });
-  if (!learner) throw new ApiError("Learner has not completed onboarding", 409);
-  return learner;
-}
-
 async function requireSession(id: string): Promise<Session> {
   const session = await db.session.findUnique({ where: { id } });
   if (!session) throw notFound("Session");
@@ -138,25 +137,37 @@ async function resolveScenario(input: CreateSessionInput, learner: Learner) {
 }
 
 const TOPIC_TYPES: SessionType[] = [SessionType.LESSON, SessionType.SHADOWING];
+const UNIT_TYPES: SessionType[] = [...TOPIC_TYPES, SessionType.MISTAKE_REVIEW];
 
-async function resolveTopic(input: CreateSessionInput, learner: Learner): Promise<string | null> {
+/** The unit a session works on: the explicit one, else the learner's next unit; the unit title doubles as the topic. */
+async function resolveUnit(input: CreateSessionInput, learner: Learner): Promise<Unit | null> {
+  if (!UNIT_TYPES.includes(input.type)) return null;
+  if (!input.unitId) return nextUnitFor(learner);
+  const unit = await getUnit(input.unitId);
+  if (!unit || unit.language !== learner.targetLanguage || unit.dialect !== learner.dialect) throw notFound("Unit");
+  return unit;
+}
+
+async function resolveTopic(input: CreateSessionInput, learner: Learner, unit: Unit | null): Promise<string | null> {
   if (!TOPIC_TYPES.includes(input.type)) return null;
-  return input.topic ?? nextTopic(learner.level, await coveredTopics());
+  return unit?.title ?? input.topic ?? nextTopic(learner.level, await coveredTopics());
 }
 
 async function assembleBrief(
   session: { id: string; type: SessionType; topic: string | null },
   learner: Learner,
   scenario: Awaited<ReturnType<typeof resolveScenario>>,
+  unit: Unit | null,
 ): Promise<Brief> {
-  const [language, dueVocab, mistakes, memories] = await Promise.all([
+  const [language, dueVocab, mistakes, memories, progress] = await Promise.all([
     db.language.findUnique({ where: { code: learner.targetLanguage } }),
     db.vocabItem.findMany({ where: { learnerId: learner.id, dueAt: { lte: new Date() } } }),
     db.mistake.findMany({ where: { learnerId: learner.id, resolved: false } }),
     db.sessionMemory.findMany({ orderBy: { createdAt: "desc" }, take: 5 }),
+    unit ? getProgress(learner.id, unit.id) : null,
   ]);
   if (!language) throw new ApiError(`Language ${learner.targetLanguage} is not configured`, 500);
-  return buildBrief({ session, learner, language, scenario, dueVocab, mistakes, memories });
+  return buildBrief({ session, learner, language, scenario, unit, progress, dueVocab, mistakes, memories });
 }
 
 export async function createSession(
@@ -164,9 +175,10 @@ export async function createSession(
 ): Promise<{ sessionId: string; token: string; url: string }> {
   const learner = await requireLearner();
   const scenario = await resolveScenario(input, learner);
+  const unit = await resolveUnit(input, learner);
   const id = randomUUID();
-  const topic = await resolveTopic(input, learner);
-  const brief = await assembleBrief({ id, type: input.type, topic }, learner, scenario);
+  const topic = await resolveTopic(input, learner, unit);
+  const brief = await assembleBrief({ id, type: input.type, topic }, learner, scenario, unit);
 
   await db.session.create({
     data: {
@@ -174,6 +186,7 @@ export async function createSession(
       type: input.type,
       status: SessionStatus.CREATED,
       scenarioId: scenario?.id ?? null,
+      unitId: unit?.id ?? null,
       topic,
       roomName: roomNameFor(id),
       brief,
@@ -273,39 +286,30 @@ export async function logSessionMistake(
   await logMistake({ ...input, sessionId });
 }
 
-const dedupeBy = <T>(items: T[], key: (item: T) => string): T[] => {
-  const seen = new Set<string>();
-  return items.filter((item) => !seen.has(key(item)) && seen.add(key(item)));
-};
+async function recapUnit(session: Session): Promise<Recap["unit"]> {
+  if (!session.unitId) return undefined;
+  const [unit, learner] = await Promise.all([getUnit(session.unitId), requireLearner()]);
+  return unit ? recapUnitFor(unit, session.id, learner) : undefined;
+}
 
+/** Builds the recap from the live log (Mistake and VocabItem rows), unit progress and the text model's summary. */
 export async function generateAndStoreRecap(id: string, openai?: OpenAI): Promise<void> {
   const session = await requireSession(id);
   if (session.status !== SessionStatus.ENDED && session.status !== SessionStatus.RECAP_READY) {
     throw new ApiError(`Session is ${session.status}; recap needs an ended session`, 409);
   }
   const transcript = transcriptSchema.parse(session.transcript ?? []);
-  const generated = await generateRecap(session.brief as Brief, transcript, openai);
-
-  for (const mistake of generated.mistakes) await logMistake({ ...mistake, sessionId: id });
-  for (const vocab of generated.newVocab) await addVocab({ ...vocab, sourceSessionId: id });
-
-  const [mistakes, sessionVocab] = await Promise.all([
+  const [rows, sessionVocab, unit] = await Promise.all([
     mistakesForSession(id),
-    db.vocabItem.findMany({ where: { learnerId: OWNER_ID, sourceSessionId: id } }),
+    db.vocabItem.findMany({ where: { learnerId: OWNER_ID, sourceSessionId: id }, orderBy: { id: "asc" } }),
+    recapUnit(session),
   ]);
-  const recap: Recap = {
-    ...generated,
-    mistakes: mistakes.map(({ original, corrected, explanation, category }) => ({
-      original,
-      corrected,
-      explanation,
-      category,
-    })),
-    newVocab: dedupeBy(
-      [...generated.newVocab, ...sessionVocab.map(({ word, translation, example }) => ({ word, translation, example: example ?? "" }))],
-      (v) => normalize(v.word),
-    ).slice(0, MAX_NEW_VOCAB),
-  };
+  const mistakes = rows.map(({ original, corrected, explanation, category }) => ({ original, corrected, explanation, category }));
+  const newVocab = sessionVocab
+    .slice(0, MAX_NEW_VOCAB)
+    .map(({ word, translation, example }) => ({ word, translation, example: example ?? "" }));
+  const text = await generateRecap({ brief: session.brief as Brief, transcript, mistakes, newVocab }, openai);
+  const recap: Recap = { ...text, mistakes, newVocab, ...(unit ? { unit } : {}) };
 
   await db.$transaction([
     db.sessionMemory.upsert({

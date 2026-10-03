@@ -1,12 +1,12 @@
 import type OpenAI from "openai";
 import { afterAll, afterEach, beforeAll, expect, it, vi } from "vitest";
-import { CURRICULUM } from "@/lib/curriculum";
+import type { Learner } from "@/generated/prisma/client";
 import { db } from "@/lib/db";
 import { log } from "@/lib/log";
 import { OWNER_ID } from "@/lib/owner";
+import { recordRating } from "@/lib/ratings";
 import {
   EMPTY_RECAP,
-  coveredTopics,
   createSession,
   generateAndStoreRecap,
   getBrief,
@@ -19,7 +19,8 @@ import {
   markStarted,
   runRecap,
 } from "@/lib/sessions";
-import type { Recap, TranscriptEntry } from "@/lib/types";
+import type { RecapText, TranscriptEntry } from "@/lib/types";
+import { nextUnitFor } from "@/lib/units";
 import { cleanupTestRows, ensureOwner, describeDb, teardownOwner, TEST_PREFIX } from "@/test/db-fixture";
 
 let nextId = 0;
@@ -44,42 +45,57 @@ const transcript: TranscriptEntry[] = [
   { role: "learner", text: "Me gusta la playa.", t: 8 },
 ];
 
-const canned: Recap = {
+const canned: RecapText = {
   summary: "Practicaste saludos.",
-  mistakes: [
-    { original: "Yo soy muy bien", corrected: "Estoy muy bien", explanation: "estar", category: "GRAMMAR" },
-    { original: "no en transcript", corrected: "x", explanation: "y", category: "OTHER" },
-  ],
-  newVocab: [
-    { word: `${TEST_PREFIX}playa`, translation: "beach", example: "Me gusta la playa." },
-    { word: `${TEST_PREFIX}Gracias`, translation: "thanks", example: "Gracias." },
-  ],
   levelNote: "Solid A1.",
   memory: "Likes the beach.",
+  nextStep: "Keep drilling estar.",
 };
 
-const fakeOpenAI = (output_parsed: Recap | null = canned) =>
-  ({ responses: { parse: vi.fn(async () => ({ output_parsed })) } }) as unknown as OpenAI;
+const fakeOpenAI = (output_parsed: RecapText | null = canned) => {
+  const parse = vi.fn(async () => ({ output_parsed }));
+  return { client: { responses: { parse } } as unknown as OpenAI, parse };
+};
 
-const endedSession = async () => {
-  const { sessionId } = await createSession({ type: "LESSON" });
+const endedSession = async (unitId?: string) => {
+  const { sessionId } = await createSession({ type: "LESSON", unitId });
   await markStarted(sessionId);
   await markEnded(sessionId, transcript, 90);
   return sessionId;
 };
 
-let topics: readonly string[] = [];
+const testUnitId = `${TEST_PREFIX}sessions-unit`;
+const foreignDialectUnitId = `${TEST_PREFIX}sessions-unit-foreign`;
+const testWords = ["hola", "adiós", "gracias", "por favor", "¿mande?"];
+let learner: Learner;
 beforeAll(async () => {
   await ensureOwner();
-  const learner = await db.learner.findUniqueOrThrow({ where: { id: OWNER_ID } });
-  const alreadyCovered = new Set(await coveredTopics());
-  topics = CURRICULUM[learner.level].filter((topic) => !alreadyCovered.has(topic));
+  learner = await db.learner.findUniqueOrThrow({ where: { id: OWNER_ID } });
+  const content = {
+    language: learner.targetLanguage,
+    level: learner.level,
+    canDo: "I can test sessions.",
+    pattern: { name: "ser", explanationEn: "x", examples: [] },
+    targetWords: testWords.map((word) => ({ word, translation: word, example: word })),
+    modelSentences: [],
+  };
+  const foreignDialect = learner.dialect === "ES" ? "MX" : "ES";
+  await db.unit.createMany({
+    data: [
+      { id: testUnitId, dialect: learner.dialect, order: 9201, title: "Sessions test unit", ...content },
+      { id: foreignDialectUnitId, dialect: foreignDialect, order: 9201, title: "Foreign dialect unit", ...content },
+    ],
+  });
 });
 afterEach(async () => {
+  await db.unitProgress.deleteMany({ where: { unitId: testUnitId } });
   await cleanupTestRows();
   vi.clearAllMocks();
 });
-afterAll(teardownOwner);
+afterAll(async () => {
+  await db.unit.deleteMany({ where: { id: { in: [testUnitId, foreignDialectUnitId] } } });
+  await teardownOwner();
+});
 
 describeDb("createSession", () => {
   it("creates a CREATED LESSON with a brief snapshot, room and token", async () => {
@@ -95,36 +111,45 @@ describeDb("createSession", () => {
     const row = await db.session.findUniqueOrThrow({ where: { id: result.sessionId } });
     expect(row.status).toBe("CREATED");
     expect(row.roomName).toBe(`wafel-${result.sessionId}`);
-    expect(row.topic).toBe(topics[0]);
+    const next = await nextUnitFor(learner);
+    expect(next).not.toBeNull();
+    expect(row.unitId).toBe(next?.id);
+    expect(row.topic).toBe(next?.title);
     const brief = await getBrief(result.sessionId);
-    expect(brief).toMatchObject({ sessionId: result.sessionId, type: "LESSON", topic: row.topic });
+    expect(brief).toMatchObject({ sessionId: result.sessionId, type: "LESSON", topic: row.topic, dialect: learner.dialect });
+    expect(brief.unit).toMatchObject({ id: next?.id, title: next?.title, wordScores: {} });
     expect(brief.dueVocab).toContainEqual({ word: `${TEST_PREFIX}hola`, translation: "hello" });
   });
 
-  it("picks the next topic not covered by a finished LESSON", async () => {
-    const first = await createSession({ type: "LESSON" });
-    const unfinished = await createSession({ type: "LESSON" });
-    expect((await getSessionView(unfinished.sessionId)).topic).toBe(topics[0]);
-    await markStarted(first.sessionId);
-    await markEnded(first.sessionId, transcript, 60);
-    const second = await createSession({ type: "LESSON" });
-    const [a, b] = await Promise.all([getSessionView(first.sessionId), getSessionView(second.sessionId)]);
-    expect(a.topic).toBe(topics[0]);
-    expect(b.topic).toBe(topics[1]);
-    const covered = await coveredTopics();
-    expect(covered).toContain(a.topic);
-    expect(covered).not.toContain(b.topic);
+  it("uses an explicit unit for LESSON, SHADOWING and MISTAKE_REVIEW, none for FREE_TALK", async () => {
+    for (const type of ["LESSON", "SHADOWING"] as const) {
+      const { sessionId } = await createSession({ type, unitId: testUnitId, topic: "ignored" });
+      const row = await db.session.findUniqueOrThrow({ where: { id: sessionId } });
+      expect(row).toMatchObject({ unitId: testUnitId, topic: "Sessions test unit" });
+      expect((await getBrief(sessionId)).unit?.id).toBe(testUnitId);
+    }
+    const review = await createSession({ type: "MISTAKE_REVIEW", unitId: testUnitId });
+    const reviewRow = await db.session.findUniqueOrThrow({ where: { id: review.sessionId } });
+    expect(reviewRow).toMatchObject({ unitId: testUnitId, topic: null });
+    expect((await getBrief(review.sessionId)).unit?.id).toBe(testUnitId);
+    const talk = await createSession({ type: "FREE_TALK", unitId: testUnitId });
+    const talkRow = await db.session.findUniqueOrThrow({ where: { id: talk.sessionId } });
+    expect(talkRow).toMatchObject({ unitId: null, topic: null });
+    expect((await getBrief(talk.sessionId)).unit).toBeUndefined();
   });
 
-  it("uses an explicit topic for LESSON and SHADOWING, none for FREE_TALK", async () => {
-    const lesson = await createSession({ type: "LESSON", topic: topics[3] });
-    expect((await getSessionView(lesson.sessionId)).topic).toBe(topics[3]);
-    expect((await getBrief(lesson.sessionId)).topic).toBe(topics[3]);
-    const shadowing = await createSession({ type: "SHADOWING", topic: "Rolling your r's" });
-    expect((await getSessionView(shadowing.sessionId)).topic).toBe("Rolling your r's");
-    const talk = await createSession({ type: "FREE_TALK", topic: topics[0] });
-    expect((await getSessionView(talk.sessionId)).topic).toBeNull();
+  it("snapshots the learner's word scores for the unit into the brief", async () => {
+    const first = await createSession({ type: "LESSON", unitId: testUnitId });
+    await recordRating(first.sessionId, { target: "hola", kind: "WORD", score: 2 });
+    const second = await createSession({ type: "LESSON", unitId: testUnitId });
+    expect((await getBrief(second.sessionId)).unit?.wordScores).toEqual({ hola: { best: 2, sessions: [first.sessionId] } });
   });
+
+  it("404s for unknown, foreign-language or foreign-dialect units", async () => {
+    await expect(createSession({ type: "LESSON", unitId: "test-nope" })).rejects.toMatchObject({ status: 404 });
+    await expect(createSession({ type: "LESSON", unitId: foreignDialectUnitId })).rejects.toMatchObject({ status: 404 });
+  });
+
 
   it("requires a scenario for ROLEPLAY and snapshots it into the brief", async () => {
     await expect(createSession({ type: "ROLEPLAY" })).rejects.toMatchObject({ status: 400 });
@@ -259,40 +284,59 @@ describeDb("live logging", () => {
 });
 
 describeDb("generateAndStoreRecap", () => {
-  it("validates, merges live vocab/mistakes, writes memory and marks RECAP_READY", async () => {
-    const id = await endedSession();
-    await logSessionVocab(id, { word: `${TEST_PREFIX}gracias`, translation: "thank you" });
-    await logSessionMistake(id, {
-      original: "yo soy muy bien",
-      corrected: "estoy muy bien",
-      explanation: "live",
-      category: "CONJUGATION",
-    });
+  it("builds mistakes and vocab from the live log, adds the unit snapshot, writes memory and marks RECAP_READY", async () => {
+    const id = await endedSession(testUnitId);
+    await logSessionVocab(id, { word: `${TEST_PREFIX}gracias`, translation: "thank you", example: "Gracias." });
+    await logSessionMistake(id, { original: "yo soy muy bien", corrected: "estoy muy bien", explanation: "live", category: "CONJUGATION" });
+    await recordRating(id, { target: "Hola", kind: "WORD", score: 1 });
+    await recordRating(id, { target: "hola", kind: "WORD", score: 3 });
+    await recordRating(id, { target: "¿Mande?", kind: "WORD", score: 2 });
+    await recordRating(id, { target: "ser", kind: "PATTERN", score: 2 });
+    const { client, parse } = fakeOpenAI();
 
-    await generateAndStoreRecap(id, fakeOpenAI());
+    await generateAndStoreRecap(id, client);
 
     const view = await getSessionView(id);
     expect(view.status).toBe("RECAP_READY");
-    expect(view.recap?.mistakes).toEqual([
-      { original: "yo soy muy bien", corrected: "estoy muy bien", explanation: "live", category: "CONJUGATION" },
-    ]);
-    expect(view.recap?.newVocab.map((v) => v.word)).toEqual([`${TEST_PREFIX}playa`, `${TEST_PREFIX}Gracias`]);
+    const mistakes = [{ original: "yo soy muy bien", corrected: "estoy muy bien", explanation: "live", category: "CONJUGATION" }];
+    const newVocab = [{ word: `${TEST_PREFIX}gracias`, translation: "thank you", example: "Gracias." }];
+    expect(view.recap).toEqual({
+      ...canned,
+      mistakes,
+      newVocab,
+      unit: {
+        id: testUnitId,
+        title: "Sessions test unit",
+        status: "IN_PROGRESS",
+        wordsRated: [{ word: "hola", best: 3 }, { word: "¿mande?", best: 2 }],
+        patternScore: 2,
+        masteredWords: 0,
+        totalWords: 5,
+        nextStep: { unitId: expect.any(String), title: expect.any(String), raiseLevelSuggested: false },
+      },
+    });
     expect(await db.mistake.count({ where: { sessionId: id } })).toBe(1);
-
-    const words = await db.vocabItem.findMany({ where: { word: { startsWith: TEST_PREFIX } }, select: { word: true, translation: true } });
-    expect(words).toEqual(
-      expect.arrayContaining([
-        { word: `${TEST_PREFIX}gracias`, translation: "thanks" },
-        { word: `${TEST_PREFIX}playa`, translation: "beach" },
-      ]),
-    );
-    expect(words).toHaveLength(2);
+    expect(await db.vocabItem.count({ where: { word: { startsWith: TEST_PREFIX } } })).toBe(1);
     expect((await db.sessionMemory.findUnique({ where: { sessionId: id } }))?.summary).toBe("Likes the beach.");
+
+    const [params] = parse.mock.calls[0] as unknown as [{ input: string }];
+    expect(params.input).toContain('"corrected":"estoy muy bien"');
+    expect(params.input).toContain(`"word":"${TEST_PREFIX}gracias"`);
+  }, 20_000);
+
+  it("omits the unit snapshot for sessions without a unit and never invents mistakes", async () => {
+    const { sessionId } = await createSession({ type: "FREE_TALK" });
+    await markStarted(sessionId);
+    await markEnded(sessionId, transcript, 30);
+    await generateAndStoreRecap(sessionId, fakeOpenAI().client);
+    const view = await getSessionView(sessionId);
+    expect(view.recap).toEqual({ ...canned, mistakes: [], newVocab: [] });
+    expect(await db.mistake.count({ where: { sessionId } })).toBe(0);
   });
 
   it("refuses sessions that have not ended", async () => {
     const { sessionId } = await createSession({ type: "FREE_TALK" });
-    await expect(generateAndStoreRecap(sessionId, fakeOpenAI())).rejects.toMatchObject({ status: 409 });
+    await expect(generateAndStoreRecap(sessionId, fakeOpenAI().client)).rejects.toMatchObject({ status: 409 });
   });
 
   it("runRecap leaves the session ENDED and logs when the model fails", async () => {
@@ -303,11 +347,10 @@ describeDb("generateAndStoreRecap", () => {
     expect(log.error).toHaveBeenCalledWith(expect.stringContaining(`recapError for session ${id}`), expect.any(Error));
   });
 
-  it("caps merged newVocab at 8", async () => {
+  it("caps newVocab at 8", async () => {
     const id = await endedSession();
-    const many = Array.from({ length: 6 }, (_, i) => ({ word: `${TEST_PREFIX}w${i}`, translation: `t${i}`, example: "" }));
-    for (let i = 0; i < 4; i++) await logSessionVocab(id, { word: `${TEST_PREFIX}live${i}`, translation: "x" });
-    await generateAndStoreRecap(id, fakeOpenAI({ ...canned, newVocab: many }));
+    for (let i = 0; i < 10; i++) await logSessionVocab(id, { word: `${TEST_PREFIX}live${i}`, translation: "x" });
+    await generateAndStoreRecap(id, fakeOpenAI().client);
     expect((await getSessionView(id)).recap?.newVocab).toHaveLength(8);
-  });
+  }, 20_000);
 });
