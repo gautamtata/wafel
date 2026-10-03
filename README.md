@@ -16,6 +16,7 @@ cd web
 bun install                                             # also runs prisma generate
 vercel link --yes --project wafel --scope northlight
 vercel env pull .env.local --environment development   # DATABASE_URL etc.
+# (without Vercel: cp .env.example .env.local and fill in DATABASE_URL)
 bun run db:migrate                                      # prisma migrate dev
 bun run db:seed                                         # languages + scenarios
 bun run dev

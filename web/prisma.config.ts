@@ -1,5 +1,5 @@
 import { config as loadEnv } from "dotenv";
-import { defineConfig, env } from "prisma/config";
+import { defineConfig } from "prisma/config";
 
 loadEnv({ path: [".env.local", ".env"], quiet: true });
 
@@ -10,6 +10,6 @@ export default defineConfig({
     seed: "bun run prisma/seed.ts",
   },
   datasource: {
-    url: env("DATABASE_URL"),
+    url: process.env.DATABASE_URL ?? "",
   },
 });
