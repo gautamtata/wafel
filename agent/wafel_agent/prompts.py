@@ -130,23 +130,41 @@ _CORRECTION_BLOCKS: dict[CorrectionMode, str] = {
     ),
 }
 
-_TOOL_POLICY = (
-    "Herramientas. show_phrase: llámala con cada frase que presentes o pidas repetir (frases "
-    "modelo, ejemplos del patrón, palabras objetivo con su ejemplo), con el español y su "
-    "traducción al inglés; el alumno la ve en pantalla mientras hablas. rate_attempt: después "
-    "de cada intento del alumno con una palabra objetivo, llámala con kind WORD y una nota de "
-    "0 a 3 (0 no lo intentó o incomprensible, 1 con errores graves, 2 comprensible con algún "
-    "fallo, 3 correcto y natural); al final de la sesión, llámala una vez con kind PATTERN "
-    "para el patrón de la unidad. En target pasa SIEMPRE la palabra objetivo tal cual aparece "
-    "en la lista de la unidad, letra por letra, aunque el alumno haya usado una forma "
-    "conjugada, en femenino o en plural. log_mistake es el registro oficial de errores: una "
-    "llamada por cada error real, con la frase exacta que oíste, la forma correcta, una "
-    "explicación breve y la categoría; no registres dudas ni reformulaciones correctas. "
-    "save_vocab: cuando el alumno pregunte por una palabra o le enseñes una palabra nueva "
-    "fuera de la unidad. show_note: para una tabla corta o una regla que sería confusa solo "
-    "con voz. end_lesson: cuando el alumno se despida o diga que quiere terminar; despídete "
-    "en una frase y luego llama a la herramienta."
+_SHOW_PHRASE_POLICY = (
+    "Herramientas. show_phrase: ANTES de decir cualquier frase o palabra en español que el "
+    "alumno deba entender o repetir (frases modelo, ejemplos del patrón, palabras objetivo con "
+    "su ejemplo, y tus reformulaciones), llama primero a show_phrase con el español y su "
+    "traducción al inglés, y solo después dila en voz alta. Nunca presentes un ejemplo sin su "
+    "tarjeta."
 )
+
+_RATE_ATTEMPT_POLICY = (
+    "rate_attempt: después de cada intento del alumno con una palabra objetivo, llámala con "
+    "kind WORD y una nota de 0 a 3 (0 no lo intentó o incomprensible, 1 con errores graves, 2 "
+    "comprensible con algún fallo, 3 correcto y natural); al final de la sesión, llámala una "
+    "vez con kind PATTERN para el patrón de la unidad. En target pasa SIEMPRE la palabra "
+    "objetivo tal cual aparece en la lista de la unidad, letra por letra, aunque el alumno "
+    "haya usado una forma conjugada, en femenino o en plural."
+)
+
+_NO_RATE_ATTEMPT_POLICY = (
+    "rate_attempt: no la llames en esta sesión; no hay unidad con palabras objetivo."
+)
+
+_OTHER_TOOLS_POLICY = (
+    "log_mistake es el registro oficial de errores: una llamada por cada error real, con la "
+    "frase exacta que oíste, la forma correcta, una explicación breve y la categoría; no "
+    "registres dudas ni reformulaciones correctas. save_vocab: cuando el alumno pregunte por "
+    "una palabra o le enseñes una palabra nueva fuera de la unidad. show_note: para una tabla "
+    "corta o una regla que sería confusa solo con voz. end_lesson: cuando el alumno se despida "
+    "o diga que quiere terminar; despídete en una frase y luego llama a la herramienta."
+)
+
+
+def _tool_policy(brief: Brief) -> str:
+    rating = _RATE_ATTEMPT_POLICY if brief.unit else _NO_RATE_ATTEMPT_POLICY
+    return " ".join((_SHOW_PHRASE_POLICY, rating, _OTHER_TOOLS_POLICY))
+
 
 _INTERRUPTION_POLICY = (
     "Interrupciones: el alumno puede interrumpirte en cualquier momento; detente, responde a "
@@ -318,7 +336,7 @@ def build_voice_prompt(brief: Brief) -> str:
         _CORRECTION_BLOCKS[brief.correction_mode],
         _script(brief),
         *_context_blocks(brief),
-        _TOOL_POLICY,
+        _tool_policy(brief),
         _INTERRUPTION_POLICY,
         (
             f"La sesión dura como máximo {brief.cap_minutes} minutos. Empieza tú: saluda al "
@@ -346,9 +364,10 @@ def build_backend_prompt(brief: Brief) -> str:
             f"correction mode {brief.correction_mode.value}, "
             f"session cap {brief.cap_minutes} minutes.",
             unit_line,
-            "- show_phrase(spanish, english): every time the tutor presents a phrase or asks "
-            "the learner to repeat one (model sentences, pattern examples, target words with "
-            "their example). spanish is the exact Spanish line, english its translation.",
+            "- show_phrase(spanish, english): call it BEFORE the tutor speaks any phrase the "
+            "learner must understand or repeat (model sentences, pattern examples, target "
+            "words with their example, recasts); one call per phrase; never a phrase without "
+            "a card. spanish is the exact Spanish line, english its translation.",
             "- rate_attempt(target, kind, score, note?): after each learner attempt at a unit "
             "target word, kind WORD; once at the end of the session for the unit's grammar "
             "pattern, kind PATTERN. score 0-3: 0 no attempt or unintelligible, 1 serious "

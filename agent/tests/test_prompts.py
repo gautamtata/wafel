@@ -294,7 +294,8 @@ def test_tool_policy_verbatim_target_and_authoritative_mistakes(lesson: Brief) -
         "letra por letra, aunque el alumno haya usado una forma conjugada, en femenino o en "
         "plural."
     ) in prompt
-    assert "show_phrase: llámala con cada frase que presentes o pidas repetir" in prompt
+    assert "show_phrase: ANTES de decir cualquier frase o palabra en español" in prompt
+    assert "y solo después dila en voz alta. Nunca presentes un ejemplo sin su tarjeta." in prompt
     assert (
         "log_mistake es el registro oficial de errores: una llamada por cada error real" in prompt
     )
@@ -337,6 +338,17 @@ def test_backend_prompt(lesson: Brief) -> None:
 def test_backend_prompt_without_unit(brief: Brief) -> None:
     prompt = build_backend_prompt(brief)
     assert "No unit in this session" in prompt
+    assert "call it BEFORE the tutor speaks any phrase" in prompt
+    assert "never a phrase without a card" in prompt
+
+
+def test_voice_prompt_rate_attempt_gated_on_unit(lesson: Brief, brief: Brief) -> None:
+    with_unit = build_voice_prompt(lesson)
+    without_unit = build_voice_prompt(brief)
+    assert "En target pasa SIEMPRE la palabra objetivo" in with_unit
+    assert "no la llames en esta sesión" not in with_unit
+    assert "rate_attempt: no la llames en esta sesión; no hay unidad" in without_unit
+    assert "En target pasa SIEMPRE" not in without_unit
 
 
 def test_backend_prompt_does_not_ask_model_to_end_on_cap(brief: Brief) -> None:
