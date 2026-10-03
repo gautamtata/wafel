@@ -36,7 +36,17 @@ uv run ruff check
 ## Deploy (LiveKit Cloud Agents)
 
 ```sh
-lk agent create      # first time, from agent/
-lk agent secrets set --secrets-file .env
-lk agent deploy
+# create .env.production (gitignored) containing ONLY:
+#   OPENAI_API_KEY=...
+#   WAFEL_API_URL=https://wafel-mocha.vercel.app
+#   AGENT_SHARED_SECRET=...   (same value as the Vercel env)
+lk agent create --region us-east --secrets-file .env.production   # first time; commits livekit.toml
+lk agent deploy                                                   # ship a new build
+lk agent update-secrets --secrets-file .env.production            # after rotating a secret
+lk agent status && lk agent logs
 ```
+
+LiveKit Cloud injects `LIVEKIT_URL`/`LIVEKIT_API_KEY`/`LIVEKIT_API_SECRET` into the
+deployed worker; do not put them (or WAFEL_SAMPLE_BRIEF) in `.env.production`, and do not copy
+`.env.example` there: empty values make `lk agent create` fail. See the
+root README for the full deployment runbook.

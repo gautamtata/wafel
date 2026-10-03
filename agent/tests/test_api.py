@@ -4,7 +4,7 @@ import httpx
 import pytest
 import respx
 
-from wafel_agent.api import WafelApi
+from wafel_agent.api import DEFAULT_TIMEOUT_SEC, ENDED_TIMEOUT_SEC, WafelApi
 from wafel_agent.brief import Brief, MistakeCategory
 
 BASE = "http://wafel.test"
@@ -105,6 +105,17 @@ async def test_ended_posts_transcript_and_duration(api: WafelApi) -> None:
         "transcript": transcript,
         "durationSec": 42,
     }
+
+
+@respx.mock
+async def test_ended_uses_longer_timeout(api: WafelApi) -> None:
+    ended = respx.post(f"{BASE}/api/agent/sessions/abc/ended").respond(204)
+    vocab = respx.post(f"{BASE}/api/agent/sessions/abc/vocab").respond(200, json={"ok": True})
+    await api.ended("abc", [], 1)
+    await api.save_vocab("abc", "hola", "hello")
+    assert ENDED_TIMEOUT_SEC == 15.0
+    assert ended.calls.last.request.extensions["timeout"]["read"] == ENDED_TIMEOUT_SEC
+    assert vocab.calls.last.request.extensions["timeout"]["read"] == DEFAULT_TIMEOUT_SEC
 
 
 @respx.mock

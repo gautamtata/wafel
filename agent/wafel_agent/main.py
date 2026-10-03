@@ -3,17 +3,25 @@ from __future__ import annotations
 import json
 import logging
 import os
+from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 
 from dotenv import load_dotenv
 from livekit.agents import AgentSession, JobContext, WorkerOptions, cli
+from livekit.agents.voice.room_io import RoomOptions
 from livekit.plugins.openai.realtime import GPTLiveModel
 
 from wafel_agent.api import WafelApi
 from wafel_agent.brief import Brief, load_brief_file
 from wafel_agent.prompts import build_backend_prompt
 from wafel_agent.tools import build_tools
-from wafel_agent.tutor import LessonLifecycle, Shutdown, WafelTutor
+from wafel_agent.tutor import (
+    LEARNER_IDENTITY,
+    LearnerPresence,
+    LessonLifecycle,
+    Shutdown,
+    WafelTutor,
+)
 
 logger = logging.getLogger("wafel.main")
 
@@ -67,6 +75,11 @@ async def resolve_brief(
         return None
 
 
+def room_options() -> RoomOptions:
+    """Link only the learner; keep the session open across a page refresh so they can rejoin."""
+    return RoomOptions(participant_identity=LEARNER_IDENTITY, close_on_disconnect=False)
+
+
 def build_llm(brief: Brief) -> GPTLiveModel:
     return GPTLiveModel(
         model=VOICE_MODEL,
@@ -74,6 +87,17 @@ def build_llm(brief: Brief) -> GPTLiveModel:
         delegation="responses",
         responses_options={"model": BACKEND_MODEL, "instructions": build_backend_prompt(brief)},
     )
+
+
+def build_shutdown(
+    presence: LearnerPresence, lifecycle: LessonLifecycle, api: WafelApi
+) -> Callable[[], Awaitable[None]]:
+    async def on_shutdown() -> None:
+        presence.cancel()
+        await lifecycle.post_ended()
+        await api.aclose()
+
+    return on_shutdown
 
 
 async def entrypoint(ctx: JobContext) -> None:
@@ -92,14 +116,11 @@ async def entrypoint(ctx: JobContext) -> None:
     tools = build_tools(brief.session_id, api, ctx.room, lifecycle.request_end)
     session = AgentSession(llm=build_llm(brief))
     session.on("conversation_item_added", lifecycle.transcript.on_item)
+    presence = LearnerPresence(ctx.room, lifecycle.request_end)
+    ctx.add_shutdown_callback(build_shutdown(presence, lifecycle, api))
 
-    async def on_shutdown() -> None:
-        await lifecycle.post_ended()
-        await api.aclose()
-
-    ctx.add_shutdown_callback(on_shutdown)
-
-    await session.start(WafelTutor(brief, tools), room=ctx.room)
+    presence.watch()
+    await session.start(WafelTutor(brief, tools), room=ctx.room, room_options=room_options())
     lifecycle.mark_started()
     await api.started(brief.session_id)
 

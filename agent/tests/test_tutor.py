@@ -1,5 +1,7 @@
 import asyncio
+from collections.abc import Callable, Generator
 from dataclasses import dataclass, field
+from types import SimpleNamespace
 from typing import Any
 
 import pytest
@@ -8,7 +10,14 @@ from livekit.agents.voice.events import ConversationItemAddedEvent
 
 from wafel_agent.brief import Brief
 from wafel_agent.prompts import build_voice_prompt
-from wafel_agent.tutor import LessonLifecycle, TranscriptLog, WafelTutor
+from wafel_agent.tutor import (
+    GREETING_INSTRUCTION,
+    LEARNER_LEFT_REASON,
+    LearnerPresence,
+    LessonLifecycle,
+    TranscriptLog,
+    WafelTutor,
+)
 
 
 @dataclass
@@ -139,3 +148,121 @@ async def test_cancel_stops_cap_timer(brief: Brief) -> None:
     lc.cancel()
     with pytest.raises(asyncio.CancelledError):
         await task
+
+
+@dataclass
+class FakeParticipant:
+    identity: str
+
+
+ParticipantHandler = Callable[[FakeParticipant], None]
+
+
+class FakeRoom:
+    def __init__(self) -> None:
+        self.handlers: dict[str, ParticipantHandler] = {}
+
+    def on(self, event: str, handler: ParticipantHandler) -> None:
+        self.handlers[event] = handler
+
+
+@pytest.fixture
+def presence() -> tuple[LearnerPresence, FakeRoom, list[str]]:
+    room = FakeRoom()
+    reasons: list[str] = []
+
+    async def request_end(reason: str) -> None:
+        reasons.append(reason)
+
+    watcher = LearnerPresence(room, request_end, grace_seconds=0.01)  # type: ignore[arg-type]
+    watcher.watch()
+    return watcher, room, reasons
+
+
+async def test_learner_departure_ends_after_grace(presence: tuple) -> None:
+    watcher, room, reasons = presence
+    room.handlers["participant_disconnected"](FakeParticipant("learner"))
+    await asyncio.sleep(0.05)
+    assert reasons == [LEARNER_LEFT_REASON]
+
+
+async def test_learner_return_within_grace_cancels_end(presence: tuple) -> None:
+    watcher, room, reasons = presence
+    room.handlers["participant_disconnected"](FakeParticipant("learner"))
+    room.handlers["participant_connected"](FakeParticipant("learner"))
+    await asyncio.sleep(0.05)
+    assert reasons == []
+
+
+async def test_other_participants_are_ignored(presence: tuple) -> None:
+    watcher, room, reasons = presence
+    room.handlers["participant_disconnected"](FakeParticipant("observer"))
+    await asyncio.sleep(0.05)
+    assert reasons == []
+    room.handlers["participant_disconnected"](FakeParticipant("learner"))
+    room.handlers["participant_connected"](FakeParticipant("observer"))
+    await asyncio.sleep(0.05)
+    assert reasons == [LEARNER_LEFT_REASON]
+
+
+async def test_cancel_stops_departure_timer(presence: tuple) -> None:
+    watcher, room, reasons = presence
+    room.handlers["participant_disconnected"](FakeParticipant("learner"))
+    watcher.cancel()
+    await asyncio.sleep(0.05)
+    assert reasons == []
+
+
+@dataclass
+class FakeHandle:
+    error: BaseException | None = None
+    interrupted: bool = False
+
+    def exception(self) -> BaseException | None:
+        return self.error
+
+    def __await__(self) -> Generator[None, None, "FakeHandle"]:
+        async def done() -> FakeHandle:
+            return self
+
+        return done().__await__()
+
+
+class FakeSession:
+    def __init__(self, first: FakeHandle) -> None:
+        self._first = first
+        self.calls: list[str] = []
+
+    def generate_reply(self, *, instructions: str) -> FakeHandle:
+        self.calls.append(instructions)
+        return self._first if len(self.calls) == 1 else FakeHandle()
+
+
+async def _greet(brief: Brief, first: FakeHandle) -> list[str]:
+    tutor = WafelTutor(brief, tools=[])
+    session = FakeSession(first)
+    tutor._activity = SimpleNamespace(session=session)  # type: ignore[assignment]
+    await tutor.on_enter()
+    return session.calls
+
+
+async def test_greeting_retries_once_when_reply_fails(brief: Brief) -> None:
+    calls = await _greet(brief, FakeHandle(error=RuntimeError("did not start speaking")))
+    assert calls == [GREETING_INSTRUCTION, GREETING_INSTRUCTION]
+
+
+async def test_greeting_not_retried_on_success(brief: Brief) -> None:
+    assert await _greet(brief, FakeHandle()) == [GREETING_INSTRUCTION]
+
+
+async def test_greeting_not_retried_when_interrupted(brief: Brief) -> None:
+    calls = await _greet(brief, FakeHandle(error=RuntimeError("x"), interrupted=True))
+    assert calls == [GREETING_INSTRUCTION]
+
+
+async def test_repeated_learner_disconnects_end_once(presence: tuple) -> None:
+    watcher, room, reasons = presence
+    room.handlers["participant_disconnected"](FakeParticipant("learner"))
+    room.handlers["participant_disconnected"](FakeParticipant("learner"))
+    await asyncio.sleep(0.05)
+    assert reasons == [LEARNER_LEFT_REASON]
