@@ -28,7 +28,7 @@ from wafel_agent.tutor import (
 
 logger = logging.getLogger("wafel.main")
 
-AGENT_NAME = "wafel-tutor"
+AGENT_NAME = os.environ.get("WAFEL_AGENT_NAME", "wafel-tutor")
 VOICE_MODEL = "gpt-live-1"
 BACKEND_MODEL = "gpt-5.6-luna"
 LEARNER_JOIN_TIMEOUT_S = 240.0

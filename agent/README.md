@@ -18,7 +18,9 @@ uv run python -m wafel_agent.main dev       # connect to LiveKit Cloud, hot relo
 uv run python -m wafel_agent.main start     # production worker
 ```
 
-The worker registers as agent `wafel-tutor`. The web app dispatches it with job
+The worker registers as agent `wafel-tutor` (override with `WAFEL_AGENT_NAME`, e.g.
+`wafel-tutor-dev`, so a local `dev` worker does not compete with the deployed one for
+dispatches; the web app only dispatches `wafel-tutor`). The web app dispatches it with job
 metadata `{"sessionId": "<id>"}`; the agent fetches the brief from
 `WAFEL_API_URL/api/agent/sessions/<id>/brief` using `X-Agent-Secret`. If the fetch
 fails the agent posts `failed` and shuts down. When a job carries no `sessionId`
