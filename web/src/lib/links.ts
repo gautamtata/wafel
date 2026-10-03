@@ -11,3 +11,5 @@ export function suggestionHref({ type, topic }: Suggestion): string {
 export function sessionHref(id: string, status: SessionStatus): string {
   return status === "RECAP_READY" ? `/session/${id}/recap` : `/session/${id}`;
 }
+
+export const MISTAKE_PRACTICE_HREF = "/practice?type=MISTAKE_REVIEW";
