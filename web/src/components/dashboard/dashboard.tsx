@@ -1,4 +1,5 @@
 import { Clock3, Coffee, Coins, Flame, Layers } from "lucide-react";
+import { EmptyState } from "@/components/app-shell/empty-state";
 import type { DashboardView } from "@/lib/dashboard";
 import { formatCents } from "@/lib/format";
 import { LEVEL_DESCRIPTORS } from "@/lib/prompts-meta";
@@ -9,16 +10,10 @@ import { TodayCard } from "./today-card";
 
 function EmptySessions() {
   return (
-    <div className="flex flex-col items-center rounded-2xl border border-dashed px-6 py-12 text-center">
-      <span className="flex size-12 items-center justify-center rounded-full bg-muted text-foreground/70">
-        <Coffee className="size-5" strokeWidth={1.75} />
-      </span>
-      <p className="mt-4 font-display text-xl font-medium tracking-tight">Nothing here yet</p>
-      <p className="mt-1.5 max-w-[36ch] text-sm text-pretty text-muted-foreground">
-        Your sessions will collect here. Each one ends with a recap: corrections, new words and a
-        note on your level.
-      </p>
-    </div>
+    <EmptyState icon={Coffee} title="Nothing here yet">
+      Your sessions will collect here. Each one ends with a recap: corrections, new words and a note
+      on your level.
+    </EmptyState>
   );
 }
 

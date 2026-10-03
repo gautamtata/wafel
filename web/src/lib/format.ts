@@ -20,3 +20,25 @@ export function formatDay(date: Date, now: Date, timeZone: string = appTimeZone(
     day: "numeric",
   }).format(date);
 }
+
+const MINUTE_MS = 60_000;
+const HOUR_MS = 60 * MINUTE_MS;
+const DAY_MS = 24 * HOUR_MS;
+
+const plural = (n: number, unit: string) => `${n} ${unit}${n === 1 ? "" : "s"}`;
+
+export function formatSpan(ms: number): string {
+  const minutes = Math.max(1, Math.round(ms / MINUTE_MS));
+  if (minutes < 60) return `${minutes} min`;
+  const hours = Math.round(ms / HOUR_MS);
+  if (hours < 24) return `${hours} hr`;
+  const days = Math.round(ms / DAY_MS);
+  if (days < 30) return plural(days, "day");
+  if (days < 365) return `${Math.round(days / 30)} mo`;
+  return `${Math.round(days / 365)} yr`;
+}
+
+export function formatDueIn(dueAt: Date, now: Date): string {
+  const ms = dueAt.getTime() - now.getTime();
+  return ms <= 0 ? "Due now" : `in ${formatSpan(ms)}`;
+}

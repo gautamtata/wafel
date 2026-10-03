@@ -3,7 +3,7 @@ import { db } from "@/lib/db";
 import { addVocab, reviewVocab } from "@/lib/vocab";
 import { cleanupTestRows, ensureOwner, teardownOwner, TEST_PREFIX } from "@/test/db-fixture";
 import { ctx, loginAsOwner, logout, request, TEST_APP_SECRET } from "@/test/http";
-import { GET as listVocab } from "./route";
+import { GET as listVocab, POST as addVocabRoute } from "./route";
 import { DELETE as deleteVocab } from "./[id]/route";
 import { POST as reviewRoute } from "./[id]/review/route";
 
@@ -55,5 +55,22 @@ describe("vocab routes", () => {
     expect((await deleteVocab(request("", { method: "DELETE" }), ctx(item.id))).status).toBe(204);
     expect(await db.vocabItem.findUnique({ where: { id: item.id } })).toBeNull();
     expect((await deleteVocab(request("", { method: "DELETE" }), ctx(item.id))).status).toBe(404);
+  });
+
+  it("POST adds a word to the deck and validates the body", async () => {
+    logout();
+    expect((await addVocabRoute(request("/api/vocab", { method: "POST", body: {} }))).status).toBe(401);
+    await loginAsOwner();
+    const res = await addVocabRoute(
+      request("/api/vocab", {
+        method: "POST",
+        body: { word: `${TEST_PREFIX}cinco`, translation: "five", example: "Tengo cinco gatos." },
+      }),
+    );
+    expect(res.status).toBe(201);
+    const created = (await res.json()) as { id: string; word: string };
+    expect(created.word).toBe(`${TEST_PREFIX}cinco`);
+    expect(await db.vocabItem.findUnique({ where: { id: created.id } })).toMatchObject({ example: "Tengo cinco gatos." });
+    expect((await addVocabRoute(request("/api/vocab", { method: "POST", body: { word: "" } }))).status).toBe(400);
   });
 });
