@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { PracticePicker } from "@/components/practice/practice-picker";
-import { CURRICULUM, nextTopic } from "@/lib/curriculum";
 import { getLearner } from "@/lib/learner";
 import { countUnresolvedMistakes } from "@/lib/mistakes";
 import { listScenarios } from "@/lib/scenarios";
-import { coveredTopics } from "@/lib/sessions";
+import { listUnitSummaries, neighbouringLevels } from "@/lib/unit-progress";
 
 export const metadata: Metadata = { title: "Practice · Wafel" };
 
@@ -15,16 +14,16 @@ export default async function PracticePage({ searchParams }: PageProps<"/practic
   const [learner, params] = await Promise.all([getLearner(), searchParams]);
   if (!learner) redirect("/onboarding");
 
-  const [unresolvedMistakes, covered, scenarios] = await Promise.all([
+  const [unresolvedMistakes, summaries, scenarios] = await Promise.all([
     countUnresolvedMistakes(),
-    coveredTopics(),
+    listUnitSummaries(learner, neighbouringLevels(learner.level)),
     listScenarios(learner.targetLanguage, learner.level),
   ]);
 
-  const levelTopics = CURRICULUM[learner.level];
-  const requested = first(params.topic);
-  const suggestedTopic =
-    requested && levelTopics.includes(requested) ? requested : nextTopic(learner.level, covered);
+  const current = summaries.find((unit) => unit.isCurrent) ?? null;
+  const requested = summaries.find((unit) => unit.id === first(params.unitId));
+  const initial = requested ?? current;
+  const units = summaries.filter((unit) => unit.level === learner.level || unit.id === initial?.id);
 
   return (
     <div className="flex flex-col gap-8">
@@ -36,8 +35,9 @@ export default async function PracticePage({ searchParams }: PageProps<"/practic
       </header>
       <PracticePicker
         context={{ level: learner.level, unresolvedMistakes }}
-        topics={levelTopics.map((topic) => ({ topic, covered: covered.includes(topic) }))}
-        suggestedTopic={suggestedTopic}
+        units={units}
+        currentUnitId={current?.id ?? null}
+        initialUnitId={initial?.id ?? null}
         scenarios={scenarios}
         initialType={first(params.type) ?? null}
       />
