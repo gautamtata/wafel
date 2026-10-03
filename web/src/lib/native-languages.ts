@@ -1,0 +1,16 @@
+export const NATIVE_LANGUAGES = [
+  { code: "en", name: "English" },
+  { code: "fr", name: "French" },
+  { code: "de", name: "German" },
+  { code: "it", name: "Italian" },
+  { code: "pt", name: "Portuguese" },
+  { code: "nl", name: "Dutch" },
+  { code: "pl", name: "Polish" },
+  { code: "ru", name: "Russian" },
+  { code: "tr", name: "Turkish" },
+  { code: "ar", name: "Arabic" },
+  { code: "hi", name: "Hindi" },
+  { code: "zh", name: "Chinese (Mandarin)" },
+  { code: "ja", name: "Japanese" },
+  { code: "ko", name: "Korean" },
+] as const;

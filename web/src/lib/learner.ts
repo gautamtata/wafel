@@ -2,11 +2,10 @@ import { cache } from "react";
 import type { Learner } from "@/generated/prisma/client";
 import { Cefr, CorrectionMode, Pace } from "@/generated/prisma/enums";
 import { db } from "@/lib/db";
+import { GOALS_MAX_LENGTH, SESSION_CAP_RANGE } from "@/lib/learner-limits";
 import { VOICES } from "@/lib/prompts-meta";
 
 export const OWNER_ID = "owner";
-export const SESSION_CAP_RANGE = { min: 5, max: 60 } as const;
-export const GOALS_MAX_LENGTH = 500;
 
 type Editable = Omit<Learner, "id" | "createdAt" | "updatedAt">;
 export type LearnerUpdate = Partial<Editable>;

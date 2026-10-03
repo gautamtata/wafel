@@ -61,6 +61,8 @@
   --input: var(--border);
   --ring: var(--honey);
   --radius: 1rem;
+  --shadow-color: 28 18 12;
+  --shadow-strength: 0.14;
 }
 
 .dark {
@@ -71,6 +73,28 @@
   --muted: #332620;
   --destructive: oklch(0.704 0.191 22.216);
   --border: #3f2f27;
+  --shadow-color: 0 0 0;
+  --shadow-strength: 0.5;
+}
+
+@utility shadow-soft {
+  box-shadow:
+    0 1px 2px rgb(var(--shadow-color) / calc(var(--shadow-strength) * 0.5)),
+    0 12px 32px -20px rgb(var(--shadow-color) / var(--shadow-strength));
+}
+
+@utility shadow-lift {
+  box-shadow:
+    0 1px 2px rgb(var(--shadow-color) / calc(var(--shadow-strength) * 0.6)),
+    0 28px 56px -32px rgb(var(--shadow-color) / calc(var(--shadow-strength) * 2.2));
+}
+
+@utility eyebrow {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
 }
 
 @layer base {
@@ -82,5 +106,9 @@
   }
   html {
     @apply font-sans;
+  }
+  .font-display,
+  .font-heading {
+    font-variation-settings: "SOFT" 50;
   }
 }
