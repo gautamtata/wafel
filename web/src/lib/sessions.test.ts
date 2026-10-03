@@ -20,7 +20,10 @@ import type { Recap, TranscriptEntry } from "@/lib/types";
 import { cleanupTestRows, ensureOwner, teardownOwner, TEST_PREFIX } from "@/test/db-fixture";
 
 let nextId = 0;
-vi.mock("node:crypto", () => ({ randomUUID: () => `${TEST_PREFIX}${Date.now()}-${nextId++}` }));
+vi.mock("node:crypto", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("node:crypto")>()),
+  randomUUID: () => `${TEST_PREFIX}${Date.now()}-${nextId++}`,
+}));
 
 const createSessionRoom = vi.fn(async (id: string) => ({
   roomName: `wafel-${id}`,
