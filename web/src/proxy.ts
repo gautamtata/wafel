@@ -1,9 +1,8 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { SESSION_COOKIE, verifySession } from "@/lib/auth";
+import { hasValidSession, SESSION_COOKIE } from "@/lib/auth";
 
 export async function proxy(req: NextRequest) {
-  const token = req.cookies.get(SESSION_COOKIE)?.value ?? "";
-  if (await verifySession(token, process.env.APP_SECRET ?? "")) {
+  if (await hasValidSession(req.cookies.get(SESSION_COOKIE)?.value)) {
     return NextResponse.next();
   }
 

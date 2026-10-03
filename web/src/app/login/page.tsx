@@ -1,15 +1,16 @@
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { SESSION_COOKIE, safeNextPath, verifySession } from "@/lib/auth";
+import { hasValidSession, SESSION_COOKIE, safeNextPath } from "@/lib/auth";
 import { LoginForm } from "./login-form";
 
 export const metadata: Metadata = { title: "Sign in · Wafel" };
 
 export default async function LoginPage({ searchParams }: PageProps<"/login">) {
   const next = safeNextPath((await searchParams).next);
-  const token = (await cookies()).get(SESSION_COOKIE)?.value ?? "";
-  if (await verifySession(token, process.env.APP_SECRET ?? "")) redirect(next);
+  if (await hasValidSession((await cookies()).get(SESSION_COOKIE)?.value)) {
+    redirect(next);
+  }
 
   return (
     <main className="relative flex min-h-dvh items-center justify-center overflow-hidden px-6 py-12">

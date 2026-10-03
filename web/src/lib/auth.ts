@@ -36,16 +36,36 @@ export async function verifySession(
   }
 }
 
-export async function requireOwner(): Promise<void> {
-  const token = (await cookies()).get(SESSION_COOKIE)?.value ?? "";
-  if (!(await verifySession(token, process.env.APP_SECRET ?? ""))) {
-    throw new Response(null, { status: 401 });
-  }
+export async function hasValidSession(
+  token: string | undefined,
+): Promise<boolean> {
+  return verifySession(token ?? "", process.env.APP_SECRET ?? "");
 }
 
+export async function requireOwner(): Promise<Response | null> {
+  const token = (await cookies()).get(SESSION_COOKIE)?.value;
+  if (await hasValidSession(token)) return null;
+  return Response.json({ error: "Unauthorized" }, { status: 401 });
+}
+
+export function withOwner<T extends unknown[]>(
+  handler: (req: Request, ...args: T) => Promise<Response>,
+): (req: Request, ...args: T) => Promise<Response> {
+  return async (req, ...args) => (await requireOwner()) ?? handler(req, ...args);
+}
+
+const NEXT_BASE = "http://wafel.invalid";
+
 export function safeNextPath(next: string | string[] | undefined): string {
-  if (typeof next !== "string" || !/^\/(?![/\\])/.test(next)) return "/";
-  return next;
+  if (typeof next !== "string" || !next.startsWith("/")) return "/";
+  try {
+    const url = new URL(next, NEXT_BASE);
+    const path = url.pathname + url.search + url.hash;
+    const local = url.origin === NEXT_BASE && !/^\/[/\\]/.test(path);
+    return local ? path : "/";
+  } catch {
+    return "/";
+  }
 }
 
 export function safeEqual(a: string, b: string): boolean {

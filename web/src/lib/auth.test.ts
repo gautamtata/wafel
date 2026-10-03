@@ -1,11 +1,13 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
+  hasValidSession,
   isAgentRequest,
   requireOwner,
   SESSION_COOKIE,
   safeNextPath,
   signSession,
   verifySession,
+  withOwner,
 } from "@/lib/auth";
 
 const SECRET = "test-secret-0123456789abcdef0123456789abcdef";
@@ -80,34 +82,67 @@ describe("isAgentRequest", () => {
 describe("safeNextPath", () => {
   it.each([
     ["/vocab?tab=due", "/vocab?tab=due"],
+    ["/session/1/recap#mistakes", "/session/1/recap#mistakes"],
+    ["/%09/evil.example", "/%09/evil.example"],
     ["/", "/"],
     [undefined, "/"],
     [["/a", "/b"], "/"],
+    ["vocab", "/"],
     ["https://evil.example", "/"],
     ["//evil.example", "/"],
     ["/\\evil.example", "/"],
-    ["vocab", "/"],
-  ])("maps %j to %s", (input, expected) => {
+    ["/\t/evil.example", "/"],
+    ["/\n/evil.example", "/"],
+    ["/\r\n/evil.example", "/"],
+    ["/.//evil.example", "/"],
+    ["/\t\\evil.example", "/"],
+  ])("maps %j to %j", (input, expected) => {
     expect(safeNextPath(input)).toBe(expected);
   });
 });
 
-describe("requireOwner", () => {
+describe("owner guards", () => {
+  type Ctx = { params: Promise<{ id: string }> };
+  const ctx: Ctx = { params: Promise.resolve({ id: "s1" }) };
+  const handler = withOwner(async (_req: Request, { params }: Ctx) =>
+    Response.json({ id: (await params).id }),
+  );
+  const call = () => handler(new Request("http://localhost/api/sessions/s1"), ctx);
+
+  beforeEach(() => vi.stubEnv("APP_SECRET", SECRET));
   afterEach(() => {
     cookieJar.clear();
     vi.unstubAllEnvs();
   });
 
-  it("resolves with a valid session cookie", async () => {
-    vi.stubEnv("APP_SECRET", SECRET);
-    cookieJar.set(SESSION_COOKIE, await signSession(SECRET));
-    await expect(requireOwner()).resolves.toBeUndefined();
+  it("hasValidSession accepts only a valid token", async () => {
+    expect(await hasValidSession(await signSession(SECRET))).toBe(true);
+    expect(await hasValidSession(undefined)).toBe(false);
+    expect(await hasValidSession(await signSession(SECRET, -1))).toBe(false);
   });
 
-  it("throws a 401 Response without a valid cookie", async () => {
-    vi.stubEnv("APP_SECRET", SECRET);
-    const thrown = await requireOwner().catch((e: unknown) => e);
-    expect(thrown).toBeInstanceOf(Response);
-    expect((thrown as Response).status).toBe(401);
+  it("requireOwner returns null with a valid session cookie", async () => {
+    cookieJar.set(SESSION_COOKIE, await signSession(SECRET));
+    expect(await requireOwner()).toBeNull();
+  });
+
+  it("requireOwner returns a JSON 401 without a valid cookie", async () => {
+    cookieJar.set(SESSION_COOKIE, "garbage");
+    const res = await requireOwner();
+    expect(res?.status).toBe(401);
+    expect(await res?.json()).toEqual({ error: "Unauthorized" });
+  });
+
+  it("withOwner answers 401 JSON without a cookie and skips the handler", async () => {
+    const res = await call();
+    expect(res.status).toBe(401);
+    expect(await res.json()).toEqual({ error: "Unauthorized" });
+  });
+
+  it("withOwner runs the handler with its context for the owner", async () => {
+    cookieJar.set(SESSION_COOKIE, await signSession(SECRET));
+    const res = await call();
+    expect(res.status).toBe(200);
+    expect(await res.json()).toEqual({ id: "s1" });
   });
 });
