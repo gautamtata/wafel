@@ -17,6 +17,8 @@ export default defineConfig({
         test: {
           name: "node",
           include: ["src/**/*.test.ts"],
+          setupFiles: ["src/test/env.ts"],
+          fileParallelism: false,
         },
       },
       {
@@ -25,7 +27,7 @@ export default defineConfig({
           name: "dom",
           include: ["src/**/*.test.tsx"],
           environment: "jsdom",
-          setupFiles: ["src/test/setup.ts"],
+          setupFiles: ["src/test/env.ts", "src/test/setup.ts"],
         },
       },
     ],
