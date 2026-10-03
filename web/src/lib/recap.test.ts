@@ -9,6 +9,8 @@ const brief: Brief = {
   language: { code: "es", name: "Spanish", nativeName: "Español" },
   nativeLanguage: "en",
   level: "A1",
+  dialect: "MX",
+  languagePolicy: "BILINGUAL",
   correctionMode: "SUBTLE",
   pace: "SLOW",
   voice: "marin",

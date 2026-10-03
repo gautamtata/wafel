@@ -10,6 +10,7 @@
     "test": "vitest run",
     "db:migrate": "prisma migrate dev",
     "db:seed": "prisma db seed",
+    "check:units": "bun scripts/check-units.ts",
     "db:studio": "prisma studio",
     "postinstall": "prisma generate"
   },

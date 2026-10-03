@@ -29,6 +29,10 @@ describe("parseLearnerUpdate", () => {
     });
   });
 
+  it("accepts a dialect", () => {
+    expect(parseLearnerUpdate({ dialect: "ES" })).toEqual({ ok: true, data: { dialect: "ES" } });
+  });
+
   it("accepts a partial update and clears empty goals", () => {
     expect(parseLearnerUpdate({ level: "B1", sessionCapMinutes: 30, goals: " " })).toEqual({
       ok: true,
@@ -45,6 +49,7 @@ describe("parseLearnerUpdate", () => {
 
   it.each([
     [{ level: "D1" }, "level"],
+    [{ dialect: "AR" }, "dialect"],
     [{ correctionMode: "LOUD" }, "correctionMode"],
     [{ pace: 3 }, "pace"],
     [{ voice: "robot" }, "voice"],

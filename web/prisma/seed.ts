@@ -1,5 +1,9 @@
 import { db } from "../src/lib/db";
 import type { Prisma } from "../src/generated/prisma/client";
+import { loadAllContent } from "../src/lib/unit-content";
+
+const UNIT_LANGUAGE = "es";
+const UNIT_DIALECT = "MX";
 
 const languages: Prisma.LanguageCreateInput[] = [
   { code: "es", name: "Spanish", nativeName: "Español", voice: "marin", enabled: true },
@@ -17,43 +21,43 @@ const scenarios: Prisma.ScenarioCreateInput[] = [
     title: "Ordering at a restaurant",
     description: "Sit down at a neighborhood restaurant, ask about the menu, and order a meal.",
     minLevel: "A1",
-    setting: "A small, busy restaurant in Madrid at lunchtime.",
-    tutorRole: "A friendly waiter taking your order.",
-    learnerRole: "A customer eating alone, ordering food and drink.",
+    setting: "A busy taquería in Colonia Roma, Mexico City, at lunchtime.",
+    tutorRole: "A friendly taquero taking your order at the counter.",
+    learnerRole: "A customer eating alone, ordering tacos and an agua fresca.",
     goals: [
-      "Greet the waiter and ask for a table",
-      "Ask what a dish is and order a main course and a drink",
-      "Ask for the bill and say thank you",
+      "Greet the taquero and ask what is on the menu today",
+      "Order tacos al pastor with everything and an agua de horchata",
+      "Ask how much it is in pesos, pay, and say thank you",
     ],
   },
   {
     id: "es-market",
     language: "es",
     title: "Shopping at the market",
-    description: "Buy fruit and vegetables from a market stall and handle prices and quantities.",
+    description: "Buy fruit, vegetables and chiles at a mercado stall and handle prices in pesos.",
     minLevel: "A1",
-    setting: "An open-air produce market on a Saturday morning.",
-    tutorRole: "A talkative vendor at a fruit and vegetable stall.",
-    learnerRole: "A shopper buying ingredients for dinner.",
+    setting: "A stall at the Mercado de Medellín in Mexico City on a Saturday morning.",
+    tutorRole: "A talkative marchanta at a fruit and vegetable stall.",
+    learnerRole: "A shopper buying ingredients for salsa and dinner.",
     goals: [
-      "Ask for three different items by name and quantity",
-      "Ask how much something costs and respond to the price",
-      "Pay and say goodbye politely",
+      "Ask for three different items by name and quantity (kilos, piezas)",
+      "Ask how much something costs in pesos and respond to the price",
+      "Pay, ask for a bolsa, and say goodbye politely",
     ],
   },
   {
     id: "es-directions",
     language: "es",
     title: "Asking for directions",
-    description: "Find your way to a landmark by asking a stranger for directions.",
+    description: "Find your way to the Zócalo by asking a stranger for directions and using the Metro.",
     minLevel: "A1",
-    setting: "A street corner in the old town; you are lost on your way to the cathedral.",
-    tutorRole: "A helpful local passerby who knows the area well.",
-    learnerRole: "A visitor trying to reach the cathedral on foot.",
+    setting: "Outside Metro Bellas Artes in Mexico City; you are lost on your way to the Zócalo.",
+    tutorRole: "A helpful chilango passerby who knows the Centro Histórico well.",
+    learnerRole: "A visitor trying to reach the Zócalo on foot or by Metro.",
     goals: [
-      "Politely stop someone and ask where the cathedral is",
-      "Understand directions with left, right, and straight ahead",
-      "Confirm how long it takes to walk there and thank them",
+      "Politely stop someone and ask where the Zócalo is",
+      "Understand directions with left, right, straight ahead, and which Metro line to take",
+      "Confirm how long it takes to get there and thank them",
     ],
   },
   {
@@ -62,13 +66,13 @@ const scenarios: Prisma.ScenarioCreateInput[] = [
     title: "At the pharmacy",
     description: "Describe mild symptoms to a pharmacist and get the right remedy.",
     minLevel: "A2",
-    setting: "A quiet pharmacy in the afternoon.",
+    setting: "A quiet Farmacias Similares branch in Coyoacán in the afternoon.",
     tutorRole: "A patient pharmacist who asks follow-up questions.",
     learnerRole: "A customer with a headache and a sore throat.",
     goals: [
       "Describe your symptoms and how long you have had them",
       "Understand the pharmacist's advice and dosage instructions",
-      "Ask whether you need a prescription and how much it costs",
+      "Ask whether you need a receta and how much it costs in pesos",
     ],
   },
   {
@@ -77,13 +81,13 @@ const scenarios: Prisma.ScenarioCreateInput[] = [
     title: "Meeting a new neighbor",
     description: "Introduce yourself to a neighbor and make small talk about the building and the area.",
     minLevel: "A2",
-    setting: "The hallway of an apartment building; you have just moved in.",
-    tutorRole: "A warm, curious neighbor who has lived there for years.",
-    learnerRole: "A newcomer who moved in last week.",
+    setting: "The hallway of an apartment building in Colonia Condesa; you have just moved in.",
+    tutorRole: "A warm, curious neighbor who has lived in the building for years.",
+    learnerRole: "A newcomer who moved to Mexico City last week.",
     goals: [
       "Introduce yourself and say where you are from and what you do",
-      "Ask about the neighborhood: shops, transport, and quiet hours",
-      "Accept or decline an invitation for coffee and arrange a time",
+      "Ask about the colonia: tianguis, the nearest Metro or Metrobús, and quiet hours",
+      "Accept or decline an invitation for a café and arrange a time",
     ],
   },
   {
@@ -92,12 +96,12 @@ const scenarios: Prisma.ScenarioCreateInput[] = [
     title: "Checking into a hotel",
     description: "Check in, ask about hotel services, and resolve a small problem with your room.",
     minLevel: "A2",
-    setting: "The reception desk of a mid-range hotel in the evening.",
+    setting: "The reception desk of a mid-range hotel in Oaxaca's centro in the evening.",
     tutorRole: "A professional receptionist handling check-in.",
     learnerRole: "A traveler with a reservation for two nights.",
     goals: [
       "Confirm your reservation and provide your details",
-      "Ask about breakfast, Wi-Fi, and checkout time",
+      "Ask about breakfast, Wi-Fi, checkout time, and the price in pesos",
       "Report that the room's air conditioning is not working and ask for a fix",
     ],
   },
@@ -107,7 +111,7 @@ const scenarios: Prisma.ScenarioCreateInput[] = [
     title: "A job interview",
     description: "Talk about your experience, strengths, and goals in a short job interview.",
     minLevel: "B1",
-    setting: "A meeting room at a small company; a first-round interview.",
+    setting: "A meeting room at a small company in Monterrey; a first-round interview.",
     tutorRole: "A hiring manager asking standard interview questions.",
     learnerRole: "A candidate applying for a role in your own field.",
     goals: [
@@ -133,7 +137,26 @@ async function main() {
       update: scenario,
     });
   }
-  console.log(`Seeded ${languages.length} languages and ${scenarios.length} scenarios.`);
+  let units = 0;
+  for (const file of loadAllContent()) {
+    for (const { id, order, title, canDo, pattern, targetWords, modelSentences, scenarioHint } of file.units) {
+      const data = {
+        language: UNIT_LANGUAGE,
+        dialect: UNIT_DIALECT,
+        level: file.level,
+        order,
+        title,
+        canDo,
+        pattern,
+        targetWords,
+        modelSentences,
+        scenarioHint: scenarioHint ?? null,
+      } satisfies Omit<Prisma.UnitUncheckedCreateInput, "id">;
+      await db.unit.upsert({ where: { id }, create: { id, ...data }, update: data });
+      units++;
+    }
+  }
+  console.log(`Seeded ${languages.length} languages, ${scenarios.length} scenarios and ${units} units.`);
 }
 
 main()
