@@ -21,7 +21,12 @@ export function PathView({ learnerLevel, levels }: PathViewProps) {
   const [openId, setOpenId] = useState<string | null>(() => currentOf(levels));
   const [startingId, setStartingId] = useState<string | null>(null);
   const [expanded, setExpanded] = useState<ReadonlySet<Cefr>>(
-    () => new Set(levels.map((l) => l.level).filter((level) => levelIndex(level) <= levelIndex(learnerLevel))),
+    () =>
+      new Set(
+        levels
+          .filter(({ level, units }) => levelIndex(level) <= levelIndex(learnerLevel) || units.some((u) => u.isCurrent))
+          .map(({ level }) => level),
+      ),
   );
 
   const toggleLevel = (level: Cefr) =>

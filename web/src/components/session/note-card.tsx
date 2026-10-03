@@ -7,7 +7,7 @@ type NoteCardProps = { note: Note; onDismiss: (id: string) => void };
 
 export function NoteCard({ note, onDismiss }: NoteCardProps) {
   return (
-    <article className="relative rounded-2xl border border-honey/40 bg-card p-4 pr-12 shadow-lift animate-in slide-in-from-bottom-4 fade-in duration-300">
+    <article className="relative rounded-2xl border border-honey/40 bg-card p-4 pr-12 shadow-lift animate-in slide-in-from-bottom-4 fade-in duration-300 motion-reduce:animate-none">
       <p className="eyebrow text-honey">Note</p>
       <h3 className="mt-1 font-display text-lg font-medium tracking-tight">{note.title}</h3>
       <p className="mt-1.5 text-sm leading-relaxed whitespace-pre-line text-muted-foreground">

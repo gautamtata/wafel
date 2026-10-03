@@ -4,7 +4,7 @@ export function GrammarNote({ pattern }: { pattern: UnitPattern }) {
   return (
     <div>
       <p className="eyebrow">Grammar note</p>
-      <h4 className="mt-1.5 font-display text-lg font-medium tracking-tight">{pattern.name}</h4>
+      <h3 className="mt-1.5 font-display text-lg font-medium tracking-tight">{pattern.name}</h3>
       <p className="mt-1 text-sm leading-relaxed text-pretty text-muted-foreground">{pattern.explanationEn}</p>
       <ul className="mt-3.5 flex flex-col gap-2">
         {pattern.examples.map(({ es, en }) => (

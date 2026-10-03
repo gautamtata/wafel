@@ -193,7 +193,7 @@ export function SettingsForm({ initial }: { initial: LearnerSettings }) {
       </SettingsSection>
 
       {dirty && (
-        <div className="sticky bottom-[calc(env(safe-area-inset-bottom)+4.75rem)] duration-300 animate-in fade-in slide-in-from-bottom-3 md:bottom-6">
+        <div className="sticky bottom-[calc(env(safe-area-inset-bottom)+4.75rem)] duration-300 animate-in fade-in slide-in-from-bottom-3 motion-reduce:animate-none md:bottom-6">
           <Button
             onClick={save}
             disabled={pending}

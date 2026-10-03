@@ -85,6 +85,17 @@ describe("RecapView unit section", () => {
     expect(section.getByText(/Consider moving up to B1/)).toBeInTheDocument();
   });
 
+  it("says when no words were rated and when the path is finished", () => {
+    renderRecap({
+      ...OLD_RECAP,
+      unit: { ...UNIT, wordsRated: [], nextStep: { unitId: null, title: null, raiseLevelSuggested: false } },
+    });
+    const section = within(unitSection());
+    expect(section.getByText("No words were rated this time.")).toBeInTheDocument();
+    expect(section.getByText(/finished every unit on your path/)).toBeInTheDocument();
+    expect(section.queryByText(/Next up/)).not.toBeInTheDocument();
+  });
+
   it("renders an old recap without a unit or next step as before", () => {
     renderRecap(OLD_RECAP);
     expect(screen.queryByRole("region", { name: "This unit" })).not.toBeInTheDocument();

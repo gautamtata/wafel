@@ -66,6 +66,16 @@ describe("PathView", () => {
     expect(screen.getByText("Stories")).toBeInTheDocument();
   });
 
+  it("opens the current unit's level even above the learner's level", () => {
+    const raised: PathLevel[] = [
+      { level: "A2", units: [unit("A2", 1, "Last weekend", "MASTERED")] },
+      { level: "B1", units: [unit("B1", 1, "Stories", "NOT_STARTED", true)] },
+    ];
+    render(<PathView learnerLevel="A2" levels={raised} />);
+    expect(screen.getByRole("button", { name: /Hide B1 units/ })).toHaveAttribute("aria-expanded", "true");
+    expect(card("Stories")).toHaveAttribute("data-current", "true");
+  });
+
   it("shows status badges and progress per unit", () => {
     render(<PathView learnerLevel="A2" levels={LEVELS} />);
     expect(within(card("Greetings")).getByText("Mastered")).toBeInTheDocument();
@@ -93,7 +103,8 @@ describe("PathView", () => {
     expect(toggle).toHaveAttribute("aria-expanded", "true");
     const note = within(card("Last weekend"));
     expect(note.getByText("Grammar note")).toBeInTheDocument();
-    expect(note.getByText("Pattern A2-1")).toBeInTheDocument();
+    expect(note.getByRole("heading", { level: 3, name: "Pattern A2-1" })).toBeInTheDocument();
+    expect(note.getByText("Grammar note").closest("[id^=unit-]")).toHaveClass("motion-reduce:animate-none");
     expect(note.getByText("How pattern 1 works.")).toBeInTheDocument();
     expect(note.getByText("Ejemplo A2-1")).toBeInTheDocument();
     expect(note.getByText("Example A2-1")).toBeInTheDocument();

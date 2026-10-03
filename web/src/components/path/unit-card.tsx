@@ -51,7 +51,7 @@ export function UnitCard({ unit, open, starting, onToggle, onStart }: UnitCardPr
             <UnitStatusBadge status={unit.status} />
             <ChevronDown
               aria-hidden
-              className={cn("size-4 text-muted-foreground transition-transform duration-200", open && "rotate-180")}
+              className={cn("size-4 text-muted-foreground transition-transform duration-200 motion-reduce:transition-none", open && "rotate-180")}
             />
           </span>
         </span>
@@ -60,7 +60,7 @@ export function UnitCard({ unit, open, starting, onToggle, onStart }: UnitCardPr
       {open && (
         <div
           id={panelId}
-          className="flex flex-col gap-5 border-t px-4 pt-4 pb-5 duration-300 animate-in fade-in slide-in-from-top-1 sm:px-5 sm:pl-15"
+          className="flex flex-col gap-5 border-t px-4 pt-4 pb-5 duration-300 animate-in fade-in slide-in-from-top-1 motion-reduce:animate-none sm:px-5 sm:pl-15"
         >
           <GrammarNote pattern={unit.pattern} />
           <Button
