@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { isActive, NAV_ITEMS } from "./nav-items";
+import { isActive, NAV_ITEMS, SETTINGS_ITEM } from "./nav-items";
 import { ThemeToggle } from "./theme-toggle";
 import { Wordmark } from "./wordmark";
 
@@ -18,10 +18,10 @@ export function TabBar() {
         <Wordmark className="text-3xl" />
       </div>
       <ul className="grid grid-cols-5 px-1 md:flex md:flex-col md:gap-1 md:px-4">
-        {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
+        {[...NAV_ITEMS, SETTINGS_ITEM].map(({ href, label, icon: Icon }) => {
           const active = isActive(href, pathname);
           return (
-            <li key={href}>
+            <li key={href} className={cn(href === SETTINGS_ITEM.href && "hidden md:mt-4 md:block")}>
               <Link
                 href={href}
                 aria-current={active ? "page" : undefined}
