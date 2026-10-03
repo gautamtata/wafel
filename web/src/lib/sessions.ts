@@ -16,7 +16,7 @@ import { OWNER_ID } from "@/lib/owner";
 import { generateRecap } from "@/lib/recap";
 import { MAX_NEW_VOCAB, normalize } from "@/lib/recap-validate";
 import type { Brief, Recap, TranscriptEntry } from "@/lib/types";
-import { addVocab } from "@/lib/vocab";
+import { addVocab, type vocabLogSchema } from "@/lib/vocab";
 
 const sessionTypes = Object.values(SessionType) as [SessionType, ...SessionType[]];
 const mistakeCategories = Object.values(MistakeCategory) as [MistakeCategory, ...MistakeCategory[]];
@@ -36,12 +36,6 @@ export const endedSchema = z.object({
 });
 
 export const failedSchema = z.object({ reason: z.string() });
-
-export const vocabLogSchema = z.object({
-  word: z.string().min(1),
-  translation: z.string().min(1),
-  example: z.string().optional(),
-});
 
 export const mistakeLogSchema = z.object({
   original: z.string().min(1),

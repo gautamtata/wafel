@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { PageHeader } from "@/components/app-shell/page-header";
 import { SettingsForm } from "@/components/settings/settings-form";
 import { getLearner } from "@/lib/learner";
 
@@ -12,12 +13,7 @@ export default async function SettingsPage() {
   const { level, correctionMode, pace, voice, sessionCapMinutes, nativeLanguage, goals } = learner;
   return (
     <div className="flex flex-col gap-10">
-      <header>
-        <h1 className="font-display text-[2.75rem] leading-none font-medium tracking-tight sm:text-6xl">
-          Settings
-        </h1>
-        <p className="mt-3 text-muted-foreground">Changes apply from your next session.</p>
-      </header>
+      <PageHeader title="Settings" subtitle="Changes apply from your next session." />
       <SettingsForm
         initial={{
           level,

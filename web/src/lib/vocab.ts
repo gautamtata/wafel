@@ -6,6 +6,14 @@ import { OWNER_ID } from "@/lib/owner";
 import { normalize } from "@/lib/recap-validate";
 import { type Grade, initialState, review } from "@/lib/srs";
 
+export const vocabLogSchema = z.object({
+  word: z.string().min(1),
+  translation: z.string().min(1),
+  example: z.string().optional(),
+});
+
+export const addVocabSchema = vocabLogSchema.extend({ sourceSessionId: z.string().min(1).optional() });
+
 export const gradeSchema = z.object({ grade: z.union([z.literal(0), z.literal(1), z.literal(2), z.literal(3)]) });
 
 export type VocabInput = {
