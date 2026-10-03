@@ -1,10 +1,10 @@
 import type { SessionStatus } from "@/generated/prisma/enums";
 import type { Suggestion } from "@/lib/dashboard";
 
-export function suggestionHref({ type, topic }: Suggestion): string {
+export function suggestionHref({ type, unit }: Suggestion): string {
   if (type === "VOCAB_REVIEW") return "/vocab";
   const params = new URLSearchParams({ type });
-  if (topic) params.set("topic", topic);
+  if (unit) params.set("unitId", unit.id);
   return `/practice?${params}`;
 }
 

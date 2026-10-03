@@ -2,6 +2,7 @@ import type { Cefr, SessionStatus, SessionType } from "@/generated/prisma/enums"
 import { nextTopic } from "@/lib/curriculum";
 import { db } from "@/lib/db";
 import { getLearner, OWNER_ID } from "@/lib/learner";
+import { nextUnitFor } from "@/lib/units";
 import { appTimeZone, dayNumber, midnightOf, monthStartDay, weekday } from "@/lib/timezone";
 
 export const MISTAKE_REVIEW_THRESHOLD = 3;
@@ -10,7 +11,8 @@ const RECENT_LIMIT = 10;
 const COMPLETED: readonly SessionStatus[] = ["ENDED", "RECAP_READY"];
 
 export type SuggestionType = "LESSON" | "MISTAKE_REVIEW" | "VOCAB_REVIEW";
-export type Suggestion = { type: SuggestionType; topic?: string; reason: string };
+export type SuggestedUnit = { id: string; title: string; canDo: string };
+export type Suggestion = { type: SuggestionType; topic?: string; unit?: SuggestedUnit; reason: string };
 
 export type RecentSession = {
   id: string;
@@ -42,6 +44,7 @@ export type DashboardSource = {
   sessions: SessionSource[];
   wordsDue: number;
   unresolvedMistakes: number;
+  nextUnit: SuggestedUnit | null;
 };
 
 export function startOfWeek(now: Date, timeZone: string): Date {
@@ -68,6 +71,7 @@ export function computeStreak(dates: readonly Date[], now: Date, timeZone: strin
 type SuggestionInput = {
   level: Cefr;
   coveredTopics: readonly string[];
+  unit: SuggestedUnit | null;
   unresolvedMistakes: number;
   wordsDue: number;
 };
@@ -75,6 +79,7 @@ type SuggestionInput = {
 export function pickSuggestion({
   level,
   coveredTopics,
+  unit,
   unresolvedMistakes,
   wordsDue,
 }: SuggestionInput): Suggestion {
@@ -92,7 +97,7 @@ export function pickSuggestion({
   }
   return {
     type: "LESSON",
-    topic: nextTopic(level, coveredTopics),
+    ...(unit ? { unit, topic: unit.title } : { topic: nextTopic(level, coveredTopics) }),
     reason:
       coveredTopics.length === 0
         ? `Your first ${level} lesson. About ten minutes, all spoken.`
@@ -123,7 +128,7 @@ export function buildDashboard(
   now: Date,
   timeZone: string = appTimeZone(),
 ): DashboardView {
-  const { level, sessions, wordsDue, unresolvedMistakes } = source;
+  const { level, sessions, wordsDue, unresolvedMistakes, nextUnit } = source;
   const completed = sessions.filter((s) => COMPLETED.includes(s.status));
   const weekStart = startOfWeek(now, timeZone);
   const monthStart = startOfMonth(now, timeZone);
@@ -145,7 +150,7 @@ export function buildDashboard(
       sessions.filter((s) => s.createdAt >= monthStart).map((s) => s.estimatedCostCents ?? 0),
     ),
     unresolvedMistakes,
-    nextSuggestion: pickSuggestion({ level, coveredTopics, unresolvedMistakes, wordsDue }),
+    nextSuggestion: pickSuggestion({ level, coveredTopics, unit: nextUnit, unresolvedMistakes, wordsDue }),
     recentSessions: sessions
       .filter((s) => s.status !== "CREATED")
       .slice(0, RECENT_LIMIT)
@@ -154,8 +159,9 @@ export function buildDashboard(
 }
 
 export async function getDashboard(now: Date = new Date()): Promise<DashboardView> {
-  const [learner, rows, wordsDue, unresolvedMistakes] = await Promise.all([
+  const [learner, next, rows, wordsDue, unresolvedMistakes] = await Promise.all([
     getLearner(),
+    getLearner().then((owner) => (owner ? nextUnitFor(owner) : null)),
     db.session.findMany({
       orderBy: { createdAt: "desc" },
       select: {
@@ -181,7 +187,13 @@ export async function getDashboard(now: Date = new Date()): Promise<DashboardVie
   }));
 
   return buildDashboard(
-    { level: learner?.level ?? "A1", sessions, wordsDue, unresolvedMistakes },
+    {
+      level: learner?.level ?? "A1",
+      sessions,
+      wordsDue,
+      unresolvedMistakes,
+      nextUnit: next && { id: next.id, title: next.title, canDo: next.canDo },
+    },
     now,
   );
 }

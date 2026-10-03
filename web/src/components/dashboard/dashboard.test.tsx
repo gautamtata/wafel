@@ -16,7 +16,8 @@ const VIEW: DashboardView = {
   unresolvedMistakes: 1,
   nextSuggestion: {
     type: "LESSON",
-    topic: "Making plans and invitations",
+    topic: "Making plans",
+    unit: { id: "es-MX-A2-03", title: "Making plans", canDo: "I can invite a friend out and agree on a time." },
     reason: "Next on your A2 path.",
   },
   recentSessions: [
@@ -58,13 +59,27 @@ describe("Dashboard", () => {
     expect(within(tile("This month")).getByText("$3.40")).toBeInTheDocument();
   });
 
-  it("shows today's suggestion with a start link", () => {
+  it("shows today's unit with a start link and a link to the path", () => {
     render(<Dashboard view={VIEW} now={NOW} />);
-    expect(screen.getByRole("heading", { name: "Making plans and invitations" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /Start lesson/ })).toHaveAttribute(
+    const today = within(screen.getByRole("region", { name: "Today" }));
+    expect(today.getByRole("heading", { name: "Making plans" })).toBeInTheDocument();
+    expect(today.getByText("I can invite a friend out and agree on a time.")).toBeInTheDocument();
+    expect(today.getByRole("link", { name: /Start lesson/ })).toHaveAttribute(
       "href",
-      "/practice?type=LESSON&topic=Making+plans+and+invitations",
+      "/practice?type=LESSON&unitId=es-MX-A2-03",
     );
+    expect(today.getByRole("link", { name: "See your path" })).toHaveAttribute("href", "/path");
+  });
+
+  it("offers other practice for non-lesson suggestions", () => {
+    render(
+      <Dashboard
+        view={{ ...VIEW, nextSuggestion: { type: "MISTAKE_REVIEW", reason: "3 corrections are still open." } }}
+        now={NOW}
+      />,
+    );
+    expect(screen.getByRole("heading", { name: "Revisit your mistakes" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Or choose something else" })).toHaveAttribute("href", "/practice");
   });
 
   it("links recent sessions to their recap or session page", () => {

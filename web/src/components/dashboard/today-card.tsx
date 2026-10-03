@@ -12,8 +12,15 @@ const COPY: Record<SuggestionType, { label: string; title?: string; cta: string 
   VOCAB_REVIEW: { label: "Vocabulary", title: "Words due for review", cta: "Review words" },
 };
 
+const secondaryLink = (suggestion: Suggestion) =>
+  suggestion.type === "LESSON"
+    ? { href: "/path", label: "See your path" }
+    : { href: "/practice", label: "Or choose something else" };
+
 export function TodayCard({ suggestion }: { suggestion: Suggestion }) {
   const copy = COPY[suggestion.type];
+  const { unit } = suggestion;
+  const secondary = secondaryLink(suggestion);
   return (
     <section
       aria-label="Today"
@@ -27,12 +34,13 @@ export function TodayCard({ suggestion }: { suggestion: Suggestion }) {
         <div className="min-w-0">
           <p className="eyebrow">Today · {copy.label}</p>
           <h2 className="mt-3 font-display text-[1.875rem] leading-[1.08] font-medium tracking-tight text-balance sm:text-4xl">
-            {suggestion.topic ?? copy.title}
+            {unit?.title ?? suggestion.topic ?? copy.title}
           </h2>
         </div>
         <TutorPresence className="-mt-1 -mr-1 size-16 sm:size-20" />
       </div>
-      <p className="relative mt-3 max-w-[44ch] text-pretty text-muted-foreground">
+      {unit && <p className="relative mt-3 max-w-[44ch] text-lg text-pretty text-foreground/85">{unit.canDo}</p>}
+      <p className={cn("relative max-w-[44ch] text-pretty text-muted-foreground", unit ? "mt-1.5 text-sm" : "mt-3")}>
         {suggestion.reason}
       </p>
       <div className="relative mt-7 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
@@ -47,10 +55,10 @@ export function TodayCard({ suggestion }: { suggestion: Suggestion }) {
           <ArrowRight data-icon="inline-end" />
         </Link>
         <Link
-          href="/practice"
-          className="py-2 text-center text-sm font-medium text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline"
+          href={secondary.href}
+          className="py-3 text-center text-sm font-medium text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline"
         >
-          Or choose something else
+          {secondary.label}
         </Link>
       </div>
     </section>
