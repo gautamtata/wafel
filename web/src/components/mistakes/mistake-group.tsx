@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Switch } from "@/components/ui/switch";
+import { QuietSwitch } from "@/components/forms/quiet-switch";
 import type { Mistake } from "@/generated/prisma/client";
 import { SAVE_FAILED, send } from "@/lib/client-fetch";
 import type { MistakeGroupOf } from "@/lib/mistake-categories";
@@ -15,14 +15,24 @@ export type MistakeRow = Pick<Mistake, "id" | "original" | "corrected" | "explan
 export function MistakeGroup({ group }: { group: MistakeGroupOf<MistakeRow> }) {
   const router = useRouter();
   const [rows, setRows] = useState(group.mistakes);
+  const [pending, setPending] = useState<ReadonlySet<string>>(new Set());
   const open = rows.filter((row) => !row.resolved).length;
   const headingId = `group-${group.category.toLowerCase()}`;
 
   const setResolved = (id: string, resolved: boolean) =>
     setRows((current) => current.map((row) => (row.id === id ? { ...row, resolved } : row)));
 
+  const setInFlight = (id: string, inFlight: boolean) =>
+    setPending((current) => {
+      const next = new Set(current);
+      if (inFlight) next.add(id);
+      else next.delete(id);
+      return next;
+    });
+
   async function toggle(id: string, resolved: boolean) {
     setResolved(id, resolved);
+    setInFlight(id, true);
     try {
       await send(`/api/mistakes/${id}`, "PATCH", { resolved });
       router.refresh();
@@ -30,6 +40,7 @@ export function MistakeGroup({ group }: { group: MistakeGroupOf<MistakeRow> }) {
       setResolved(id, !resolved);
       toast.error(SAVE_FAILED);
     }
+    setInFlight(id, false);
   }
 
   return (
@@ -53,7 +64,10 @@ export function MistakeGroup({ group }: { group: MistakeGroupOf<MistakeRow> }) {
             </div>
             <label className="-my-1 flex min-h-11 shrink-0 cursor-pointer items-center gap-2.5 text-sm font-medium text-muted-foreground">
               Resolved
-              <Switch checked={row.resolved} onCheckedChange={(checked) => toggle(row.id, checked)} />
+              <QuietSwitch
+                checked={row.resolved}
+                disabled={pending.has(row.id)}
+                onCheckedChange={(checked) => toggle(row.id, checked)} />
             </label>
           </li>
         ))}

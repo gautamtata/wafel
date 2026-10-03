@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
-import { Switch } from "@/components/ui/switch";
+import { QuietSwitch } from "@/components/forms/quiet-switch";
 import { SAVE_FAILED, send } from "@/lib/client-fetch";
 import type { Recap } from "@/lib/types";
 
@@ -49,7 +49,7 @@ function VocabPick({ word, sessionId }: { word: PickWord; sessionId: string }) {
       </div>
       <label className="flex min-h-11 shrink-0 cursor-pointer items-center gap-2.5 text-sm font-medium text-muted-foreground">
         In deck
-        <Switch checked={inDeck} disabled={pending} onCheckedChange={toggle} />
+        <QuietSwitch checked={inDeck} disabled={pending} onCheckedChange={toggle} />
       </label>
     </li>
   );

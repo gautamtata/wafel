@@ -36,8 +36,8 @@ export function RecapPending({ sessionId }: { sessionId: string }) {
       router.refresh();
     } catch {
       toast.error("The recap still didn't come through. Try again in a moment.");
-      setRetrying(false);
     }
+    setRetrying(false);
   }
 
   return (

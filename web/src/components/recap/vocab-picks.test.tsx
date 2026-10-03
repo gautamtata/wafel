@@ -24,6 +24,8 @@ describe("VocabPicks", () => {
 
     const toggle = screen.getByRole("switch", { name: /In deck/ });
     expect(toggle).toHaveAttribute("aria-checked", "true");
+    expect(toggle).toHaveClass("data-checked:bg-foreground");
+    expect(toggle).not.toHaveClass("data-checked:bg-primary");
 
     fireEvent.click(toggle);
     await waitFor(() =>

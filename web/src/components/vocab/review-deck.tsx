@@ -29,8 +29,10 @@ const EPOCH = new Date(0);
 const nextInterval = (card: ReviewCard, grade: Grade) =>
   formatSpan(review({ ...card, dueAt: EPOCH }, grade, EPOCH).dueAt.getTime());
 
-const isTyping = (target: EventTarget | null) =>
-  target instanceof HTMLElement && (target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName));
+const INTERACTIVE = "a,button,input,textarea,select,[role=button],[role=switch],[contenteditable]";
+
+const ownsKeys = (target: EventTarget | null) =>
+  target instanceof Element && target.closest(INTERACTIVE) !== null;
 
 function Face({ hidden, className, children }: { hidden: boolean; className?: string; children: React.ReactNode }) {
   return (
@@ -95,6 +97,7 @@ export function ReviewDeck({ cards, nextDueLabel }: ReviewDeckProps) {
       setReviewed((n) => n + 1);
       send(`/api/vocab/${card.id}/review`, "POST", { grade: value }).catch(() => {
         toast.error(`Couldn't save your review of “${card.word}”. It's back in the deck.`);
+        setReviewed((n) => n - 1);
         setQueue((q) => (q.some((c) => c.id === card.id) ? q : [...q, card]));
       });
     },
@@ -104,7 +107,7 @@ export function ReviewDeck({ cards, nextDueLabel }: ReviewDeckProps) {
   useEffect(() => {
     if (!current) return;
     const onKey = (event: KeyboardEvent) => {
-      if (event.metaKey || event.ctrlKey || event.altKey || isTyping(event.target)) return;
+      if (event.repeat || event.metaKey || event.ctrlKey || event.altKey || ownsKeys(event.target)) return;
       if (!revealed && (event.key === " " || event.key === "Enter")) {
         event.preventDefault();
         setRevealed(true);
@@ -142,7 +145,14 @@ export function ReviewDeck({ cards, nextDueLabel }: ReviewDeckProps) {
         <span className="tabular-nums">
           {queue.length} left
         </span>
-        <div className="h-1 flex-1 overflow-hidden rounded-full bg-muted">
+        <div
+          role="progressbar"
+          aria-label="Review progress"
+          aria-valuemin={0}
+          aria-valuemax={total}
+          aria-valuenow={reviewed}
+          className="h-1 flex-1 overflow-hidden rounded-full bg-muted"
+        >
           <div
             className="h-full rounded-full bg-foreground/70 transition-[width] duration-500"
             style={{ width: `${(reviewed / total) * 100}%` }}

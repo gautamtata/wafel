@@ -29,6 +29,20 @@ describe("MistakeGroup", () => {
     expect(screen.getByText("Hacer is irregular in the preterite.")).toBeInTheDocument();
   });
 
+  it("uses a neutral switch and disables it while the patch is in flight", async () => {
+    let settle: (res: Response) => void = () => {};
+    vi.spyOn(globalThis, "fetch").mockReturnValue(new Promise((resolve) => (settle = resolve)));
+    render(<MistakeGroup group={GROUP} />);
+    const row = screen.getByText("yo tieno").closest("li") as HTMLElement;
+    const toggle = within(row).getByRole("switch", { name: /Resolved/ });
+    expect(toggle).toHaveClass("data-checked:bg-foreground");
+    expect(toggle).not.toHaveClass("data-checked:bg-primary");
+    fireEvent.click(toggle);
+    expect(toggle).toHaveAttribute("aria-disabled", "true");
+    settle(Response.json({}));
+    await waitFor(() => expect(toggle).not.toHaveAttribute("aria-disabled"));
+  });
+
   it("resolves optimistically and patches the mistake", async () => {
     const fetchMock = vi.spyOn(globalThis, "fetch").mockResolvedValue(Response.json({}));
     render(<MistakeGroup group={GROUP} />);

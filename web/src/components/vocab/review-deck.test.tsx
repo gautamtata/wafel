@@ -63,6 +63,25 @@ describe("ReviewDeck", () => {
     await waitFor(() => expect(fetchMock).toHaveBeenCalledWith(...reviewCall("v2", 1)));
   });
 
+  it("leaves Enter, Space and digits to focused controls", () => {
+    render(
+      <>
+        <button type="button">Elsewhere</button>
+        <ReviewDeck cards={CARDS} nextDueLabel={null} />
+      </>,
+    );
+    const other = screen.getByRole("button", { name: "Elsewhere" });
+    other.focus();
+    expect(fireEvent.keyDown(other, { key: "Enter" })).toBe(true);
+    fireEvent.keyDown(other, { key: " " });
+    expect(screen.queryByText("the bill")).not.toBeInTheDocument();
+
+    fireEvent.keyDown(window, { key: " " });
+    fireEvent.keyDown(other, { key: "3" });
+    fireEvent.keyDown(window, { key: "3", repeat: true });
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
   it("brings Again cards back and finishes with a summary", async () => {
     render(<ReviewDeck cards={[CARDS[0]]} nextDueLabel={null} />);
     fireEvent.click(screen.getByRole("button", { name: "Show answer" }));
@@ -83,6 +102,7 @@ describe("ReviewDeck", () => {
     fireEvent.click(screen.getByRole("button", { name: /^Good/ }));
     await waitFor(() => expect(toastError).toHaveBeenCalled());
     expect(screen.getByText("la cuenta")).toBeInTheDocument();
+    expect(screen.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "0");
   });
 
   it("shows a real empty state when nothing is due", () => {
