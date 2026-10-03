@@ -1,0 +1,442 @@
+[
+  {
+    "id": "es-MX-C1-01",
+    "order": 1,
+    "title": "Debate and persuasion",
+    "canDo": "I can argue persuasively, anticipate objections and refute them tactfully in a debate.",
+    "pattern": {
+      "name": "Concession, reframing and emphasis (por más que + subjuntivo, no es que... sino que..., lo que pasa es que)",
+      "explanationEn": "Persuasion at this level depends on conceding ground and then redirecting. Por más que or por mucho que + subjunctive concedes an effort without changing your conclusion: Por más que insistan, la ley no cambia. No es que + subjunctive, sino que + indicative reframes an objection: No es que me oponga, sino que faltan datos. Lo que pasa es que and El punto es que bring the discussion back to your core argument, and cleft sentences add emphasis: Lo que necesitamos es transparencia. Rhetorical questions (¿De verdad creemos que...?) and markers like en todo caso and a fin de cuentas let you push hard without sounding aggressive.",
+      "examples": [
+        {
+          "es": "No es que esté en contra del proyecto, sino que nadie consultó a los vecinos.",
+          "en": "It's not that I'm against the project; it's that nobody consulted the residents."
+        },
+        {
+          "es": "Por más que suban los precios, la gente sigue comprando en el tianguis.",
+          "en": "No matter how much prices go up, people keep shopping at the street market."
+        }
+      ]
+    },
+    "targetWords": [
+      {
+        "word": "por más que",
+        "translation": "no matter how much (+ subjunctive)",
+        "example": "Por más que lo expliquen, la medida sigue siendo impopular."
+      },
+      {
+        "word": "no es que... sino que",
+        "translation": "it's not that... but rather",
+        "example": "No es que no quiera, sino que no me alcanza el tiempo."
+      },
+      {
+        "word": "lo que pasa es que",
+        "translation": "the thing is",
+        "example": "Lo que pasa es que el estudio se hizo hace diez años."
+      },
+      {
+        "word": "a fin de cuentas",
+        "translation": "at the end of the day",
+        "example": "A fin de cuentas, todos queremos una ciudad más segura."
+      },
+      {
+        "word": "en todo caso",
+        "translation": "in any case; if anything",
+        "example": "En todo caso, habría que ampliar la consulta."
+      },
+      {
+        "word": "de entrada",
+        "translation": "to begin with, from the outset",
+        "example": "De entrada, el diagnóstico me parece incompleto."
+      },
+      {
+        "word": "rebatir",
+        "translation": "to refute, to rebut",
+        "example": "Es difícil rebatir esos datos."
+      },
+      {
+        "word": "matizar",
+        "translation": "to qualify, to add nuance",
+        "example": "Quisiera matizar lo que dijo la compañera."
+      },
+      {
+        "word": "plantear",
+        "translation": "to raise, to put forward",
+        "example": "Usted plantea un problema real, pero la solución no convence."
+      },
+      {
+        "word": "el planteamiento",
+        "translation": "approach, line of argument",
+        "example": "El planteamiento parte de una premisa falsa."
+      },
+      {
+        "word": "la postura",
+        "translation": "stance, position",
+        "example": "Respeto su postura, aunque no la comparto."
+      },
+      {
+        "word": "ceder",
+        "translation": "to give ground, to concede",
+        "example": "Si ninguna de las partes cede, no habrá acuerdo."
+      },
+      {
+        "word": "el contraargumento",
+        "translation": "counterargument",
+        "example": "Prepara tus contraargumentos antes del debate."
+      }
+    ],
+    "modelSentences": [
+      {
+        "es": "Por más que insistan, no considero que la consulta haya sido transparente.",
+        "en": "No matter how much they insist, I don't consider the consultation to have been transparent."
+      },
+      {
+        "es": "No es que me oponga a la carretera, sino que nadie ha explicado el impacto ambiental.",
+        "en": "It's not that I oppose the highway; it's that nobody has explained the environmental impact."
+      },
+      {
+        "es": "Lo que pasa es que, de entrada, el planteamiento parte de datos viejos.",
+        "en": "The thing is that, from the outset, the argument is based on old data."
+      },
+      {
+        "es": "Quisiera matizar su postura: en todo caso, el problema es la ejecución, no la idea.",
+        "en": "I'd like to qualify your position: if anything, the problem is the execution, not the idea."
+      },
+      {
+        "es": "A fin de cuentas, si nadie cede un poco, todos vamos a perder.",
+        "en": "At the end of the day, if nobody gives a little ground, we all lose."
+      }
+    ],
+    "scenarioHint": "Defend your position at a heated public consultation in Zapopan about a proposed highway through the Bosque de la Primavera."
+  },
+  {
+    "id": "es-MX-C1-02",
+    "order": 2,
+    "title": "Irony and humor in Mexican speech",
+    "canDo": "I can recognize and use irony, understatement and friendly teasing in Mexican conversation, and respond to it naturally.",
+    "pattern": {
+      "name": "Irony and humorous understatement (sarcastic praise, ironic diminutives, exaggeration, carrilla)",
+      "explanationEn": "Mexican humor relies heavily on irony and understatement, and the tone often carries more meaning than the words. Sarcastic praise flips the meaning: ¡Qué bonito!, ¡Qué puntual!, or Muy bien, ¿eh? after someone messes up. Diminutives can ironically shrink a big problem (tenemos un problemita, llegó tantito tarde), while exaggeration inflates small ones (me muero de hambre, hace un calor infernal). Teasing, known as carrilla, is a sign of trust among friends, and the expected answer is more humor, not offense: aguantar vara. You'll also hear albures, sexual double meanings built into innocent-sounding phrases; at this stage, aim to recognize them and laugh along rather than attempt them.",
+      "examples": [
+        {
+          "es": "¡Qué puntual! Nomás llegaste una horita tarde.",
+          "en": "So punctual! You were only an hour late."
+        },
+        {
+          "es": "Tenemos un problemita: se inundó toda la cocina.",
+          "en": "We have a tiny problem: the whole kitchen flooded."
+        }
+      ]
+    },
+    "targetWords": [
+      {
+        "word": "echar carrilla",
+        "translation": "to tease, to rib (Mexico)",
+        "example": "Mis amigos me echan carrilla por mi acento."
+      },
+      {
+        "word": "aguantar vara",
+        "translation": "to take a joke, to put up with teasing (Mexico)",
+        "example": "Si te echan carrilla, aguanta vara y ríete."
+      },
+      {
+        "word": "¡qué bonito!",
+        "translation": "how nice! (often sarcastic)",
+        "example": "¡Qué bonito! Te comiste mi pastel."
+      },
+      {
+        "word": "tantito",
+        "translation": "a little bit (Mexico)",
+        "example": "Espérame tantito, ya casi salgo."
+      },
+      {
+        "word": "un problemita",
+        "translation": "a small problem (often ironic)",
+        "example": "Hay un problemita: perdí los boletos."
+      },
+      {
+        "word": "el albur",
+        "translation": "Mexican wordplay with sexual double meaning",
+        "example": "En el mercado, los vendedores son expertos en el albur."
+      },
+      {
+        "word": "el doble sentido",
+        "translation": "double meaning, innuendo",
+        "example": "Esa frase tiene doble sentido; no la digas en la junta."
+      },
+      {
+        "word": "tomar el pelo",
+        "translation": "to pull someone's leg",
+        "example": "No le creas, te está tomando el pelo."
+      },
+      {
+        "word": "burlarse de",
+        "translation": "to make fun of",
+        "example": "No me estoy burlando de ti; es puro cotorreo."
+      },
+      {
+        "word": "cotorrear",
+        "translation": "to banter, to chat and joke around (Mexico)",
+        "example": "Nos quedamos cotorreando hasta las dos de la mañana."
+      },
+      {
+        "word": "¿a poco?",
+        "translation": "really? no way! (Mexico)",
+        "example": "¿A poco te creíste lo del fantasma?"
+      },
+      {
+        "word": "el chiste",
+        "translation": "joke",
+        "example": "Mi tío cuenta los mismos chistes en cada fiesta."
+      },
+      {
+        "word": "el corralón",
+        "translation": "car impound lot (Mexico)",
+        "example": "Se llevaron mi carro al corralón por estacionarme mal."
+      }
+    ],
+    "modelSentences": [
+      {
+        "es": "¡Qué bonito! Llegas tantito tarde a tu propia fiesta.",
+        "en": "How lovely! You're just a little late to your own party."
+      },
+      {
+        "es": "No te enojes, nomás te estoy echando carrilla; aguanta vara.",
+        "en": "Don't get mad, I'm just teasing you; learn to take a joke."
+      },
+      {
+        "es": "Tenemos un problemita: el pastel se quedó en el carro y el carro está en el corralón.",
+        "en": "We have a tiny problem: the cake was left in the car and the car is at the impound lot."
+      },
+      {
+        "es": "¿A poco no te diste cuenta de que te estaban tomando el pelo?",
+        "en": "Come on, you really didn't notice they were pulling your leg?"
+      },
+      {
+        "es": "Mis tíos se la pasan cotorreando y contando chistes de doble sentido.",
+        "en": "My uncles spend all their time joking around and telling innuendo-laden jokes."
+      }
+    ],
+    "scenarioHint": "Banter with old friends at a carne asada in Monterrey who keep teasing you about your latest mishap."
+  },
+  {
+    "id": "es-MX-C1-03",
+    "order": 3,
+    "title": "Professional presentations",
+    "canDo": "I can deliver a structured professional presentation and handle questions with precise, formal language.",
+    "pattern": {
+      "name": "Presentation discourse markers (en primer lugar, a continuación, cabe destacar, en resumen) and handling Q&A",
+      "explanationEn": "A clear presentation signposts its structure: Para empezar or En primer lugar, A continuación, Por otro lado, Por último, En resumen. Highlight key points with Cabe destacar que, Vale la pena subrayar que and Lo más relevante es que, and point to visuals with Como pueden ver en la gráfica. In Q&A, buy time and reformulate: Gracias por la pregunta; si entiendo bien, lo que usted plantea es.... Address the audience as ustedes, and use usted with senior individuals unless they invite you to tutear. Hedge forecasts with the conditional: Estimamos que las ventas podrían crecer un ocho por ciento.",
+      "examples": [
+        {
+          "es": "Cabe destacar que las ventas en el Bajío crecieron un doce por ciento.",
+          "en": "It's worth highlighting that sales in the Bajío region grew by twelve percent."
+        },
+        {
+          "es": "Gracias por la pregunta; si entiendo bien, a usted le preocupa el plazo de entrega.",
+          "en": "Thank you for the question; if I understand correctly, you're concerned about the delivery deadline."
+        }
+      ]
+    },
+    "targetWords": [
+      {
+        "word": "cabe destacar",
+        "translation": "it's worth highlighting",
+        "example": "Cabe destacar el esfuerzo del equipo de ventas."
+      },
+      {
+        "word": "a continuación",
+        "translation": "next, below",
+        "example": "A continuación, veremos los resultados por región."
+      },
+      {
+        "word": "en resumen",
+        "translation": "in summary",
+        "example": "En resumen, fue un año difícil pero rentable."
+      },
+      {
+        "word": "la gráfica",
+        "translation": "chart, graph (Mexico)",
+        "example": "En esta gráfica se ve la tendencia de los últimos tres años."
+      },
+      {
+        "word": "el trimestre",
+        "translation": "quarter (three months)",
+        "example": "Las ventas del segundo trimestre superaron lo esperado."
+      },
+      {
+        "word": "el rubro",
+        "translation": "category, line item (business, Mexico)",
+        "example": "El rubro de logística representa el treinta por ciento del gasto."
+      },
+      {
+        "word": "la meta",
+        "translation": "goal, target",
+        "example": "Alcanzamos la meta anual en octubre."
+      },
+      {
+        "word": "el indicador",
+        "translation": "metric, indicator",
+        "example": "El indicador de satisfacción subió cinco puntos."
+      },
+      {
+        "word": "el desempeño",
+        "translation": "performance",
+        "example": "El desempeño de la planta mejoró después de la capacitación."
+      },
+      {
+        "word": "el área de oportunidad",
+        "translation": "area for improvement (Mexican corporate euphemism)",
+        "example": "Detectamos un área de oportunidad en atención al cliente."
+      },
+      {
+        "word": "la junta",
+        "translation": "meeting (Mexico)",
+        "example": "La junta con los directivos es a las nueve."
+      },
+      {
+        "word": "el plazo de entrega",
+        "translation": "delivery deadline, lead time",
+        "example": "El cliente pidió reducir el plazo de entrega."
+      },
+      {
+        "word": "tutear",
+        "translation": "to address someone as tú",
+        "example": "El director me pidió que lo tuteara."
+      }
+    ],
+    "modelSentences": [
+      {
+        "es": "A continuación, les presento los resultados del tercer trimestre.",
+        "en": "Next, I'll present the third-quarter results."
+      },
+      {
+        "es": "Como pueden ver en la gráfica, cabe destacar el desempeño de la región del Bajío.",
+        "en": "As you can see in the chart, the Bajío region's performance stands out."
+      },
+      {
+        "es": "Detectamos un área de oportunidad en el rubro de logística.",
+        "en": "We identified an area for improvement in the logistics category."
+      },
+      {
+        "es": "Si entiendo bien su pregunta, a usted le preocupa el plazo de entrega.",
+        "en": "If I understand your question correctly, you're concerned about the delivery deadline."
+      },
+      {
+        "es": "En resumen, estimamos que podríamos alcanzar la meta anual antes de diciembre.",
+        "en": "In summary, we estimate we could reach the annual target before December."
+      }
+    ],
+    "scenarioHint": "Present quarterly results to the board of an auto-parts manufacturer in Querétaro and field tough questions from the directors."
+  },
+  {
+    "id": "es-MX-C1-04",
+    "order": 4,
+    "title": "Discussing literature and the news",
+    "canDo": "I can discuss a news story or a literary text, analyzing its tone, bias and register, and support my reading with evidence.",
+    "pattern": {
+      "name": "Analytical language and reporting verbs (sostener, señalar, según, se desprende que, condicional de rumor)",
+      "explanationEn": "Discussing texts calls for reporting verbs more precise than decir: sostener, señalar, advertir, cuestionar, plantear. Use según or de acuerdo con to attribute a claim, and se desprende que or esto sugiere que to draw inferences. A raíz de (as a result of) and en el marco de (as part of) are staples of Mexican journalism. To report a claim without endorsing it, news writing uses the conditional of rumor: El funcionario habría recibido sobornos, meaning he allegedly received bribes. To talk about style, describe tone and register: el tono es irónico, el lenguaje es coloquial, el narrador no es confiable.",
+      "examples": [
+        {
+          "es": "En Pedro Páramo, Rulfo plantea un mundo donde los vivos y los muertos conviven.",
+          "en": "In Pedro Páramo, Rulfo presents a world where the living and the dead coexist."
+        },
+        {
+          "es": "A raíz del reportaje, la Fiscalía abrió una investigación.",
+          "en": "Following the report, the prosecutor's office opened an investigation."
+        }
+      ]
+    },
+    "targetWords": [
+      {
+        "word": "sostener",
+        "translation": "to maintain, to argue",
+        "example": "La autora sostiene que la migración transformó el pueblo."
+      },
+      {
+        "word": "señalar",
+        "translation": "to point out",
+        "example": "El reportaje señala varias contradicciones en el informe oficial."
+      },
+      {
+        "word": "cuestionar",
+        "translation": "to question, to challenge",
+        "example": "La novela cuestiona la versión oficial de la historia."
+      },
+      {
+        "word": "según",
+        "translation": "according to",
+        "example": "Según los vecinos, la obra lleva un año detenida."
+      },
+      {
+        "word": "se desprende que",
+        "translation": "it follows that, one can infer that",
+        "example": "Del informe se desprende que hubo irregularidades."
+      },
+      {
+        "word": "a raíz de",
+        "translation": "as a result of, in the wake of",
+        "example": "A raíz de la investigación, renunció el director."
+      },
+      {
+        "word": "la nota",
+        "translation": "news story, article (Mexico)",
+        "example": "¿Leíste la nota sobre el agua en la ciudad?"
+      },
+      {
+        "word": "el columnista / la columnista",
+        "translation": "columnist",
+        "example": "El columnista escribe con mucha ironía."
+      },
+      {
+        "word": "el sesgo",
+        "translation": "bias",
+        "example": "Se nota un sesgo claro en la selección de fuentes."
+      },
+      {
+        "word": "la crónica",
+        "translation": "literary chronicle (a major Mexican journalistic genre)",
+        "example": "Las crónicas de Monsiváis retratan la vida en la capital."
+      },
+      {
+        "word": "el narrador / la narradora",
+        "translation": "narrator",
+        "example": "El narrador nos oculta información hasta el final."
+      },
+      {
+        "word": "verosímil",
+        "translation": "believable, plausible",
+        "example": "El personaje no me pareció verosímil."
+      },
+      {
+        "word": "el desenlace",
+        "translation": "ending, outcome (of a plot)",
+        "example": "El desenlace de la novela me tomó por sorpresa."
+      }
+    ],
+    "modelSentences": [
+      {
+        "es": "Según la nota, el exfuncionario habría desviado recursos del municipio.",
+        "en": "According to the article, the former official allegedly diverted municipal funds."
+      },
+      {
+        "es": "El columnista sostiene que la reforma es necesaria, pero se nota un sesgo evidente.",
+        "en": "The columnist argues the reform is necessary, but there's an obvious bias."
+      },
+      {
+        "es": "De la crónica de Monsiváis se desprende una crítica a la clase política.",
+        "en": "From Monsiváis's chronicle one can infer a critique of the political class."
+      },
+      {
+        "es": "La novela cuestiona los límites entre la vida y la muerte, y el narrador nunca los aclara.",
+        "en": "The novel questions the boundaries between life and death, and the narrator never clarifies them."
+      },
+      {
+        "es": "A mí el desenlace no me pareció verosímil, aunque la autora señala que se basa en hechos reales.",
+        "en": "I didn't find the ending believable, even though the author points out that it's based on real events."
+      }
+    ],
+    "scenarioHint": "Discuss a Sunday newspaper column and a short story by Juan Rulfo at a book club in Coyoacán."
+  }
+]
