@@ -1,6 +1,6 @@
 import type { TextStreamData } from "@livekit/components-react";
 import { describe, expect, it } from "vitest";
-import { toTurns } from "./session-live";
+import { parsePhrase, toTurns } from "./session-live";
 
 const stream = (
   id: string,
@@ -26,5 +26,24 @@ describe("toTurns", () => {
       { id: "seg1", role: "tutor", text: "Hola, ¿qué tal?", at: 60, final: true },
       { id: "b", role: "learner", text: "Hola, bien", at: 10, final: false },
     ]);
+  });
+});
+
+describe("parsePhrase", () => {
+  const encode = (value: unknown) => new TextEncoder().encode(JSON.stringify(value));
+
+  it("parses a wafel.phrase data message", () => {
+    expect(parsePhrase(encode({ type: "phrase", spanish: "¿Me da dos tacos?", english: "Can I have two tacos?" }))).toEqual({
+      spanish: "¿Me da dos tacos?",
+      english: "Can I have two tacos?",
+    });
+  });
+
+  it("trims and rejects malformed or empty payloads", () => {
+    expect(parsePhrase(encode({ type: "phrase", spanish: "  Hola ", english: " Hi " }))).toEqual({ spanish: "Hola", english: "Hi" });
+    expect(parsePhrase(encode({ type: "note", spanish: "Hola", english: "Hi" }))).toBeNull();
+    expect(parsePhrase(encode({ type: "phrase", spanish: "Hola" }))).toBeNull();
+    expect(parsePhrase(encode({ type: "phrase", spanish: "   ", english: "Hi" }))).toBeNull();
+    expect(parsePhrase(new TextEncoder().encode("{oops"))).toBeNull();
   });
 });

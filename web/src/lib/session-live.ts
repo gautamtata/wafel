@@ -3,21 +3,38 @@ import { z } from "zod";
 
 export const LEARNER_IDENTITY = "learner";
 export const NOTE_TOPIC = "wafel.note";
+export const PHRASE_TOPIC = "wafel.phrase";
 export const TUTOR_ARRIVAL_TIMEOUT_MS = 10_000;
 
 export type TurnRole = "tutor" | "learner";
 export type Turn = { id: string; role: TurnRole; text: string; at: number; final: boolean };
 export type Note = { id: string; title: string; body: string };
+export type Phrase = { id: string; spanish: string; english: string };
 
 const noteSchema = z.object({ type: z.literal("note"), title: z.string(), body: z.string() });
+const phraseSchema = z.object({
+  type: z.literal("phrase"),
+  spanish: z.string().trim().min(1),
+  english: z.string().trim().min(1),
+});
 
-export function parseNote(payload: Uint8Array): Omit<Note, "id"> | null {
+function decode<T>(schema: z.ZodType<T>, payload: Uint8Array): T | null {
   try {
-    const parsed = noteSchema.safeParse(JSON.parse(new TextDecoder().decode(payload)));
-    return parsed.success ? { title: parsed.data.title, body: parsed.data.body } : null;
+    const parsed = schema.safeParse(JSON.parse(new TextDecoder().decode(payload)));
+    return parsed.success ? parsed.data : null;
   } catch {
     return null;
   }
+}
+
+export function parseNote(payload: Uint8Array): Omit<Note, "id"> | null {
+  const note = decode(noteSchema, payload);
+  return note && { title: note.title, body: note.body };
+}
+
+export function parsePhrase(payload: Uint8Array): Omit<Phrase, "id"> | null {
+  const phrase = decode(phraseSchema, payload);
+  return phrase && { spanish: phrase.spanish, english: phrase.english };
 }
 
 const FINAL_ATTRIBUTE = "lk.transcription_final";
