@@ -3,9 +3,10 @@ from __future__ import annotations
 import asyncio
 import logging
 import time
-from collections.abc import Callable
+from collections.abc import Awaitable, Callable
 from typing import Any, Literal
 
+from livekit import rtc
 from livekit.agents import Agent
 from livekit.agents.llm import ChatMessage
 from livekit.agents.llm.tool_context import FunctionTool
@@ -19,6 +20,9 @@ logger = logging.getLogger("wafel.tutor")
 
 END_DELAY_SEC = 3.0
 CAP_REASON = "cap"
+LEARNER_IDENTITY = "learner"
+LEARNER_GRACE_SEC = 20.0
+LEARNER_LEFT_REASON = "learner left"
 GREETING_INSTRUCTION = (
     "Saluda al alumno en español, preséntate brevemente y haz la primera pregunta."
 )
@@ -26,6 +30,7 @@ GREETING_INSTRUCTION = (
 TranscriptRole = Literal["tutor", "learner"]
 Shutdown = Callable[[str], None]
 Elapsed = Callable[[], float]
+RequestEnd = Callable[[str], Awaitable[None]]
 
 _CHAT_ROLE_TO_TRANSCRIPT: dict[str, TranscriptRole] = {"assistant": "tutor", "user": "learner"}
 
@@ -121,3 +126,47 @@ class LessonLifecycle:
     async def post_ended(self) -> None:
         self.cancel()
         await self._api.ended(self._session_id, self.transcript.entries(), self.duration_sec)
+
+
+class LearnerPresence:
+    """Ends the lesson when the learner leaves and does not return within a grace period."""
+
+    def __init__(
+        self,
+        room: rtc.Room,
+        request_end: RequestEnd,
+        *,
+        identity: str = LEARNER_IDENTITY,
+        grace_seconds: float = LEARNER_GRACE_SEC,
+    ) -> None:
+        self._room = room
+        self._request_end = request_end
+        self._identity = identity
+        self._grace_seconds = grace_seconds
+        self._grace_task: asyncio.Task[None] | None = None
+
+    def watch(self) -> None:
+        self._room.on("participant_disconnected", self.on_participant_disconnected)
+        self._room.on("participant_connected", self.on_participant_connected)
+
+    def on_participant_disconnected(self, participant: rtc.RemoteParticipant) -> None:
+        if participant.identity != self._identity:
+            return
+        logger.info("learner left; ending in %.0fs unless they return", self._grace_seconds)
+        self.cancel()
+        self._grace_task = asyncio.create_task(self._end_after_grace(), name="wafel-learner-grace")
+
+    def on_participant_connected(self, participant: rtc.RemoteParticipant) -> None:
+        if participant.identity != self._identity or self._grace_task is None:
+            return
+        logger.info("learner returned; cancelling departure timer")
+        self.cancel()
+
+    async def _end_after_grace(self) -> None:
+        await asyncio.sleep(self._grace_seconds)
+        await self._request_end(LEARNER_LEFT_REASON)
+
+    def cancel(self) -> None:
+        if self._grace_task is not None:
+            self._grace_task.cancel()
+            self._grace_task = None

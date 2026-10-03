@@ -1,4 +1,5 @@
 import asyncio
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -8,7 +9,13 @@ from livekit.agents.voice.events import ConversationItemAddedEvent
 
 from wafel_agent.brief import Brief
 from wafel_agent.prompts import build_voice_prompt
-from wafel_agent.tutor import LessonLifecycle, TranscriptLog, WafelTutor
+from wafel_agent.tutor import (
+    LEARNER_LEFT_REASON,
+    LearnerPresence,
+    LessonLifecycle,
+    TranscriptLog,
+    WafelTutor,
+)
 
 
 @dataclass
@@ -139,3 +146,66 @@ async def test_cancel_stops_cap_timer(brief: Brief) -> None:
     lc.cancel()
     with pytest.raises(asyncio.CancelledError):
         await task
+
+
+@dataclass
+class FakeParticipant:
+    identity: str
+
+
+ParticipantHandler = Callable[[FakeParticipant], None]
+
+
+class FakeRoom:
+    def __init__(self) -> None:
+        self.handlers: dict[str, ParticipantHandler] = {}
+
+    def on(self, event: str, handler: ParticipantHandler) -> None:
+        self.handlers[event] = handler
+
+
+@pytest.fixture
+def presence() -> tuple[LearnerPresence, FakeRoom, list[str]]:
+    room = FakeRoom()
+    reasons: list[str] = []
+
+    async def request_end(reason: str) -> None:
+        reasons.append(reason)
+
+    watcher = LearnerPresence(room, request_end, grace_seconds=0.01)  # type: ignore[arg-type]
+    watcher.watch()
+    return watcher, room, reasons
+
+
+async def test_learner_departure_ends_after_grace(presence: tuple) -> None:
+    watcher, room, reasons = presence
+    room.handlers["participant_disconnected"](FakeParticipant("learner"))
+    await asyncio.sleep(0.05)
+    assert reasons == [LEARNER_LEFT_REASON]
+
+
+async def test_learner_return_within_grace_cancels_end(presence: tuple) -> None:
+    watcher, room, reasons = presence
+    room.handlers["participant_disconnected"](FakeParticipant("learner"))
+    room.handlers["participant_connected"](FakeParticipant("learner"))
+    await asyncio.sleep(0.05)
+    assert reasons == []
+
+
+async def test_other_participants_are_ignored(presence: tuple) -> None:
+    watcher, room, reasons = presence
+    room.handlers["participant_disconnected"](FakeParticipant("observer"))
+    await asyncio.sleep(0.05)
+    assert reasons == []
+    room.handlers["participant_disconnected"](FakeParticipant("learner"))
+    room.handlers["participant_connected"](FakeParticipant("observer"))
+    await asyncio.sleep(0.05)
+    assert reasons == [LEARNER_LEFT_REASON]
+
+
+async def test_cancel_stops_departure_timer(presence: tuple) -> None:
+    watcher, room, reasons = presence
+    room.handlers["participant_disconnected"](FakeParticipant("learner"))
+    watcher.cancel()
+    await asyncio.sleep(0.05)
+    assert reasons == []

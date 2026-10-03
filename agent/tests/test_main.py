@@ -13,8 +13,10 @@ from wafel_agent.main import (
     Settings,
     build_llm,
     resolve_brief,
+    room_options,
     session_id_from_metadata,
 )
+from wafel_agent.tutor import LEARNER_IDENTITY
 
 BASE = "http://wafel.test"
 
@@ -105,3 +107,10 @@ def test_build_llm_configuration(brief: Brief, monkeypatch) -> None:  # noqa: AN
     assert opts.delegation == "responses"
     assert opts.responses["model"] == BACKEND_MODEL
     assert "end_lesson" in opts.responses["instructions"]
+
+
+def test_room_options_link_learner_and_survive_refresh() -> None:
+    opts = room_options()
+    assert LEARNER_IDENTITY == "learner"
+    assert opts.participant_identity == LEARNER_IDENTITY
+    assert opts.close_on_disconnect is False

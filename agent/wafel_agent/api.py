@@ -10,6 +10,7 @@ from wafel_agent.brief import Brief, MistakeCategory
 logger = logging.getLogger("wafel.api")
 
 DEFAULT_TIMEOUT_SEC = 5.0
+ENDED_TIMEOUT_SEC = 15.0
 
 
 class WafelApi:
@@ -28,16 +29,31 @@ class WafelApi:
     def _url(self, session_id: str, path: str) -> str:
         return f"{self._base_url}/api/agent/sessions/{session_id}/{path}"
 
-    async def _post(self, session_id: str, path: str, body: dict[str, Any]) -> httpx.Response:
+    async def _post(
+        self,
+        session_id: str,
+        path: str,
+        body: dict[str, Any],
+        timeout: float = DEFAULT_TIMEOUT_SEC,
+    ) -> httpx.Response:
         response = await self._client.post(
-            self._url(session_id, path), json=body, headers={"X-Agent-Secret": self._secret}
+            self._url(session_id, path),
+            json=body,
+            headers={"X-Agent-Secret": self._secret},
+            timeout=timeout,
         )
         response.raise_for_status()
         return response
 
-    async def _post_quietly(self, session_id: str, path: str, body: dict[str, Any]) -> bool:
+    async def _post_quietly(
+        self,
+        session_id: str,
+        path: str,
+        body: dict[str, Any],
+        timeout: float = DEFAULT_TIMEOUT_SEC,
+    ) -> bool:
         try:
-            await self._post(session_id, path, body)
+            await self._post(session_id, path, body, timeout)
         except (httpx.HTTPError, ValueError) as exc:
             logger.warning("POST %s failed for session %s: %s", path, session_id, exc)
             return False
@@ -81,7 +97,10 @@ class WafelApi:
         self, session_id: str, transcript: list[dict[str, Any]], duration_sec: int
     ) -> None:
         await self._post_quietly(
-            session_id, "ended", {"transcript": transcript, "durationSec": duration_sec}
+            session_id,
+            "ended",
+            {"transcript": transcript, "durationSec": duration_sec},
+            timeout=ENDED_TIMEOUT_SEC,
         )
 
     async def failed(self, session_id: str, reason: str) -> None:
