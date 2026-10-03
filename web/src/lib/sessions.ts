@@ -24,6 +24,7 @@ const mistakeCategories = Object.values(MistakeCategory) as [MistakeCategory, ..
 export const createSessionSchema = z.object({
   type: z.enum(sessionTypes),
   scenarioId: z.string().min(1).optional(),
+  topic: z.string().min(1).max(120).optional(),
 });
 
 export const transcriptSchema = z.array(
@@ -125,6 +126,13 @@ async function resolveScenario(input: CreateSessionInput, learner: Learner) {
   return scenario;
 }
 
+const TOPIC_TYPES: SessionType[] = [SessionType.LESSON, SessionType.SHADOWING];
+
+async function resolveTopic(input: CreateSessionInput, learner: Learner): Promise<string | null> {
+  if (!TOPIC_TYPES.includes(input.type)) return null;
+  return input.topic ?? nextTopic(learner.level, await coveredTopics());
+}
+
 async function assembleBrief(
   session: { id: string; type: SessionType; topic: string | null },
   learner: Learner,
@@ -146,8 +154,7 @@ export async function createSession(
   const learner = await requireLearner();
   const scenario = await resolveScenario(input, learner);
   const id = randomUUID();
-  const topic =
-    input.type === SessionType.LESSON ? nextTopic(learner.level, await coveredTopics()) : null;
+  const topic = await resolveTopic(input, learner);
   const brief = await assembleBrief({ id, type: input.type, topic }, learner, scenario);
 
   await db.session.create({

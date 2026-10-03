@@ -1,8 +1,9 @@
 import { AccessToken, AgentDispatchClient, RoomServiceClient } from "livekit-server-sdk";
 import { log } from "@/lib/log";
+import { LEARNER_IDENTITY } from "@/lib/session-live";
 
 export const AGENT_NAME = "wafel-tutor";
-export const LEARNER_IDENTITY = "learner";
+export { LEARNER_IDENTITY };
 
 const ROOM_PREFIX = "wafel-";
 const EMPTY_TIMEOUT_SEC = 300;

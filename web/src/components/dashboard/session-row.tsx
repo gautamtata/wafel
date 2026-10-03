@@ -1,31 +1,15 @@
-import {
-  ChevronRight,
-  Drama,
-  GraduationCap,
-  type LucideIcon,
-  MessagesSquare,
-  PenLine,
-  Repeat2,
-} from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import Link from "next/link";
-import type { SessionType } from "@/generated/prisma/enums";
+import { SESSION_TYPE_ICONS } from "@/components/session-type-icons";
 import type { RecentSession } from "@/lib/dashboard";
 import { formatCents, formatDay, formatDuration } from "@/lib/format";
 import { sessionHref } from "@/lib/links";
-import { SESSION_STATUS_NOTES, SESSION_TYPE_LABELS } from "@/lib/session-labels";
-
-const TYPE_ICONS: Record<SessionType, LucideIcon> = {
-  SHADOWING: Repeat2,
-  LESSON: GraduationCap,
-  ROLEPLAY: Drama,
-  FREE_TALK: MessagesSquare,
-  MISTAKE_REVIEW: PenLine,
-};
+import { SESSION_STATUS_NOTES, SESSION_TYPE_LABELS, sessionTitle } from "@/lib/session-labels";
 
 export function SessionRow({ session, now }: { session: RecentSession; now: Date }) {
-  const Icon = TYPE_ICONS[session.type];
+  const Icon = SESSION_TYPE_ICONS[session.type];
   const typeLabel = SESSION_TYPE_LABELS[session.type];
-  const title = session.topic ?? session.scenarioTitle ?? typeLabel;
+  const title = sessionTitle(session);
   const when = session.startedAt ?? session.endedAt;
   const note = SESSION_STATUS_NOTES[session.status];
   const meta = [

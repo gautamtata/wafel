@@ -114,6 +114,16 @@ describe("createSession", () => {
     expect(covered).not.toContain(b.topic);
   });
 
+  it("uses an explicit topic for LESSON and SHADOWING, none for FREE_TALK", async () => {
+    const lesson = await createSession({ type: "LESSON", topic: topics[3] });
+    expect((await getSessionView(lesson.sessionId)).topic).toBe(topics[3]);
+    expect((await getBrief(lesson.sessionId)).topic).toBe(topics[3]);
+    const shadowing = await createSession({ type: "SHADOWING", topic: "Rolling your r's" });
+    expect((await getSessionView(shadowing.sessionId)).topic).toBe("Rolling your r's");
+    const talk = await createSession({ type: "FREE_TALK", topic: topics[0] });
+    expect((await getSessionView(talk.sessionId)).topic).toBeNull();
+  });
+
   it("requires a scenario for ROLEPLAY and snapshots it into the brief", async () => {
     await expect(createSession({ type: "ROLEPLAY" })).rejects.toMatchObject({ status: 400 });
     await expect(createSession({ type: "ROLEPLAY", scenarioId: "nope" })).rejects.toMatchObject({ status: 404 });
