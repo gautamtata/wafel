@@ -61,10 +61,24 @@ describe("generateRecap", () => {
     expect(Object.keys(schema.properties).sort()).toEqual(["levelNote", "memory", "nextStep", "summary"]);
     expect(String(params.instructions)).toMatch(/two sentences/);
     expect(String(params.instructions)).toMatch(/do not invent/);
-    expect(String(params.input)).toContain("native language (ISO 639-1 code): en");
+    expect(String(params.instructions)).toContain('Write "summary", "levelNote" and "nextStep" in English; write "memory" in English.');
+    expect(String(params.input)).toContain("native language: English (en)");
     expect(String(params.input)).toContain("[learner] Yo soy muy bien, gracias.");
     expect(String(params.input)).toContain('"corrected":"Estoy muy bien"');
     expect(String(params.input)).toContain('"word":"gracias"');
+  });
+
+  it("resolves the native language name for the instructions and falls back to the code", async () => {
+    const { client, parse } = fakeClient(canned);
+    await generateRecap({ ...input, brief: { ...brief, nativeLanguage: "de" } }, client);
+    expect(String((parse.mock.calls[0] as unknown as [{ instructions: string }])[0].instructions)).toContain(
+      'Write "summary", "levelNote" and "nextStep" in German;',
+    );
+
+    await generateRecap({ ...input, brief: { ...brief, nativeLanguage: "xx" } }, client);
+    expect(String((parse.mock.calls[1] as unknown as [{ instructions: string }])[0].instructions)).toContain(
+      'Write "summary", "levelNote" and "nextStep" in xx;',
+    );
   });
 
   it("trims an overlong memory", async () => {
