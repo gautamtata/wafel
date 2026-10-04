@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { Cefr } from "@/generated/prisma/enums";
+import { normalizeWord } from "@/lib/mastery";
 
 export const UNIT_LIMITS = {
   targetWords: { min: 10, max: 14 },
@@ -24,8 +25,11 @@ export const unitContentSchema = z.object({
     .array(z.object({ word: line, translation: line, example: line }))
     .min(UNIT_LIMITS.targetWords.min)
     .max(UNIT_LIMITS.targetWords.max)
-    .refine((words) => new Set(words.map((w) => w.word.toLowerCase())).size === words.length, {
-      message: "targetWords must be unique",
+    .refine((words) => words.every((w) => normalizeWord(w.word).length > 0), {
+      message: "targetWords must contain a word after normalisation (not just an article or punctuation)",
+    })
+    .refine((words) => new Set(words.map((w) => normalizeWord(w.word))).size === words.length, {
+      message: "targetWords must be unique after normalisation (case, articles, punctuation ignored)",
     }),
   modelSentences: z.array(bilingual).length(UNIT_LIMITS.modelSentences),
   scenarioHint: line.optional(),

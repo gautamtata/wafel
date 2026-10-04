@@ -28,4 +28,14 @@ describe("unit content schema", () => {
     expect(unitFileSchema.safeParse([unit, { ...unit, order: 2 }]).success).toBe(false);
     expect(unitFileSchema.safeParse([unit, { ...unit, id: "es-MX-A1-02" }]).success).toBe(false);
   });
+
+  it("rejects words that collide or vanish after normalisation", () => {
+    const unit = unitContentSchema.parse(placeholder[0]);
+    const word = (text: string) => ({ word: text, translation: "x", example: text });
+    const base = unit.targetWords.slice(0, 11);
+    expect(unitContentSchema.safeParse({ ...unit, targetWords: [...base, word("la casa"), word("Casa")] }).success).toBe(false);
+    expect(unitContentSchema.safeParse({ ...unit, targetWords: [...base, word("¿gato?"), word("gato")] }).success).toBe(false);
+    expect(unitContentSchema.safeParse({ ...unit, targetWords: [...base, word("¿?")] }).success).toBe(false);
+    expect(unitContentSchema.safeParse({ ...unit, targetWords: [...base, word("la casa"), word("gato")] }).success).toBe(true);
+  });
 });
