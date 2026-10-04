@@ -214,6 +214,13 @@ describeDb("sessions", () => {
       expect((await getSessionView(sessionId)).capMinutes).toBe(learner.sessionCapMinutes);
     });
 
+    it("getSessionView exposes the unit's known lines for the phrase-card fallback", async () => {
+      const { sessionId } = await createSession({ type: "LESSON", unitId: testUnitId });
+      const { knownLines } = await getSessionView(sessionId);
+      expect(knownLines).toEqual(testWords.map((word) => ({ spanish: word, english: `${word} — ${word}` })));
+      expect((await getSessionView((await createSession({ type: "FREE_TALK" })).sessionId)).knownLines).toEqual([]);
+    });
+
     it("concurrent markEnded calls transition exactly once", async () => {
       const { sessionId } = await createSession({ type: "FREE_TALK" });
       await markStarted(sessionId);

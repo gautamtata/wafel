@@ -11,6 +11,7 @@ import { useHydrated } from "@/hooks/use-hydrated";
 import { type PollStatus, useSessionStatus } from "@/hooks/use-session-status";
 import { useWakeLock } from "@/hooks/use-wake-lock";
 import { clearCredentials, readCredentials, type SessionCredentials } from "@/lib/session-credentials";
+import type { KnownLine } from "@/lib/session-live";
 import { LiveSession } from "./live-session";
 import { PreStart } from "./pre-start";
 import { StatusBanner } from "./status-banner";
@@ -31,6 +32,7 @@ export type SessionRoomProps = {
   label: string;
   title: string;
   capMinutes: number;
+  knownLines: KnownLine[];
 };
 
 const ERRORS = {
@@ -85,7 +87,7 @@ const recapLink = (id: string) => (
   </Link>
 );
 
-export function SessionRoom({ id, type, status, label, title, capMinutes }: SessionRoomProps) {
+export function SessionRoom({ id, type, status, label, title, capMinutes, knownLines }: SessionRoomProps) {
   const router = useRouter();
   const hydrated = useHydrated();
   const initial = useMemo(() => initialPhase(id, status, hydrated), [id, status, hydrated]);
@@ -152,6 +154,7 @@ export function SessionRoom({ id, type, status, label, title, capMinutes }: Sess
             label={label}
             title={title}
             capMinutes={capMinutes}
+            knownLines={knownLines}
             micError={micError}
             onTutorMissing={onTutorMissing}
           />
