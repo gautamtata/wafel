@@ -22,6 +22,7 @@ import {
   type Phrase,
   PHRASE_TOPIC,
   toTurns,
+  type Turn,
 } from "@/lib/session-live";
 import { cn } from "@/lib/utils";
 import { NoteStack } from "./note-card";
@@ -67,8 +68,19 @@ function useLatestPhrase(): { phrase: Phrase | null; dismiss: () => void } {
   return { phrase, dismiss };
 }
 
-const tutorState = (state: ReturnType<typeof useVoiceAssistant>["state"]): TutorState =>
+type AgentState = ReturnType<typeof useVoiceAssistant>["state"];
+
+/** Anything before the tutor is actually running (initializing, connecting, undefined) reads as idle. */
+const tutorState = (state: AgentState): TutorState =>
   state === "speaking" || state === "listening" || state === "thinking" ? state : "idle";
+
+/** True once the tutor has spoken or sent a transcript; latched so the label never comes back. */
+function useTutorReady(state: AgentState, turns: Turn[]): boolean {
+  const [ready, setReady] = useState(false);
+  const heard = state === "speaking" || turns.some((turn) => turn.role === "tutor");
+  if (heard && !ready) setReady(true);
+  return ready || heard;
+}
 
 export function LiveSession({ label, title, capMinutes, micError, onTutorMissing }: LiveSessionProps) {
   const room = useRoomContext();
@@ -82,6 +94,7 @@ export function LiveSession({ label, title, capMinutes, micError, onTutorMissing
   const { isMicrophoneEnabled, localParticipant } = useLocalParticipant();
   const connected = connection === ConnectionState.Connected;
   const elapsed = useElapsedSeconds(connected);
+  const ready = useTutorReady(state, turns);
   const [ending, setEnding] = useState(false);
 
   const end = useCallback(() => {
@@ -136,6 +149,11 @@ export function LiveSession({ label, title, capMinutes, micError, onTutorMissing
             )}
           />
         </div>
+        {!ready && (
+          <p className="text-sm text-muted-foreground" role="status">
+            Getting ready…
+          </p>
+        )}
         <div className="w-full max-w-xl">
           <PhraseCard phrase={phrase} onDismiss={dismissPhrase} />
         </div>

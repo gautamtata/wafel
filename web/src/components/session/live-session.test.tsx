@@ -7,6 +7,14 @@ import { LiveSession } from "./live-session";
 type Listener = (message: { payload: Uint8Array }) => void;
 const listeners = new Map<string, Listener>();
 
+type Transcription = { text: string; participantInfo: { identity: string }; streamInfo: { id: string; timestamp: number } };
+const tutorLine = (id: string, text: string): Transcription => ({
+  text,
+  participantInfo: { identity: "wafel-tutor" },
+  streamInfo: { id, timestamp: 1 },
+});
+const live = vi.hoisted(() => ({ state: "listening", transcriptions: [] as unknown[] }));
+
 vi.mock("@livekit/components-react", () => ({
   RoomAudioRenderer: () => null,
   useConnectionState: () => "connected",
@@ -14,17 +22,21 @@ vi.mock("@livekit/components-react", () => ({
   useLocalParticipant: () => ({ isMicrophoneEnabled: true, localParticipant: { setMicrophoneEnabled: vi.fn() } }),
   useRoomContext: () => ({ disconnect: vi.fn() }),
   useTrackVolume: () => 0,
-  useTranscriptions: () => [],
-  useVoiceAssistant: () => ({ agent: {}, state: "listening", audioTrack: undefined }),
+  useTranscriptions: () => live.transcriptions,
+  useVoiceAssistant: () => ({ agent: {}, state: live.state, audioTrack: undefined }),
 }));
 vi.mock("@/hooks/use-tutor-presence", () => ({ useTutorPresence: vi.fn(), useElapsedSeconds: () => 0 }));
 vi.mock("./tutor-orb", () => ({
-  TutorOrb: ({ className }: { className?: string }) => <div data-testid="orb" className={className} />,
+  TutorOrb: ({ className, state }: { className?: string; state: string }) => (
+    <div data-testid="orb" data-state={state} className={className} />
+  ),
 }));
 
 afterEach(() => {
   cleanup();
   listeners.clear();
+  live.state = "listening";
+  live.transcriptions = [];
 });
 
 const send = (topic: string, value: unknown) =>
@@ -32,6 +44,30 @@ const send = (topic: string, value: unknown) =>
 
 const renderSession = () =>
   render(<LiveSession label="Lesson" title="Last weekend" capMinutes={15} micError={null} onTutorMissing={vi.fn()} />);
+
+describe("LiveSession readiness", () => {
+  it("shows a getting-ready label until the tutor has spoken", () => {
+    live.state = "initializing";
+    const { rerender, unmount } = renderSession();
+    expect(screen.getByRole("status")).toHaveTextContent("Getting ready…");
+    expect(screen.getByTestId("orb")).toHaveAttribute("data-state", "idle");
+
+    live.state = "speaking";
+    rerender(<LiveSession label="Lesson" title="Last weekend" capMinutes={15} micError={null} onTutorMissing={vi.fn()} />);
+    expect(screen.queryByRole("status")).not.toBeInTheDocument();
+
+    live.state = "listening";
+    rerender(<LiveSession label="Lesson" title="Last weekend" capMinutes={15} micError={null} onTutorMissing={vi.fn()} />);
+    expect(screen.queryByRole("status")).not.toBeInTheDocument();
+    unmount();
+  });
+
+  it("treats a tutor transcript as ready too", () => {
+    live.transcriptions = [tutorLine("t1", "¡Hola!")];
+    renderSession();
+    expect(screen.queryByRole("status")).not.toBeInTheDocument();
+  });
+});
 
 describe("LiveSession phrase and notes", () => {
   it("replaces the note stack with the phrase card until the phrase is dismissed", () => {

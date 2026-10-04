@@ -13,7 +13,7 @@ from livekit.agents.llm.tool_context import FunctionTool
 from livekit.agents.voice.events import ConversationItemAddedEvent
 
 from wafel_agent.api import WafelApi
-from wafel_agent.brief import Brief
+from wafel_agent.brief import Brief, LanguagePolicy, SessionType
 from wafel_agent.prompts import build_voice_prompt
 
 logger = logging.getLogger("wafel.tutor")
@@ -27,10 +27,18 @@ CAP_FAREWELL_INSTRUCTION = (
 LEARNER_IDENTITY = "learner"
 LEARNER_GRACE_SEC = 20.0
 LEARNER_LEFT_REASON = "learner left"
-GREETING_INSTRUCTION = (
-    "Saluda al alumno en una frase, preséntate brevemente y empieza el paso uno del guion de "
-    "la sesión: di el objetivo, y antes de cada ejemplo llama a show_phrase."
+SCRIPT_START_INSTRUCTION = (
+    "Empieza el paso uno del guion de la sesión: di el objetivo y, antes de cada ejemplo o "
+    "frase modelo, llama a show_phrase."
 )
+_GREETING_SUFFIX = " Sin llamar herramientas y sin empezar todavía el guion."
+_DEFAULT_GOALS: dict[SessionType, str] = {
+    SessionType.SHADOWING: "practice pronunciation by repeating useful phrases",
+    SessionType.LESSON: "practice everyday Spanish",
+    SessionType.ROLEPLAY: "practice a real-life conversation",
+    SessionType.FREE_TALK: "have a relaxed conversation in Spanish",
+    SessionType.MISTAKE_REVIEW: "review your recent mistakes",
+}
 
 TranscriptRole = Literal["tutor", "learner"]
 Shutdown = Callable[[str], None]
@@ -44,6 +52,8 @@ class ReplySession(Protocol):
     """The slice of AgentSession the lifecycle needs: ask the tutor to speak and await it."""
 
     def generate_reply(self, *, instructions: str) -> Awaitable[Any]: ...
+
+    async def aclose(self) -> None: ...
 
 
 def _zero() -> float:
@@ -75,13 +85,44 @@ class WafelTutor(Agent):
     def __init__(self, brief: Brief, tools: list[FunctionTool]) -> None:
         super().__init__(instructions=build_voice_prompt(brief), tools=list(tools))
 
-    async def on_enter(self) -> None:
-        # GPT-Live occasionally never starts the first reply (10 s timeout in livekit-agents,
-        # surfaced on the handle rather than raised); give the greeting one more try.
-        handle = await self.session.generate_reply(instructions=GREETING_INSTRUCTION)
+
+def _session_goal(brief: Brief) -> str:
+    if brief.unit is not None:
+        return brief.unit.can_do
+    return brief.topic or _DEFAULT_GOALS[brief.type]
+
+
+def greeting_instruction(brief: Brief) -> str:
+    """One sentence, no tools: the first audio must not wait for a delegated tool call."""
+    language = "inglés" if brief.policy is LanguagePolicy.BILINGUAL else "español"
+    if brief.type is SessionType.ROLEPLAY:
+        return (
+            f"Saluda al alumno brevemente en {language}, en tu personaje del juego de rol, "
+            f"en una sola frase.{_GREETING_SUFFIX}"
+        )
+    goal = _session_goal(brief)
+    rendering = "" if language == "inglés" else ", parafraseado en español"
+    return (
+        f"Saluda al alumno en {language} en una sola frase e incluye el objetivo de hoy"
+        f"{rendering}: «{goal}».{_GREETING_SUFFIX}"
+    )
+
+
+async def greet(session: ReplySession, brief: Brief) -> None:
+    """Short hello first, then the script as a second turn.
+
+    GPT-Live occasionally never starts the first reply (10 s timeout in livekit-agents,
+    surfaced on the handle rather than raised); the greeting gets one more try.
+    """
+    instruction = greeting_instruction(brief)
+    try:
+        handle = await session.generate_reply(instructions=instruction)
         if handle.exception() is not None and not handle.interrupted:
             logger.warning("greeting did not start (%s); retrying once", handle.exception())
-            self.session.generate_reply(instructions=GREETING_INSTRUCTION)
+            await session.generate_reply(instructions=instruction)
+        await session.generate_reply(instructions=SCRIPT_START_INSTRUCTION)
+    except Exception as exc:
+        logger.warning("greeting failed: %s", exc)
 
 
 class LessonLifecycle:
