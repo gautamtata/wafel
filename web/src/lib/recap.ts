@@ -1,6 +1,7 @@
 import OpenAI from "openai";
 import { zodTextFormat } from "openai/helpers/zod";
 import { z } from "zod";
+import { NATIVE_LANGUAGES } from "@/lib/native-languages";
 import { validateRecapText } from "@/lib/recap-validate";
 import type { Brief, RecapMistake, RecapText, TranscriptEntry, VocabEntry } from "@/lib/types";
 
@@ -26,15 +27,20 @@ Produce a recap as JSON:
 - summary: exactly two sentences about what the learner practised and how it went.
 - levelNote: one line on how the learner's performance compares with their CEFR level.
 - memory: at most 60 words, third person, facts worth remembering for the next lesson (interests, struggles, what was covered).
-- nextStep: one sentence telling the learner what to focus on next time, based on the unit, the logged mistakes and the weak words.
-Write "levelNote", "memory" and "nextStep" in English.`;
+- nextStep: one sentence telling the learner what to focus on next time, based on the unit, the logged mistakes and the weak words.`;
+
+const nativeLanguageName = (code: string): string =>
+  NATIVE_LANGUAGES.find((language) => language.code === code)?.name ?? code;
+
+const instructions = (nativeLanguage: string): string =>
+  `${INSTRUCTIONS}\nWrite "summary", "levelNote" and "nextStep" in ${nativeLanguageName(nativeLanguage)}; write "memory" in English.`;
 
 function prompt({ brief, transcript, mistakes, newVocab }: RecapInput): string {
   const lines = transcript.map((entry) => `[${entry.role}] ${entry.text}`).join("\n");
   const context = { ...brief, sessionId: undefined };
   return [
     `Target language: ${brief.language.name} (${brief.language.code}).`,
-    `Learner's native language (ISO 639-1 code): ${brief.nativeLanguage}. Write "summary" in that language.`,
+    `Learner's native language: ${nativeLanguageName(brief.nativeLanguage)} (${brief.nativeLanguage}).`,
     `Learner level: ${brief.level}.`,
     "",
     "Lesson brief:",
@@ -54,7 +60,7 @@ const client = () => (defaultClient ??= new OpenAI());
 export async function generateRecap(input: RecapInput, openai: OpenAI = client()): Promise<RecapText> {
   const response = await openai.responses.parse({
     model: RECAP_MODEL,
-    instructions: INSTRUCTIONS,
+    instructions: instructions(input.brief.nativeLanguage),
     input: prompt(input),
     text: { format: zodTextFormat(recapTextSchema, "recap") },
   });

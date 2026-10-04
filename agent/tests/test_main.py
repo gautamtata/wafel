@@ -1,5 +1,6 @@
 import asyncio
 import json
+from collections.abc import Generator
 from pathlib import Path
 
 import httpx
@@ -23,7 +24,13 @@ from wafel_agent.main import (
     run_lesson,
     session_id_from_metadata,
 )
-from wafel_agent.tutor import LEARNER_IDENTITY, LearnerPresence, LessonLifecycle
+from wafel_agent.tutor import (
+    LEARNER_IDENTITY,
+    SCRIPT_START_INSTRUCTION,
+    LearnerPresence,
+    LessonLifecycle,
+    greeting_instruction,
+)
 
 BASE = "http://wafel.test"
 
@@ -160,9 +167,30 @@ class _Ctx:
         self.shutdown_callbacks.append(callback)
 
 
+class _Handle:
+    interrupted = False
+
+    def exception(self) -> BaseException | None:
+        return None
+
+    def __await__(self) -> Generator[None, None, "_Handle"]:
+        async def done() -> _Handle:
+            return self
+
+        return done().__await__()
+
+
 class _Session:
-    def generate_reply(self, *, instructions: str) -> object:
-        raise AssertionError("not expected")
+    def __init__(self, calls: list[str] | None = None) -> None:
+        self.calls = calls if calls is not None else []
+        self.closed = False
+
+    def generate_reply(self, *, instructions: str) -> _Handle:
+        self.calls.append(instructions)
+        return _Handle()
+
+    async def aclose(self) -> None:
+        self.closed = True
 
 
 def test_join_timeout_is_four_minutes() -> None:
@@ -170,11 +198,12 @@ def test_join_timeout_is_four_minutes() -> None:
 
 
 @respx.mock
-async def test_run_lesson_starts_only_after_learner_joins(brief: Brief) -> None:
+async def test_run_lesson_connects_model_before_join_and_bills_after(brief: Brief) -> None:
     started = respx.post(f"{BASE}/api/agent/sessions/sample-session/started").respond(204)
     failed = respx.post(f"{BASE}/api/agent/sessions/sample-session/failed").respond(204)
     ctx = _Ctx()
     order: list[str] = []
+    session = _Session(order)
 
     async def wait(_ctx: object) -> object:
         await asyncio.sleep(0.01)
@@ -184,33 +213,35 @@ async def test_run_lesson_starts_only_after_learner_joins(brief: Brief) -> None:
     async def start(*_args: object) -> _Session:
         order.append("start")
         assert not started.called
-        return _Session()
+        return session
 
     await run_lesson(ctx, brief, WafelApi(BASE, "s"), wait=wait, start=start)  # type: ignore[arg-type]
-    assert order == ["joined", "start"]
+    assert order == ["start", "joined", greeting_instruction(brief), SCRIPT_START_INSTRUCTION]
     assert started.called and not failed.called
     assert ctx.reasons == []
     assert len(ctx.shutdown_callbacks) == 1
+    assert not session.closed
 
 
 @respx.mock
 async def test_run_lesson_fails_when_learner_never_joins(brief: Brief) -> None:
     started = respx.post(f"{BASE}/api/agent/sessions/sample-session/started").respond(204)
     failed = respx.post(f"{BASE}/api/agent/sessions/sample-session/failed").respond(204)
+    ended = respx.post(f"{BASE}/api/agent/sessions/sample-session/ended").respond(204)
     ctx = _Ctx()
-    starts: list[object] = []
+    session = _Session()
 
     async def wait(_ctx: object) -> object:
         await asyncio.sleep(10)
         return object()
 
-    async def start(*args: object) -> _Session:
-        starts.append(args)
-        return _Session()
+    async def start(*_args: object) -> _Session:
+        return session
 
     await run_lesson(ctx, brief, WafelApi(BASE, "s"), wait=wait, start=start, join_timeout=0.01)  # type: ignore[arg-type]
-    assert starts == []
-    assert not started.called
+    assert session.closed
+    assert session.calls == []
+    assert not started.called and not ended.called
     assert json.loads(failed.calls.last.request.content) == {"reason": LEARNER_NEVER_JOINED}
     assert ctx.reasons == [LEARNER_NEVER_JOINED]
     assert ctx.shutdown_callbacks == []

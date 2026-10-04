@@ -22,6 +22,7 @@ const SESSION: SessionView = {
   durationSec: 600,
   estimatedCostCents: 50,
   capMinutes: 15,
+  knownLines: [],
   recap: null,
   transcript: null,
 };

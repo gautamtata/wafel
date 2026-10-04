@@ -1,5 +1,7 @@
 import type { TextStreamData } from "@livekit/components-react";
 import { z } from "zod";
+import { normalize } from "@/lib/recap-validate";
+import type { BriefUnit } from "@/lib/types";
 
 export const LEARNER_IDENTITY = "learner";
 export const NOTE_TOPIC = "wafel.note";
@@ -10,6 +12,8 @@ export type TurnRole = "tutor" | "learner";
 export type Turn = { id: string; role: TurnRole; text: string; at: number; final: boolean };
 export type Note = { id: string; title: string; body: string };
 export type Phrase = { id: string; spanish: string; english: string };
+/** A Spanish line the unit already glosses, so the web can show its card without a tool call. */
+export type KnownLine = { spanish: string; english: string };
 
 const noteSchema = z.object({ type: z.literal("note"), title: z.string(), body: z.string() });
 const phraseSchema = z.object({
@@ -58,6 +62,25 @@ export function toTurns(streams: readonly TextStreamData[]): Turn[] {
   }
   return [...bySegment.values()];
 }
+
+/** Model sentences, pattern examples and target-word examples with their English. */
+export function knownLinesOf(unit: Pick<BriefUnit, "modelSentences" | "pattern" | "targetWords"> | undefined): KnownLine[] {
+  if (!unit) return [];
+  return [
+    ...unit.modelSentences.map((line) => ({ spanish: line.es, english: line.en })),
+    ...unit.pattern.examples.map((line) => ({ spanish: line.es, english: line.en })),
+    ...unit.targetWords.map((word) => ({ spanish: word.example, english: `${word.word} — ${word.translation}` })),
+  ];
+}
+
+/** The first known line the text contains, compared after normalisation (case, accents kept, punctuation dropped). */
+export function matchKnownLine(text: string, lines: readonly KnownLine[]): KnownLine | null {
+  const haystack = normalize(text);
+  if (!haystack) return null;
+  return lines.find((line) => haystack.includes(normalize(line.spanish))) ?? null;
+}
+
+export const sameLine = (a: string, b: string): boolean => normalize(a) === normalize(b);
 
 export function formatClock(totalSeconds: number): string {
   const minutes = Math.floor(totalSeconds / 60);

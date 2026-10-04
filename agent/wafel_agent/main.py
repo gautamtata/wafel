@@ -24,6 +24,7 @@ from wafel_agent.tutor import (
     ReplySession,
     Shutdown,
     WafelTutor,
+    greet,
 )
 
 logger = logging.getLogger("wafel.main")
@@ -131,27 +132,33 @@ async def run_lesson(
     start: SessionStarter = start_session,
     join_timeout: float = LEARNER_JOIN_TIMEOUT_S,
 ) -> None:
-    """Wait for the learner, then run the lesson; the GPT-Live session only exists once they are in.
+    """Create the GPT-Live session first so the model is connected by the time the learner joins.
 
-    Nothing that bills or marks the session ACTIVE happens before the learner joins, and the
-    shutdown callback (which posts `ended`) is registered only after the wait succeeds.
+    RoomIO links the learner in the background and holds audio until their track is up, so
+    starting early is safe. Nothing that bills or marks the session ACTIVE happens before the
+    learner joins, and the shutdown callback (which posts `ended`) is registered only after the
+    wait succeeds; a join timeout closes the session and posts `failed` instead.
     """
+    lifecycle = LessonLifecycle(brief, api, ctx.shutdown)
+    session = await start(ctx, brief, lifecycle, api)
     try:
         await asyncio.wait_for(wait(ctx), join_timeout)
     except TimeoutError:
         logger.warning("learner did not join within %.0fs; giving up", join_timeout)
+        await session.aclose()
         await api.failed(brief.session_id, LEARNER_NEVER_JOINED)
         await api.aclose()
         ctx.shutdown(LEARNER_NEVER_JOINED)
         return
 
-    lifecycle = LessonLifecycle(brief, api, ctx.shutdown)
+    logger.info("learner joined; greeting")
     presence = LearnerPresence(ctx.room, lifecycle.request_end)
     ctx.add_shutdown_callback(build_shutdown(presence, lifecycle, api))
     presence.watch()
-    session = await start(ctx, brief, lifecycle, api)
+    greeting = asyncio.create_task(greet(session, brief), name="wafel-greeting")
     lifecycle.mark_started(session)
     await api.started(brief.session_id)
+    await greeting
 
 
 async def entrypoint(ctx: JobContext) -> None:

@@ -139,10 +139,12 @@ _SHOW_PHRASE_POLICY = (
 )
 
 _RATE_ATTEMPT_POLICY = (
-    "rate_attempt: después de cada intento del alumno con una palabra objetivo, llámala con "
+    "rate_attempt: después de cada intento o repetición del alumno de una frase con una "
+    "palabra objetivo (también durante la presentación), llámala ANTES de responderle, con "
     "kind WORD y una nota de 0 a 3 (0 no lo intentó o incomprensible, 1 con errores graves, 2 "
-    "comprensible con algún fallo, 3 correcto y natural); al final de la sesión, llámala una "
-    "vez con kind PATTERN para el patrón de la unidad. En target pasa SIEMPRE la palabra "
+    "comprensible con algún fallo, 3 correcto y natural; una repetición vale como máximo 2); "
+    "cuando el alumno produzca el patrón correctamente en una frase propia, llámala con kind "
+    "PATTERN. En target pasa SIEMPRE la palabra "
     "objetivo tal cual aparece en la lista de la unidad, letra por letra, aunque el alumno "
     "haya usado una forma conjugada, en femenino o en plural."
 )
@@ -232,10 +234,13 @@ def _lesson_script(brief: Brief) -> str:
         "Uno, presentación (dos minutos): di en inglés el objetivo (can-do) de la unidad, "
         f"{_explanation_instruction(brief)} con dos de sus ejemplos (show_phrase con cada uno), "
         "y luego presenta las cinco frases modelo una por una: show_phrase, dila, di su "
-        "significado y pide que la repita. "
+        "significado y pide que la repita; si la frase contiene una palabra objetivo, tras la "
+        "repetición llama a rate_attempt con kind WORD (una repetición vale como máximo 2; el 3 "
+        "es solo para producción propia). "
         "Dos, práctica controlada (cinco minutos): ejercicios de sustitución con las palabras "
         "objetivo, empezando por las de nota más baja; tras cada intento, rate_attempt con "
-        "kind WORD. "
+        "kind WORD; si el alumno produce el patrón correctamente en una frase propia, llama a "
+        "rate_attempt con kind PATTERN ya, sin esperar al paso cuatro. "
         f"Tres, práctica libre (cinco minutos): mini juego de rol basado en «{hint}» usando el "
         "patrón; reformula según el modo de corrección y registra cada error real con "
         "log_mistake. "
@@ -368,12 +373,20 @@ def build_backend_prompt(brief: Brief) -> str:
             "learner must understand or repeat (model sentences, pattern examples, target "
             "words with their example, recasts); one call per phrase; never a phrase without "
             "a card. spanish is the exact Spanish line, english its translation.",
-            "- rate_attempt(target, kind, score, note?): after each learner attempt at a unit "
-            "target word, kind WORD; once at the end of the session for the unit's grammar "
-            "pattern, kind PATTERN. score 0-3: 0 no attempt or unintelligible, 1 serious "
-            "errors, 2 understandable with a slip, 3 correct and natural. target must be the "
-            "unit's word string exactly as listed, even if the learner used a conjugated, "
-            "feminine or plural form. note is one short optional remark.",
+            "- rate_attempt(target, kind, score, note?): after EVERY learner attempt at or "
+            "repetition of a phrase containing a unit target word (including repetitions "
+            "during the presentation), kind WORD, one call per target word heard, before the "
+            "tutor replies; kind PATTERN when the learner produces the unit's grammar pattern "
+            "correctly in a sentence of their own, and once more at the end of the session. "
+            "score 0-3: 0 no attempt or unintelligible, 1 serious "
+            "errors, 2 understandable with a slip, 3 correct and natural. A repetition of a "
+            "phrase the tutor just said scores at most 2; 3 is only for the learner's own "
+            "production. target must be the unit's word string exactly as listed, even if the "
+            "learner used a conjugated, feminine or plural form. note is one short optional "
+            "remark.",
+            "Pronunciation is NOT rateable from this pipeline: you only see a transcript, so "
+            "never log PRONUNCIATION mistakes or rate pronunciation; focus on words, forms and "
+            "word order.",
             "- log_mistake(original, corrected, explanation, category): the authoritative "
             "mistake log. One call per real learner error, original being the exact phrase "
             "heard, corrected the right form, explanation one short sentence, category one of "

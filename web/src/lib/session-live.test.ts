@@ -1,6 +1,6 @@
 import type { TextStreamData } from "@livekit/components-react";
 import { describe, expect, it } from "vitest";
-import { parsePhrase, toTurns } from "./session-live";
+import { knownLinesOf, matchKnownLine, parsePhrase, sameLine, toTurns } from "./session-live";
 
 const stream = (
   id: string,
@@ -45,5 +45,31 @@ describe("parsePhrase", () => {
     expect(parsePhrase(encode({ type: "phrase", spanish: "Hola" }))).toBeNull();
     expect(parsePhrase(encode({ type: "phrase", spanish: "   ", english: "Hi" }))).toBeNull();
     expect(parsePhrase(new TextEncoder().encode("{oops"))).toBeNull();
+  });
+});
+
+describe("known lines", () => {
+  const unit = {
+    modelSentences: [{ es: "Ayer fui al mercado.", en: "Yesterday I went to the market." }],
+    pattern: { name: "pretérito", explanationEn: "x", examples: [{ es: "Comí tacos.", en: "I ate tacos." }] },
+    targetWords: [{ word: "el mercado", translation: "the market", example: "Voy al mercado los sábados." }],
+  };
+
+  it("collects model sentences, pattern examples and target-word examples with their English", () => {
+    expect(knownLinesOf(unit)).toEqual([
+      { spanish: "Ayer fui al mercado.", english: "Yesterday I went to the market." },
+      { spanish: "Comí tacos.", english: "I ate tacos." },
+      { spanish: "Voy al mercado los sábados.", english: "el mercado — the market" },
+    ]);
+    expect(knownLinesOf(undefined)).toEqual([]);
+  });
+
+  it("matches a contained line ignoring case and punctuation", () => {
+    const lines = knownLinesOf(unit);
+    expect(matchKnownLine("Repite: AYER FUI AL MERCADO", lines)?.english).toBe("Yesterday I went to the market.");
+    expect(matchKnownLine("Hoy comí tortas con mi hermana", lines)).toBeNull();
+    expect(matchKnownLine("Muy bien, comí tacos ayer", lines)?.spanish).toBe("Comí tacos.");
+    expect(matchKnownLine("", lines)).toBeNull();
+    expect(sameLine("Ayer fui al mercado", "¡Ayer fui al mercado!")).toBe(true);
   });
 });

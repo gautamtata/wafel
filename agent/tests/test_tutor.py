@@ -1,7 +1,6 @@
 import asyncio
 from collections.abc import Callable, Generator
 from dataclasses import dataclass, field
-from types import SimpleNamespace
 from typing import Any
 
 import pytest
@@ -9,16 +8,18 @@ from livekit import rtc
 from livekit.agents.llm import AgentHandoff, ChatMessage
 from livekit.agents.voice.events import ConversationItemAddedEvent
 
-from wafel_agent.brief import Brief
+from wafel_agent.brief import Brief, LanguagePolicy, SessionType
 from wafel_agent.prompts import build_voice_prompt
 from wafel_agent.tutor import (
     CAP_FAREWELL_INSTRUCTION,
-    GREETING_INSTRUCTION,
     LEARNER_LEFT_REASON,
+    SCRIPT_START_INSTRUCTION,
     LearnerPresence,
     LessonLifecycle,
     TranscriptLog,
     WafelTutor,
+    greet,
+    greeting_instruction,
 )
 
 
@@ -307,25 +308,32 @@ class FakeSession:
 
 
 async def _greet(brief: Brief, first: FakeHandle) -> list[str]:
-    tutor = WafelTutor(brief, tools=[])
     session = FakeSession(first)
-    tutor._activity = SimpleNamespace(session=session)  # type: ignore[assignment]
-    await tutor.on_enter()
+    await greet(session, brief)
     return session.calls
+
+
+async def test_greeting_then_script_start(brief: Brief) -> None:
+    assert await _greet(brief, FakeHandle()) == [
+        greeting_instruction(brief),
+        SCRIPT_START_INSTRUCTION,
+    ]
 
 
 async def test_greeting_retries_once_when_reply_fails(brief: Brief) -> None:
     calls = await _greet(brief, FakeHandle(error=RuntimeError("did not start speaking")))
-    assert calls == [GREETING_INSTRUCTION, GREETING_INSTRUCTION]
-
-
-async def test_greeting_not_retried_on_success(brief: Brief) -> None:
-    assert await _greet(brief, FakeHandle()) == [GREETING_INSTRUCTION]
+    hello = greeting_instruction(brief)
+    assert calls == [hello, hello, SCRIPT_START_INSTRUCTION]
 
 
 async def test_greeting_not_retried_when_interrupted(brief: Brief) -> None:
     calls = await _greet(brief, FakeHandle(error=RuntimeError("x"), interrupted=True))
-    assert calls == [GREETING_INSTRUCTION]
+    assert calls == [greeting_instruction(brief), SCRIPT_START_INSTRUCTION]
+
+
+async def test_greeting_swallows_session_errors(brief: Brief) -> None:
+    calls = await _greet(brief, FakeHandle(raises=RuntimeError("closed")))
+    assert calls == [greeting_instruction(brief)]
 
 
 async def test_repeated_learner_disconnects_end_once(presence: tuple) -> None:
@@ -336,7 +344,34 @@ async def test_repeated_learner_disconnects_end_once(presence: tuple) -> None:
     assert reasons == [LEARNER_LEFT_REASON]
 
 
-def test_greeting_instruction_starts_the_script() -> None:
-    assert "paso uno del guion" in GREETING_INSTRUCTION
-    assert "show_phrase" in GREETING_INSTRUCTION
-    assert "primera pregunta" not in GREETING_INSTRUCTION
+def test_script_start_instruction_starts_step_one() -> None:
+    assert "paso uno del guion" in SCRIPT_START_INSTRUCTION
+    assert "show_phrase" in SCRIPT_START_INSTRUCTION
+
+
+def test_greeting_is_one_sentence_without_tools(lesson: Brief) -> None:
+    hello = greeting_instruction(lesson)
+    assert lesson.unit is not None
+    assert "en inglés" in hello
+    assert lesson.unit.can_do in hello
+    assert "Sin llamar herramientas" in hello
+    assert "show_phrase" not in hello and "paso uno" not in hello
+
+
+def test_greeting_language_follows_policy(lesson: Brief) -> None:
+    target_only = lesson.model_copy(update={"language_policy": LanguagePolicy.TARGET_ONLY})
+    mostly = lesson.model_copy(update={"language_policy": LanguagePolicy.MOSTLY_TARGET})
+    assert "en español" in greeting_instruction(target_only)
+    assert "parafraseado en español" in greeting_instruction(target_only)
+    assert "en español" in greeting_instruction(mostly)
+
+
+def test_greeting_fits_other_session_types(brief: Brief, lesson: Brief) -> None:
+    roleplay = brief.model_copy(update={"type": SessionType.ROLEPLAY})
+    assert "personaje" in greeting_instruction(roleplay)
+    free_talk = lesson.model_copy(
+        update={"type": SessionType.FREE_TALK, "unit": None, "topic": None}
+    )
+    assert "relaxed conversation" in greeting_instruction(free_talk)
+    review = lesson.model_copy(update={"type": SessionType.MISTAKE_REVIEW, "unit": None})
+    assert lesson.topic is not None and lesson.topic in greeting_instruction(review)

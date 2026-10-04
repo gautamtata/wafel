@@ -16,6 +16,7 @@ import { log } from "@/lib/log";
 import { OWNER_ID } from "@/lib/owner";
 import { generateRecap } from "@/lib/recap";
 import { MAX_NEW_VOCAB } from "@/lib/recap-validate";
+import { type KnownLine, knownLinesOf } from "@/lib/session-live";
 import type { Brief, Recap, TranscriptEntry } from "@/lib/types";
 import { recapUnitFor } from "@/lib/unit-progress";
 import { getProgress, getUnit, nextUnitFor } from "@/lib/units";
@@ -62,6 +63,7 @@ export type SessionView = {
   durationSec: number | null;
   estimatedCostCents: number | null;
   capMinutes: number;
+  knownLines: KnownLine[];
   recap: Recap | null;
   transcript: TranscriptEntry[] | null;
 };
@@ -109,6 +111,7 @@ const toView = (row: SessionRow): SessionView => ({
   durationSec: row.durationSec,
   estimatedCostCents: row.estimatedCostCents,
   capMinutes: (row.brief as Brief).capMinutes,
+  knownLines: knownLinesOf((row.brief as Brief).unit),
   recap: (row.recap as Recap | null) ?? null,
   transcript: (row.transcript as TranscriptEntry[] | null) ?? null,
 });

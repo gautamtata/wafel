@@ -15,13 +15,17 @@ import { useCallback, useMemo, useState } from "react";
 import { useElapsedSeconds, useTutorPresence } from "@/hooks/use-tutor-presence";
 import {
   formatClock,
+  type KnownLine,
+  matchKnownLine,
   type Note,
   NOTE_TOPIC,
   parseNote,
   parsePhrase,
   type Phrase,
   PHRASE_TOPIC,
+  sameLine,
   toTurns,
+  type Turn,
 } from "@/lib/session-live";
 import { cn } from "@/lib/utils";
 import { NoteStack } from "./note-card";
@@ -37,6 +41,7 @@ type LiveSessionProps = {
   label: string;
   title: string;
   capMinutes: number;
+  knownLines: KnownLine[];
   micError: string | null;
   onTutorMissing: () => void;
 };
@@ -56,21 +61,49 @@ function useNotes(): { notes: Note[]; dismiss: (id: string) => void } {
   return { notes, dismiss };
 }
 
-function useLatestPhrase(): { phrase: Phrase | null; dismiss: () => void } {
+const latestTutorTurn = (turns: Turn[]): Turn | undefined => turns.findLast((turn) => turn.role === "tutor");
+
+/**
+ * The phrase card: tool-emitted cards win for novel phrases; when the tutor's latest transcript
+ * contains a line the unit already glosses, the card is set locally so a skipped show_phrase
+ * call does not leave the learner without the meaning. Each (turn, line) pair triggers once, so a
+ * dismissed card only returns with a new tutor turn.
+ */
+function useLatestPhrase(knownLines: KnownLine[], turns: Turn[]): { phrase: Phrase | null; dismiss: () => void } {
   const [phrase, setPhrase] = useState<Phrase | null>(null);
+  const [seenKey, setSeenKey] = useState<string | null>(null);
   const onMessage = useCallback((message: { payload: Uint8Array }) => {
     const next = parsePhrase(message.payload);
     if (next) setPhrase({ ...next, id: crypto.randomUUID() });
   }, []);
   useDataChannel(PHRASE_TOPIC, onMessage);
   const dismiss = useCallback(() => setPhrase(null), []);
+
+  const turn = latestTutorTurn(turns);
+  const match = turn ? matchKnownLine(turn.text, knownLines) : null;
+  const key = turn && match ? `${turn.id}:${match.spanish}` : null;
+  if (key && match && key !== seenKey) {
+    setSeenKey(key);
+    if (!phrase || !sameLine(phrase.spanish, match.spanish)) setPhrase({ ...match, id: key });
+  }
   return { phrase, dismiss };
 }
 
-const tutorState = (state: ReturnType<typeof useVoiceAssistant>["state"]): TutorState =>
+type AgentState = ReturnType<typeof useVoiceAssistant>["state"];
+
+/** Anything before the tutor is actually running (initializing, connecting, undefined) reads as idle. */
+const tutorState = (state: AgentState): TutorState =>
   state === "speaking" || state === "listening" || state === "thinking" ? state : "idle";
 
-export function LiveSession({ label, title, capMinutes, micError, onTutorMissing }: LiveSessionProps) {
+/** True once the tutor has spoken or sent a transcript; latched so the label never comes back. */
+function useTutorReady(state: AgentState, turns: Turn[]): boolean {
+  const [ready, setReady] = useState(false);
+  const heard = state === "speaking" || turns.some((turn) => turn.role === "tutor");
+  if (heard && !ready) setReady(true);
+  return ready || heard;
+}
+
+export function LiveSession({ label, title, capMinutes, knownLines, micError, onTutorMissing }: LiveSessionProps) {
   const room = useRoomContext();
   const connection = useConnectionState();
   const { agent, state, audioTrack } = useVoiceAssistant();
@@ -78,10 +111,11 @@ export function LiveSession({ label, title, capMinutes, micError, onTutorMissing
   const streams = useTranscriptions();
   const turns = useMemo(() => toTurns(streams), [streams]);
   const { notes, dismiss } = useNotes();
-  const { phrase, dismiss: dismissPhrase } = useLatestPhrase();
+  const { phrase, dismiss: dismissPhrase } = useLatestPhrase(knownLines, turns);
   const { isMicrophoneEnabled, localParticipant } = useLocalParticipant();
   const connected = connection === ConnectionState.Connected;
   const elapsed = useElapsedSeconds(connected);
+  const ready = useTutorReady(state, turns);
   const [ending, setEnding] = useState(false);
 
   const end = useCallback(() => {
@@ -136,6 +170,11 @@ export function LiveSession({ label, title, capMinutes, micError, onTutorMissing
             )}
           />
         </div>
+        {!ready && (
+          <p className="text-sm text-muted-foreground" role="status">
+            Getting ready…
+          </p>
+        )}
         <div className="w-full max-w-xl">
           <PhraseCard phrase={phrase} onDismiss={dismissPhrase} />
         </div>
