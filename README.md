@@ -31,6 +31,47 @@ DB-backed suites are skipped unless you set `DATABASE_URL_TEST` to a dedicated t
 database in `web/.env.local`, or opt in explicitly with
 `WAFEL_ALLOW_SHARED_DB_TESTS=1` to run them against `DATABASE_URL`.
 
+## What v2 adds
+
+- **Learning path and units.** Content lives in `web/content/units/es-MX/<LEVEL>.json`
+  (A1–B2: 8 units each, C1–C2: 4). Each unit has a can-do, one grammar pattern,
+  10–14 target words and 5 model sentences. The learner's current unit (first
+  non-mastered unit at their level) drives LESSON, SHADOWING and MISTAKE_REVIEW
+  sessions; `/path` shows every unit with its status. A word is mastered when it
+  scores ≥2 in two sessions; a unit when 80% of its words and the pattern are.
+- **Bilingual tutoring by level.** The brief carries `languagePolicy`: A1/A2
+  `BILINGUAL` (Spanish, then an English gloss), B1 `MOSTLY_TARGET`, B2+
+  `TARGET_ONLY`. Every phrase the tutor presents also appears as an on-screen
+  phrase card (`show_phrase` → data topic `wafel.phrase`).
+- **Live grading.** The duplex model rates each attempt at a target word or the
+  pattern (`rate_attempt`, score 0–3) into `UnitProgress`; the recap lists the
+  words rated and the mistakes logged during the session.
+- **Dialect.** `Learner.dialect` (`MX` default, `ES`, `NEUTRAL`) selects content,
+  scenarios and the tutor's register; the shipped content is Mexican Spanish.
+- **Voice audition.** `agent/scripts/audition.py` renders one sentence per
+  candidate GPT-Live voice so you can pick `Learner.voice` in Settings
+  (see `agent/README.md`).
+
+### Authoring units
+
+Edit the JSON under `web/content/units/es-MX/`, then validate and load:
+
+```sh
+cd web
+bun run check:units   # zod validation: ids, order, word limits, duplicate words
+bun run db:seed       # upserts units by id (idempotent)
+```
+
+Ids look like `es-MX-A1-01`; target words must be unique after normalisation
+(case, leading articles and punctuation are ignored).
+
+### Running a dev agent
+
+Set `WAFEL_AGENT_NAME=wafel-tutor-dev` in `agent/.env` when running
+`uv run python -m wafel_agent.main dev`, so the local worker does not compete
+with the deployed `wafel-tutor` for the web app's dispatches (the web app only
+dispatches `wafel-tutor`; dispatch to a dev worker by hand with `lk dispatch create`).
+
 ## Setup (agent)
 
 See `agent/README.md` (`uv sync`, `uv run python -m wafel_agent.main dev`).
