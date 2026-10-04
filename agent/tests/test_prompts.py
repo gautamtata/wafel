@@ -337,6 +337,7 @@ def test_backend_prompt(lesson: Brief) -> None:
     assert "- show_phrase(spanish, english)" in prompt
     assert "- rate_attempt(target, kind, score, note?)" in prompt
     assert "scores at most 2; 3 is only for the learner's own production" in prompt
+    assert "repetition of a phrase containing a unit target word" in prompt
     assert "Pronunciation is NOT rateable" in prompt
     assert "never log PRONUNCIATION mistakes" in prompt
 
@@ -346,6 +347,13 @@ def test_backend_prompt_without_unit(brief: Brief) -> None:
     assert "No unit in this session" in prompt
     assert "call it BEFORE the tutor speaks any phrase" in prompt
     assert "never a phrase without a card" in prompt
+
+
+def test_voice_rate_policy_covers_repetitions(lesson: Brief) -> None:
+    prompt = build_voice_prompt(lesson)
+    assert "intento o repetición del alumno" in prompt
+    assert "también durante la presentación" in prompt
+    assert "una repetición vale como máximo 2" in prompt
 
 
 def test_voice_prompt_rate_attempt_gated_on_unit(lesson: Brief, brief: Brief) -> None:
